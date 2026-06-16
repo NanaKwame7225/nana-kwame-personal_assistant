@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Nana Kwame Asomani-Appah | Personal Assistant</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
+  #app { width: 100%; max-width: 480px; height: 700px; background: #fff; border-radius: 18px; box-shadow: 0 8px 40px rgba(4,44,83,0.15); display: flex; flex-direction: column; overflow: hidden; }
+  #header { background: linear-gradient(135deg, #042C53 0%, #185FA5 100%); color: white; padding: 16px 18px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .avatar { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; }
+  .info h2 { font-size: 15px; font-weight: 600; }
+  .info p { font-size: 11px; color: #B5D4F4; margin-top: 2px; }
+  .status { margin-left: auto; display: flex; align-items: center; gap: 5px; font-size: 11px; color: #9FE1CB; white-space: nowrap; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: #1D9E75; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  #tabs { display: flex; background: #f8f9fa; border-bottom: 1px solid #e9ecef; flex-shrink: 0; }
+  .tab { flex: 1; padding: 11px 6px; font-size: 12px; border: none; background: transparent; color: #6c757d; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; border-bottom: 2.5px solid transparent; transition: all 0.15s; font-family: inherit; }
+  .tab.active { color: #042C53; border-bottom-color: #042C53; background: #fff; font-weight: 600; }
+  .tab:hover:not(.active) { color: #185FA5; background: #f0f4f8; }
+  .panel { display: none; flex: 1; flex-direction: column; overflow: hidden; }
+  .panel.active { display: flex; }
+  #messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+  .msg { display: flex; gap: 8px; align-items: flex-end; }
+  .msg.user { flex-direction: row-reverse; }
+  .bubble { max-width: 82%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.7; letter-spacing: 0.1px; }
+  .bubble p { margin: 0 0 10px 0; }
+  .bubble p:last-child { margin-bottom: 0; }
+  .msg.bot .bubble { background: #f0f4f8; color: #1a1a2e; border-bottom-left-radius: 4px; }
+  .msg.user .bubble { background: linear-gradient(135deg, #042C53, #185FA5); color: white; border-bottom-right-radius: 4px; }
+  .msg-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+  .msg-av.bot-av { background: #042C53; color: white; }
+  .msg-av.user-av { background: #e9ecef; color: #6c757d; }
+  #quick-btns { padding: 8px 14px; display: flex; gap: 6px; flex-wrap: wrap; border-top: 1px solid #f0f0f0; background: #fafafa; }
+  .qbtn { font-size: 11px; padding: 5px 11px; border: 1px solid #dee2e6; border-radius: 20px; background: white; color: #495057; cursor: pointer; white-space: nowrap; transition: all 0.15s; font-family: inherit; }
+  .qbtn:hover { background: #042C53; color: white; border-color: #042C53; }
+  #input-row { display: flex; gap: 8px; padding: 12px 14px; border-top: 1px solid #f0f0f0; flex-shrink: 0; align-items: flex-end; }
+  #chat-input { flex: 1; resize: none; min-height: 40px; max-height: 100px; padding: 10px 14px; font-size: 14px; border-radius: 22px; font-family: inherit; border: 1.5px solid #dee2e6; outline: none; transition: border-color 0.15s; }
+  #chat-input:focus { border-color: #185FA5; }
+  #send-btn { width: 40px; height: 40px; border-radius: 50%; background: #042C53; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s; }
+  #send-btn:hover { background: #185FA5; }
+  #send-btn:disabled { background: #ccc; cursor: not-allowed; }
+  .typing { display: flex; gap: 4px; align-items: center; padding: 4px 2px; }
+  .typing span { width: 8px; height: 8px; background: #adb5bd; border-radius: 50%; animation: bounce 1.2s infinite; }
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+  .scroll-panel { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+  .section-label { font-size: 11px; font-weight: 600; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+  input[type=text], textarea { width: 100%; padding: 10px 14px; border-radius: 10px; font-size: 13px; font-family: inherit; border: 1.5px solid #dee2e6; outline: none; transition: border-color 0.15s; background: white; }
+  input[type=text]:focus, textarea:focus { border-color: #185FA5; }
+  textarea { resize: vertical; }
+  .primary-btn { width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #042C53, #185FA5); color: white; border: none; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: 600; transition: opacity 0.15s; }
+  .primary-btn:hover { opacity: 0.9; }
+  .primary-btn:disabled { background: #ccc; cursor: not-allowed; opacity: 1; }
+  .output-box { background: #f8f9fa; border-radius: 10px; padding: 16px 18px; border: 1px solid #e9ecef; font-size: 14.5px; line-height: 1.8; letter-spacing: 0.1px; color: #212529; max-height: 240px; overflow-y: auto; }
+  .output-box p { margin: 0 0 12px 0; }
+  .output-box p:last-child { margin-bottom: 0; }
+  .output-box p.cv-header { font-weight: 700; color: #042C53; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px; margin-top: 16px; margin-bottom: 6px; border-bottom: 1px solid #dee2e6; padding-bottom: 4px; }
+  .output-box p.cv-header:first-child { margin-top: 0; }
+  .output-box ul { margin: 0 0 12px 18px; padding: 0; }
+  .output-box li { margin-bottom: 6px; }
+  .action-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .sec-btn { padding: 8px 14px; border-radius: 8px; border: 1.5px solid #dee2e6; background: white; color: #495057; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 6px; font-family: inherit; transition: all 0.15s; }
+  .sec-btn:hover { border-color: #042C53; color: #042C53; }
+  .info-box { border-radius: 10px; padding: 10px 14px; font-size: 12px; line-height: 1.6; display: flex; gap: 8px; align-items: flex-start; }
+  .info-box.green { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+  .info-box.blue { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+  .info-box.yellow { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .share-bar { background: #f8f9fa; border-top: 1px solid #e9ecef; padding: 10px 14px; display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+  .share-bar span { font-size: 11px; color: #6c757d; }
+  .share-btn { padding: 6px 12px; border-radius: 16px; border: 1px solid #dee2e6; background: white; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px; color: #495057; font-family: inherit; transition: all 0.15s; }
+  .share-btn:hover { background: #042C53; color: white; border-color: #042C53; }
+  @media (max-width: 500px) { body { padding: 0; align-items: flex-end; } #app { max-width: 100%; height: 100vh; border-radius: 0; } }
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="header">
+    <div class="avatar">NK</div>
+    <div class="info">
+      <h2>Nana Kwame Asomani-Appah</h2>
+      <p>Head of Academics · QA Engineer · Chemical Engineer</p>
+    </div>
+    <div class="status"><div class="dot"></div>Online</div>
+  </div>
+  <div id="tabs">
+    <button class="tab active" onclick="switchTab('chat')"><i class="ti ti-message-circle"></i> Chat</button>
+    <button class="tab" onclick="switchTab('cv')"><i class="ti ti-file-cv"></i> CV</button>
+    <button class="tab" onclick="switchTab('interview')"><i class="ti ti-presentation"></i> Interview</button>
+    <button class="tab" onclick="switchTab('profile')"><i class="ti ti-user-edit"></i> Update</button>
+  </div>
+
+  <!-- CHAT PANEL -->
+  <div id="chat-panel" class="panel active">
+    <div id="messages">
+      <div class="msg bot">
+        <div class="msg-av bot-av">NK</div>
+        <div class="bubble">Hi! 👋 I'm Nana Kwame's personal assistant. Ask me about his background, skills, career journey, certifications, or anything professional. How can I help you today?</div>
+      </div>
+    </div>
+    <div id="quick-btns">
+      <button class="qbtn" onclick="sendQuick('Tell me about your professional background')">Background</button>
+      <button class="qbtn" onclick="sendQuick('What are your core skills?')">Core skills</button>
+      <button class="qbtn" onclick="sendQuick('Walk me through your career journey')">Career journey</button>
+      <button class="qbtn" onclick="sendQuick('What certifications do you hold?')">Certifications</button>
+      <button class="qbtn" onclick="sendQuick('Why should I hire you?')">Why hire me?</button>
+      <button class="qbtn" onclick="sendQuick('What are your career goals?')">Goals</button>
+    </div>
+    <div id="input-row">
+      <textarea id="chat-input" placeholder="Ask anything about Nana Kwame..." rows="1" onkeydown="handleKey(event)"></textarea>
+      <button id="send-btn" onclick="sendChat()"><i class="ti ti-send" style="font-size:16px"></i></button>
+    </div>
+  </div>
+
+  <!-- CV PANEL -->
+  <div id="cv-panel" class="panel">
+    <div class="scroll-panel">
+      <div class="info-box blue">
+        <i class="ti ti-sparkles" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
+        <span>Enter a job title and optional description. The AI will rewrite the CV to perfectly match the role — ready to paste into Word as Times New Roman size 12.</span>
+      </div>
+      <div>
+        <div class="section-label">Target role or job title</div>
+        <input type="text" id="role-input" placeholder="e.g. Operations Manager, Data Analyst, Project Manager..." />
+      </div>
+      <div>
+        <div class="section-label">Job description or key requirements (optional)</div>
+        <textarea id="role-desc" rows="4" placeholder="Paste the job description here for a more targeted CV..."></textarea>
+      </div>
+      <button class="primary-btn" id="gen-cv-btn" onclick="generateCV()"><i class="ti ti-wand"></i> Generate Tailored CV</button>
+      <div id="cv-output" style="display:none">
+        <div class="section-label">Your tailored CV</div>
+        <div class="output-box" id="cv-preview"></div>
+        <div class="action-row" style="margin-top:8px">
+          <button class="sec-btn" onclick="copyCV()"><i class="ti ti-copy"></i> Copy text</button>
+          <button class="sec-btn" onclick="generateCV()"><i class="ti ti-refresh"></i> Regenerate</button>
+        </div>
+      </div>
+      <div class="info-box green">
+        <i class="ti ti-info-circle" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
+        <span>Copy the CV text → paste into Microsoft Word → set font to Times New Roman, size 12 → save and send.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERVIEW PANEL -->
+  <div id="interview-panel" class="panel">
+    <div class="scroll-panel">
+      <div class="info-box blue">
+        <i class="ti ti-microphone" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
+        <span>Type an interview question and get a confident, structured answer based on Nana Kwame's real experience. Use during online interviews on a second screen or phone.</span>
+      </div>
+      <div>
+        <div class="section-label">Interview question</div>
+        <textarea id="interview-q" rows="3" placeholder='"Tell me about yourself" or "Why do you want this role?" or "Describe a challenge you overcame"...'></textarea>
+      </div>
+      <div>
+        <div class="section-label">Role you're interviewing for (optional)</div>
+        <input type="text" id="interview-role" placeholder="e.g. Operations Manager, QA Lead, Academic Coordinator..." />
+      </div>
+      <button class="primary-btn" id="interview-btn" onclick="answerInterview()"><i class="ti ti-player-play"></i> Generate Answer</button>
+      <div id="interview-output" style="display:none">
+        <div class="section-label">Suggested answer</div>
+        <div class="output-box" id="interview-answer"></div>
+        <div class="action-row" style="margin-top:8px">
+          <button class="sec-btn" onclick="copyInterview()"><i class="ti ti-copy"></i> Copy answer</button>
+          <button class="sec-btn" onclick="answerInterview()"><i class="ti ti-refresh"></i> Regenerate</button>
+        </div>
+      </div>
+      <div class="info-box yellow">
+        <i class="ti ti-bulb" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
+        <span>Tip: Keep this open on your phone during video calls. Personalise with specific memories and speak naturally — don't read word for word.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE UPDATE PANEL -->
+  <div id="profile-panel" class="panel">
+    <div class="scroll-panel">
+      <div class="info-box blue">
+        <i class="ti ti-refresh" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
+        <span>Keep this assistant current as you grow. Add a new role, certification, skill, or achievement below — the chatbot, CV builder, and interview coach will all use it immediately. Save your data file to keep updates across sessions.</span>
+      </div>
+      <div>
+        <div class="section-label">Update type</div>
+        <select id="update-type" style="width:100%;padding:10px 14px;border-radius:10px;font-size:13px;font-family:inherit;border:1.5px solid #dee2e6;outline:none;background:white">
+          <option value="role">New job role / position</option>
+          <option value="certification">New certification</option>
+          <option value="skill">New skill or expertise</option>
+          <option value="achievement">New achievement / milestone</option>
+          <option value="other">Other life or career update</option>
+        </select>
+      </div>
+      <div>
+        <div class="section-label">Details</div>
+        <textarea id="update-text" rows="4" placeholder="e.g. 'Promoted to Director of Academics at OpenLabs Ghana, June 2026, now overseeing 3 campuses' or 'Completed Six Sigma Green Belt certification, June 2026'"></textarea>
+      </div>
+      <button class="primary-btn" onclick="addUpdate()"><i class="ti ti-plus"></i> Add to profile</button>
+
+      <div>
+        <div class="section-label">Current saved updates (<span id="update-count">0</span>)</div>
+        <div id="updates-list" class="output-box" style="min-height:60px"><p style="color:#adb5bd">No updates added yet. New information you add here will be remembered by the chatbot, CV builder, and interview coach.</p></div>
+      </div>
+
+      <div class="action-row">
+        <button class="sec-btn" onclick="exportProfile()"><i class="ti ti-download"></i> Save updates to file</button>
+        <button class="sec-btn" onclick="document.getElementById('import-file').click()"><i class="ti ti-upload"></i> Load updates from file</button>
+        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importProfile(event)" />
+      </div>
+      <div class="info-box green">
+        <i class="ti ti-info-circle" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
+        <span>Since this page doesn't auto-save between visits, click "Save updates to file" before closing, and "Load updates from file" when you reopen it, to keep your full update history.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="share-bar">
+    <span>Share this assistant:</span>
+    <button class="share-btn" onclick="copyLink()"><i class="ti ti-link"></i> Copy link</button>
+    <button class="share-btn" onclick="shareWA()"><i class="ti ti-brand-whatsapp"></i> WhatsApp</button>
+  </div>
+</div>
+
+<script>
+const PROFILE = `You are a friendly, professional personal assistant chatbot for Nana Kwame Asomani-Appah. Speak warmly and professionally, in first person as if representing him. Be confident, concise, and helpful.
+
+FORMATTING RULE (STRICT): Never use markdown syntax of any kind — no asterisks for bold or italics, no hash symbols for headers, no backticks, no markdown bullet dashes. Write in completely plain text with no special formatting characters at all.
+
+KEY FACTS:
+- Full name: Nana Kwame Asomani-Appah
+- Location: Accra, Ghana
+- Phone: +233557023768 | Email: Nanakwameasomani2@gmail.com
+- LinkedIn: https://www.linkedin.com/in/nana-kwame-asomani
+- Do NOT state, estimate, or imply his age or date of birth under any circumstances, even if directly asked. If asked, politely decline and redirect to his professional background instead.
+
+EDUCATION:
+- BSc Chemical Engineering, KNUST (2016–2020)
+- WASSCE General Science, Accra Academy SHS (2013–2016)
+
+PROFESSIONAL EXPERIENCE:
+1. Head of Academics | OpenLabs Ghana (May 2025 – Present)
+   Leads academic strategy, evaluates staff, coordinates events, prepares institutional reports.
+
+2. Head Facilitator & Senior Administrator | Novelty Montessori School (Sep 2022 – Apr 2025)
+   Managed full school operations, staff training, curriculum planning, budgeting, safety compliance.
+
+3. Quality Control Engineer (Contract) | Lucky Core International (Nov 2021 – Feb 2022)
+   Implemented QMS, conducted audits, supported continuous improvement.
+
+4. QA/QC Engineer (National Service) | Chocomac Ghana Limited (Dec 2020 – Oct 2021)
+   Lab testing, quality inspections, process optimisation, documentation.
+
+5. QA/QC Officer (Intern) | Pharmanova Ghana Limited
+   Lab quality testing, equipment calibration, production quality assurance.
+
+CORE COMPETENCIES:
+Strategic Leadership, Team Management, Academic Administration, Curriculum Coordination, Quality Assurance, Process Improvement, Data Analysis, Reporting, Internal Auditing, Compliance Monitoring, Project Coordination, Operations Support, Stakeholder Communication, Systems Thinking, Problem Solving.
+
+CERTIFICATIONS:
+ISO 9001:2015, ISO 45001:2018, ISO 22301, Lean Six Sigma White Belt, Internal Auditing, MEAL Essentials, PMP Beginner, CSRD Fundamentals, Operations Management Essentials, Educational Leadership & Collaboration, Effective Leadership Skills & Strategies, Data Engineering on AWS, Essentials of Prompt Engineering, Data Analytics for Lean Six Sigma (University of Amsterdam/Coursera), Business Analysis & Process Management (Coursera).
+
+TECHNICAL SKILLS:
+Microsoft Excel (Data Analysis), Power BI (Basic Analytics), MySQL (Basic), HTML/CSS, Python (Beginner), Process Mapping & Optimisation, Report Writing & Documentation.
+
+CAREER STORY:
+Started with a Chemical Engineering degree from KNUST, moved into QA/QC through national service and internships in industrial/pharmaceutical settings, then transitioned into educational leadership managing Novelty Montessori School for 3 years, and now leads academics at OpenLabs Ghana — bridging technical rigor with people-centered leadership.
+
+TONE RULES:
+- Keep answers under 120 words unless a detailed breakdown is explicitly requested — be sharp and direct, never padded with throat-clearing, restated questions, or filler before the actual answer
+- Open with the answer itself in the first sentence; do not warm up with "Great question" or restating what was asked
+- Give the full answer ONCE, in one continuous pass, and then STOP — do not summarize, recap, or restate the same point again in a closing sentence or second paragraph. Never say the same fact, idea, or phrase twice in one response, even in different words
+- Always write in proper, complete paragraph form — full grammatical sentences flowing into one another, never sentence fragments, never a single isolated line standing alone as if it were a list item
+- Give exactly ONE complete response per query and then stop — do not produce multiple drafts, options, alternate phrasings, or follow-up paragraphs offering more detail unless the user explicitly asks for more. One paragraph (or two only if a second one introduces genuinely new information) is the final and only output for that query
+- Be warm, confident, and professional, but every sentence must carry new information — no sentence that only sets up, repeats, or restates another sentence
+- If asked about salary: "Happy to discuss based on the scope of the role"
+- ALWAYS write in full prose. Never use bullet points, numbered lists, or dashes anywhere in your answer, even when listing several items — instead, weave items into one flowing sentence (e.g. "My certifications include ISO 9001, ISO 45001, and Lean Six Sigma White Belt, among others" rather than a bulleted list)
+- Always interpret the user's actual question carefully and answer that specific question fresh — never reuse a previous answer verbatim just because a new question sounds similar
+- Every answer must be grounded in Nana Kwame's specific, real details from the KEY FACTS, EDUCATION, PROFESSIONAL EXPERIENCE, CERTIFICATIONS, TECHNICAL SKILLS, or CAREER STORY above — never give a generic, vague, or textbook-style answer that could apply to anyone. If a question is broad (e.g. "what makes a good leader"), still answer it through his actual experience and specifics (e.g. his time managing Novelty Montessori School or leading academics at OpenLabs Ghana), not generic theory
+- If a question can't be answered using his real background, say so honestly rather than inventing or generalising
+
+CERTIFICATIONS RULE — IMPORTANT:
+- If the user mentions a specific role, job title, or industry anywhere in the conversation, only mention the certifications most relevant to that role, woven naturally into a paragraph, and explain briefly why they apply
+- If no role or context has been mentioned, give a general but still paragraph-style overview of the full certification portfolio
+- Never dump the full raw certification list when a role has been specified — be selective and relevant`;
+
+const CV_SYSTEM = `You are an expert ATS-optimisation CV writer. Rewrite Nana Kwame Asomani-Appah's CV to perfectly target the given role AND to pass through Applicant Tracking Systems (ATS) with a high parse and match score.
+
+FORMATTING RULE (STRICT): Output plain text only. Never use markdown syntax — no asterisks for bold or italics, no hash symbols for section headers, no backticks. Section headers should simply be plain capitalised text on their own line (e.g. PROFESSIONAL SUMMARY), not wrapped in any special characters. For bullet points, use a simple hyphen and a space at the start of the line (e.g. "- Led the team...") and nothing else — no asterisks as bullet markers.
+
+SOURCE DATA:
+Name: Nana Kwame Asomani-Appah
+Contact: +233557023768 | Nanakwameasomani2@gmail.com | linkedin.com/in/nana-kwame-asomani
+
+EDUCATION:
+BSc Chemical Engineering — KNUST (2016–2020)
+WASSCE General Science — Accra Academy SHS (2013–2016)
+
+EXPERIENCE (raw duties and known achievements to draw from — do not invent beyond what's implied here):
+Head of Academics | OpenLabs Ghana | May 2025–Present
+- Leads academic strategy development and implementation across the institution
+- Evaluates staff performance and oversees recruitment processes
+- Coordinates academic events and institutional programs
+- Ensures adherence to academic frameworks and methodologies
+- Prepares reports that inform institutional decision-making
+- Achievement angle: introduced/strengthened structured evaluation and reporting systems that improved consistency in academic decision-making and staff accountability
+
+Head Facilitator & Senior Administrator | Novelty Montessori School | Sep 2022–Apr 2025
+- Managed full school operations and administrative systems for nearly 3 years
+- Supervised staff training and performance evaluation
+- Coordinated curriculum delivery and academic planning
+- Managed budgeting and resource allocation
+- Oversaw facility management and safety compliance
+- Achievement angle: ran the school's administrative and academic operations end-to-end for almost 3 years with no major compliance or safety incidents, while coordinating staff training that improved curriculum delivery consistency
+
+Quality Control Engineer (Contract) | Lucky Core International | Nov 2021–Feb 2022
+- Implemented quality management systems in production processes
+- Conducted compliance checks and process audits
+- Supported continuous improvement initiatives
+- Ensured adherence to industrial standards and procedures
+- Achievement angle: strengthened compliance through systematic process audits, supporting measurable continuous improvement in production quality
+
+QA/QC Engineer (National Service) | Chocomac Ghana Limited | Dec 2020–Oct 2021
+- Conducted laboratory testing and quality inspections
+- Assisted in process optimisation and production control
+- Maintained documentation for quality assurance processes
+- Achievement angle: improved documentation rigor and contributed to process optimisation efforts that supported more consistent production quality control
+
+QA/QC Officer (Intern) | Pharmanova Ghana Limited
+- Assisted in laboratory quality testing and analysis
+- Supported equipment calibration and maintenance
+- Contributed to production quality assurance processes
+- Achievement angle: gained hands-on grounding in pharmaceutical-grade QA discipline, supporting equipment reliability and accurate lab analysis
+
+CERTIFICATIONS: ISO 9001:2015, ISO 45001:2018, ISO 22301, Lean Six Sigma White Belt, Internal Auditing, MEAL Essentials, PMP Beginner, CSRD, Operations Management Essentials, Educational Leadership & Collaboration, Effective Leadership Skills & Strategies, Data Engineering on AWS, Prompt Engineering, Data Analytics for Lean Six Sigma (UoA/Coursera), Business Analysis & Process Management (Coursera)
+
+SKILLS: Microsoft Excel, Power BI, MySQL, HTML/CSS, Python (Beginner), Process Mapping, Report Writing
+
+ATS-OPTIMISATION RULES (CRITICAL):
+- Use a single-column, simple layout with standard section headers in plain capital text — no tables, text boxes, columns, icons, or graphics, since these break ATS parsing
+- Mirror exact keywords and phrasing from the job title and job description wherever they truthfully apply (e.g. if the role description says "stakeholder management" and that matches his experience, use that exact phrase rather than a synonym)
+- Use standard section header names: PROFESSIONAL SUMMARY, CORE COMPETENCIES, PROFESSIONAL EXPERIENCE, EDUCATION, CERTIFICATIONS, TECHNICAL SKILLS
+- Under PROFESSIONAL EXPERIENCE, write each role's responsibilities AND achievements as clean, concise bullet points starting with a strong action verb (e.g. "Led", "Coordinated", "Implemented", "Improved") — ATS systems parse bullet points more reliably than dense prose, so bullets are required here, not paragraphs
+- Every role must include at least one distinct, clearly-labelled achievement bullet (not just a duty) that shows impact, scale, or improvement, phrased honestly based on the achievement angle provided — use phrases like "resulting in," "which led to," or "contributing to" rather than fabricated numeric metrics, unless a number is explicitly given above
+- Include a CORE COMPETENCIES section near the top as a short comma-separated keyword line (not bullets) packed with role-relevant skill keywords so ATS keyword-matching scans succeed
+- The PROFESSIONAL SUMMARY should be a tight 3–4 sentence paragraph, written in prose, placed right under the name and contact details
+- Select the 6–8 most relevant certifications for this specific role and list them as bullet points under CERTIFICATIONS (bullets parse better than a packed sentence for this section in ATS systems)
+- List TECHNICAL SKILLS as a comma-separated line of the most relevant tools and competencies for this role
+- Keep contact info exactly as provided — NO date of birth
+- Keep the whole CV to roughly one page worth of content
+- Do NOT fabricate new skills, employers, or experiences beyond what's listed above, EXCEPT for any items explicitly provided under "RECENT UPDATES TO NANA KWAME'S PROFILE" if present, which should be treated as real, current, and incorporated naturally (e.g. a new role becomes the most recent EXPERIENCE entry, a new certification is added to the relevant list, a new skill is added where appropriate)`;
+
+const INTERVIEW_SYSTEM = `You are helping Nana Kwame Asomani-Appah prepare strong answers for job interviews based entirely on his real background.
+
+FORMATTING RULE (STRICT): Output plain text only. Never use markdown syntax — no asterisks, no hash symbols, no backticks, no markdown bullet dashes. Write in completely plain prose with no special formatting characters.
+
+HIS PROFILE:
+- Based in Accra, Ghana
+- BSc Chemical Engineering, KNUST
+- Current role: Head of Academics, OpenLabs Ghana (May 2025–present)
+- Previous: Head Facilitator/Admin, Novelty Montessori School (3 years)
+- QA/QC background: Chocomac Ghana (national service), Lucky Core International (contract), Pharmanova (intern)
+- Key certifications: ISO 9001, ISO 45001, Lean Six Sigma White Belt, MEAL, Operations Management, Educational Leadership, Internal Auditing, and many more
+- Skills: Excel, Power BI, process improvement, team leadership, curriculum coordination, quality assurance
+
+ANSWER GUIDELINES:
+- Respond in first person as Nana Kwame
+- Use STAR method (Situation → Task → Action → Result) for behavioural questions, but weave it into flowing paragraphs rather than labelled steps
+- For "Tell me about yourself" give a compelling 3-part arc: engineering roots → QA experience → education leadership
+- Keep answers 150–250 words: substantial but not rambling
+- Be specific — reference real roles, certifications, and outcomes
+- If a target role has been specified, mention only the certifications and experience most relevant to that role; if no role has been given, speak about his background generally
+- End with a forward-looking statement connecting to the role
+- Sound natural and confident, not robotic
+- Write ONLY in full prose paragraphs — never use bullet points, dashes, or numbered lists; separate distinct ideas into separate paragraphs`;
+
+let chatHistory = [];
+let currentCV = '';
+let currentInterview = '';
+let profileUpdates = [];
+
+function buildUpdatesText() {
+  if (profileUpdates.length === 0) return '';
+  const lines = profileUpdates.map(u => `- [${u.type.toUpperCase()}] ${u.text}`).join('\n');
+  return `\n\nRECENT UPDATES TO NANA KWAME'S PROFILE (most current information — these take priority over anything above if there's a conflict, since they reflect his latest progress):\n${lines}`;
+}
+
+function renderUpdatesList() {
+  const box = document.getElementById('updates-list');
+  document.getElementById('update-count').textContent = profileUpdates.length;
+  if (profileUpdates.length === 0) {
+    box.innerHTML = '<p style="color:#adb5bd">No updates added yet. New information you add here will be remembered by the chatbot, CV builder, and interview coach.</p>';
+    return;
+  }
+  const typeLabels = { role: 'New role', certification: 'Certification', skill: 'Skill', achievement: 'Achievement', other: 'Update' };
+  box.innerHTML = profileUpdates.map((u, i) =>
+    `<p><strong>${escapeHtml(typeLabels[u.type] || 'Update')}:</strong> ${escapeHtml(u.text)} <a href="#" onclick="removeUpdate(${i});return false;" style="color:#c0392b;font-size:12px;margin-left:6px">[remove]</a></p>`
+  ).join('');
+}
+
+function addUpdate() {
+  const type = document.getElementById('update-type').value;
+  const text = document.getElementById('update-text').value.trim();
+  if (!text) { alert('Please describe the update first.'); return; }
+  profileUpdates.push({ type, text, date: new Date().toISOString().slice(0,10) });
+  document.getElementById('update-text').value = '';
+  renderUpdatesList();
+}
+
+function removeUpdate(i) {
+  profileUpdates.splice(i, 1);
+  renderUpdatesList();
+}
+
+function exportProfile() {
+  const blob = new Blob([JSON.stringify(profileUpdates, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'nana-kwame-profile-updates.json';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importProfile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const loaded = JSON.parse(e.target.result);
+      if (Array.isArray(loaded)) {
+        profileUpdates = loaded;
+        renderUpdatesList();
+        alert('Profile updates loaded successfully.');
+      } else { alert('That file does not look like a valid updates file.'); }
+    } catch (err) { alert('Could not read that file. Please make sure it is a valid updates JSON file.'); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function switchTab(tab) {
+  const order = ['chat','cv','interview','profile'];
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(tab + '-panel').classList.add('active');
+  document.querySelectorAll('.tab')[order.indexOf(tab)].classList.add('active');
+}
+
+function textToParagraphs(text) {
+  const parts = text.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
+  const renderBlock = (s) => {
+    const isHeader = /^[A-Z][A-Z\s&/]{2,30}$/.test(s.trim());
+    const escaped = escapeHtml(s.replace(/\n/g, ' '));
+    return isHeader ? '<p><strong>' + escaped + '</strong></p>' : '<p>' + escaped + '</p>';
+  };
+  if (parts.length <= 1) {
+    const lines = text.split(/\n/).map(s => s.trim()).filter(Boolean);
+    return lines.map(renderBlock).join('');
+  }
+  return parts.map(renderBlock).join('');
+}
+
+function renderCV(text) {
+  const lines = text.split(/\n/).map(l => l.trim()).filter(Boolean);
+  let html = '';
+  let inList = false;
+  const closeList = () => { if (inList) { html += '</ul>'; inList = false; } };
+  for (const line of lines) {
+    const isHeader = /^[A-Z][A-Z\s&/]{2,35}$/.test(line);
+    const isBullet = /^[-•*]\s+/.test(line);
+    if (isHeader) {
+      closeList();
+      html += '<p class="cv-header">' + escapeHtml(line) + '</p>';
+    } else if (isBullet) {
+      if (!inList) { html += '<ul>'; inList = true; }
+      html += '<li>' + escapeHtml(line.replace(/^[-•*]\s+/, '')) + '</li>';
+    } else {
+      closeList();
+      html += '<p>' + escapeHtml(line) + '</p>';
+    }
+  }
+  closeList();
+  return html;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function addMsg(role, text) {
+  const box = document.getElementById('messages');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
+  const av = document.createElement('div');
+  av.className = 'msg-av ' + (role === 'user' ? 'user-av' : 'bot-av');
+  av.textContent = role === 'user' ? 'You' : 'NK';
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  bub.innerHTML = textToParagraphs(text);
+  wrap.appendChild(av);
+  wrap.appendChild(bub);
+  box.appendChild(wrap);
+  box.scrollTop = box.scrollHeight;
+  return bub;
+}
+
+function showTyping() {
+  const box = document.getElementById('messages');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg bot'; wrap.id = 'typer';
+  const av = document.createElement('div');
+  av.className = 'msg-av bot-av'; av.textContent = 'NK';
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  bub.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  wrap.appendChild(av); wrap.appendChild(bub);
+  box.appendChild(wrap); box.scrollTop = box.scrollHeight;
+}
+function removeTyping() { const t = document.getElementById('typer'); if(t) t.remove(); }
+
+function stripMarkdown(text) {
+  return text
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/\*\*\*(.+?)\*\*\*/g, '$1')
+    .replace(/\*\*(.+?)\*\*/g, '$1')
+    .replace(/\*(.+?)\*/g, '$1')
+    .replace(/__(.+?)__/g, '$1')
+    .replace(/_(.+?)_/g, '$1')
+    .replace(/^[ \t]*[-*]\s+/gm, '- ')
+    .replace(/`{1,3}([^`]*)`{1,3}/g, '$1')
+    .replace(/^>\s+/gm, '')
+    .trim();
+}
+
+async function callClaude(system, messages, maxTokens) {
+  const fullSystem = system + buildUpdatesText();
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: maxTokens || 600, system: fullSystem, messages })
+  });
+  const data = await res.json();
+  const raw = data.content.map(b => b.text || '').join('');
+  return stripMarkdown(raw);
+}
+
+async function callClaudeStreaming(system, messages, maxTokens, onChunk) {
+  const fullSystem = system + buildUpdatesText();
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: maxTokens || 600, system: fullSystem, messages, stream: true })
+  });
+  if (!res.body || !res.body.getReader) {
+    const reply = await callClaude(system, messages, maxTokens);
+    onChunk(reply, true);
+    return reply;
+  }
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let fullText = '';
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop();
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue;
+      const payload = line.slice(6).trim();
+      if (!payload || payload === '[DONE]') continue;
+      try {
+        const evt = JSON.parse(payload);
+        if (evt.type === 'content_block_delta' && evt.delta && evt.delta.text) {
+          fullText += evt.delta.text;
+          onChunk(stripMarkdown(fullText), false);
+        }
+      } catch (e) { /* ignore partial json */ }
+    }
+  }
+  const finalText = stripMarkdown(fullText);
+  onChunk(finalText, true);
+  return finalText;
+}
+
+function trimHistory(history, keepLast) {
+  if (history.length <= keepLast) return history;
+  return history.slice(history.length - keepLast);
+}
+
+async function sendChat() {
+  const inp = document.getElementById('chat-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = ''; inp.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+  addMsg('user', text);
+  chatHistory.push({ role: 'user', content: text });
+  chatHistory = trimHistory(chatHistory, 16);
+  showTyping();
+  try {
+    let bubble = null;
+    const reply = await callClaudeStreaming(PROFILE, chatHistory, 320, (partial, isDone) => {
+      if (!bubble) { removeTyping(); bubble = addMsg('bot', partial); }
+      else { bubble.innerHTML = textToParagraphs(partial); document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight; }
+    });
+    chatHistory.push({ role: 'assistant', content: reply });
+  } catch(e) {
+    removeTyping();
+    addMsg('bot', 'Sorry, I had a connection issue. Please try again.');
+  }
+  document.getElementById('send-btn').disabled = false;
+}
+
+function sendQuick(q) { document.getElementById('chat-input').value = q; sendChat(); }
+function handleKey(e) { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } }
+
+async function generateCV() {
+  const role = document.getElementById('role-input').value.trim();
+  const desc = document.getElementById('role-desc').value.trim();
+  if (!role) { alert('Please enter a target role first.'); return; }
+  const btn = document.getElementById('gen-cv-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Tailoring your CV...';
+  document.getElementById('cv-output').style.display = 'none';
+  try {
+    const prompt = `TARGET ROLE: ${role}\n${desc ? 'JOB DESCRIPTION:\n' + desc + '\n' : ''}Please write the tailored CV now.`;
+    currentCV = await callClaude(CV_SYSTEM, [{ role: 'user', content: prompt }], 1700);
+    document.getElementById('cv-preview').innerHTML = renderCV(currentCV);
+    document.getElementById('cv-output').style.display = 'block';
+  } catch(e) {
+    alert('Error generating CV. Please try again.');
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<i class="ti ti-wand"></i> Generate Tailored CV';
+}
+
+function copyCV() {
+  copyTextWithFallback(currentCV, () => {
+    const btns = document.querySelectorAll('#cv-output .sec-btn');
+    btns[0].innerHTML = '<i class="ti ti-check"></i> Copied!';
+    setTimeout(() => { btns[0].innerHTML = '<i class="ti ti-copy"></i> Copy text'; }, 2000);
+  });
+}
+
+async function answerInterview() {
+  const q = document.getElementById('interview-q').value.trim();
+  const role = document.getElementById('interview-role').value.trim();
+  if (!q) { alert('Please enter an interview question.'); return; }
+  const btn = document.getElementById('interview-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Crafting your answer...';
+  document.getElementById('interview-output').style.display = 'none';
+  try {
+    const prompt = `INTERVIEW QUESTION: "${q}"${role ? '\nROLE: ' + role : ''}\n\nGenerate a strong, authentic interview answer.`;
+    currentInterview = await callClaude(INTERVIEW_SYSTEM, [{ role: 'user', content: prompt }], 700);
+    document.getElementById('interview-answer').innerHTML = textToParagraphs(currentInterview);
+    document.getElementById('interview-output').style.display = 'block';
+  } catch(e) {
+    alert('Error generating answer. Please try again.');
+  }
+  btn.disabled = false;
+  btn.innerHTML = '<i class="ti ti-player-play"></i> Generate Answer';
+}
+
+function copyInterview() {
+  copyTextWithFallback(currentInterview, () => {
+    const btns = document.querySelectorAll('#interview-output .sec-btn');
+    btns[0].innerHTML = '<i class="ti ti-check"></i> Copied!';
+    setTimeout(() => { btns[0].innerHTML = '<i class="ti ti-copy"></i> Copy answer'; }, 2000);
+  });
+}
+
+function copyTextWithFallback(text, onSuccess) {
+  if (!text) { alert('Nothing to copy yet.'); return; }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(onSuccess).catch(() => fallbackCopy(text, onSuccess));
+  } else {
+    fallbackCopy(text, onSuccess);
+  }
+}
+
+function fallbackCopy(text, onSuccess) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.focus(); ta.select();
+    const ok = document.execCommand('copy');
+    document.body.removeChild(ta);
+    if (ok) { onSuccess(); } else { alert('Could not copy automatically. Please select and copy the text manually.'); }
+  } catch (e) {
+    alert('Could not copy automatically. Please select and copy the text manually.');
+  }
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => alert('Link copied! Share it on WhatsApp or social media.'));
+}
+
+function shareWA() {
+  const msg = encodeURIComponent("Chat with Nana Kwame's personal assistant to learn about his professional background, skills, and career: " + window.location.href);
+  window.open('https://wa.me/?text=' + msg, '_blank');
+}
+
+document.getElementById('chat-input').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+});
+</script>
+</body>
+</html>
