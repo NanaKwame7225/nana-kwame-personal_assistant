@@ -7,8 +7,8 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 16px; }
-  #app { width: 100%; max-width: 480px; height: 700px; background: #fff; border-radius: 18px; box-shadow: 0 8px 40px rgba(4,44,83,0.15); display: flex; flex-direction: column; overflow: hidden; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 16px; }
+  #app { width: 100%; max-width: 480px; height: min(700px, 88vh); height: min(700px, 88dvh); background: #fff; border-radius: 18px; box-shadow: 0 8px 40px rgba(4,44,83,0.15); display: flex; flex-direction: column; overflow: hidden; }
   #header { background: linear-gradient(135deg, #042C53 0%, #185FA5 100%); color: white; padding: 16px 18px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
   .avatar { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; }
   .info h2 { font-size: 15px; font-weight: 600; }
@@ -75,7 +75,28 @@
   .share-bar span { font-size: 11px; color: #6c757d; }
   .share-btn { padding: 6px 12px; border-radius: 16px; border: 1px solid #dee2e6; background: white; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px; color: #495057; font-family: inherit; transition: all 0.15s; }
   .share-btn:hover { background: #042C53; color: white; border-color: #042C53; }
-  @media (max-width: 500px) { body { padding: 0; align-items: flex-end; } #app { max-width: 100%; height: 100vh; border-radius: 0; } }
+  @media (max-width: 580px) {
+    body { padding: 0; align-items: flex-end; }
+    #app { max-width: 100%; width: 100%; height: 100vh; height: 100dvh; border-radius: 0; }
+  }
+  @media (min-width: 581px) and (max-width: 900px) {
+    #app { max-width: 520px; height: min(720px, 90vh); height: min(720px, 90dvh); }
+  }
+  @media (min-width: 901px) {
+    #app { max-width: 460px; height: min(700px, 85vh); height: min(700px, 85dvh); }
+  }
+  @media (max-height: 560px) and (orientation: landscape) {
+    body { padding: 0; align-items: stretch; justify-content: stretch; }
+    #app { height: 100vh; height: 100dvh; max-width: 100%; border-radius: 0; }
+    #header { padding: 10px 16px; }
+    #quick-btns { display: none; }
+  }
+  @media (max-width: 360px) {
+    .bubble { font-size: 13.5px; padding: 10px 13px; }
+    .info h2 { font-size: 13.5px; }
+    #header { padding: 12px 14px; gap: 9px; }
+    .tab { font-size: 11px; padding: 10px 4px; }
+  }
 </style>
 </head>
 <body>
@@ -538,9 +559,13 @@ function stripMarkdown(text) {
     .trim();
 }
 
+// Set this to your deployed Railway proxy URL once it's live, e.g.
+// 'https://nk-personal-assistant-proxy-production.up.railway.app/v1/messages'
+const PROXY_URL = 'https://nk-personal-assistant-proxy-production.up.railway.app/v1/messages';
+
 async function callClaude(system, messages, maxTokens) {
   const fullSystem = system + buildUpdatesText();
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  const res = await fetch(PROXY_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: maxTokens || 600, system: fullSystem, messages })
@@ -552,7 +577,7 @@ async function callClaude(system, messages, maxTokens) {
 
 async function callClaudeStreaming(system, messages, maxTokens, onChunk) {
   const fullSystem = system + buildUpdatesText();
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  const res = await fetch(PROXY_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: maxTokens || 600, system: fullSystem, messages, stream: true })
