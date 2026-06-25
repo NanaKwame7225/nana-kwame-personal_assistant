@@ -110,7 +110,19 @@
     #header { padding: 12px 14px; gap: 9px; }
     .tab { font-size: 11px; padding: 10px 4px; }
   }
+
+  #attach-row { padding: 0 14px 4px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .attach-chip { display: inline-flex; align-items: center; gap: 6px; background: #eef2f7; border: 1px solid #dee2e6; border-radius: 14px; padding: 4px 10px; font-size: 11px; color: #495057; max-width: 220px; }
+  .attach-chip i { font-size: 13px; }
+  .attach-chip .x { cursor: pointer; color: #c0392b; font-weight: 700; padding-left: 4px; }
+  .attach-chip .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .icon-btn { width: 40px; height: 40px; border-radius: 50%; background: #f0f4f8; color: #495057; border: 1.5px solid #dee2e6; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+  .icon-btn:hover { background: #e9ecef; color: #042C53; border-color: #042C53; }
+  .file-msg-thumb { max-width: 200px; max-height: 160px; border-radius: 10px; margin-top: 6px; display: block; }
+  .file-msg-card { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.18); padding: 6px 10px; border-radius: 10px; margin-top: 6px; font-size: 12px; }
+  .msg.bot .file-msg-card { background: #e9ecef; color: #1a1a2e; }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 </head>
 <body>
 <div id="app">
@@ -145,7 +157,10 @@
       <button class="qbtn" onclick="sendQuick('Why should I hire you?')">Why hire me?</button>
       <button class="qbtn" onclick="sendQuick('What are your career goals?')">Goals</button>
     </div>
+    <div id="attach-row" style="display:none"></div>
     <div id="input-row">
+      <button class="icon-btn" id="attach-btn" type="button" onclick="document.getElementById('file-input').click()" title="Attach files"><i class="ti ti-paperclip" style="font-size:18px"></i></button>
+      <input type="file" id="file-input" multiple accept="image/*,.pdf,.doc,.docx,.txt,.md,.csv,.rtf,.html,.htm,.json,.xml" style="display:none" onchange="handleFiles(event)" />
       <textarea id="chat-input" placeholder="Ask anything about Nana Kwame..." rows="1" onkeydown="handleKey(event)"></textarea>
       <button id="send-btn" onclick="sendChat()"><i class="ti ti-send" style="font-size:16px"></i></button>
     </div>
@@ -268,66 +283,41 @@ FORMATTING RULE (STRICT): Never use markdown syntax of any kind — no asterisks
 KEY FACTS:
 - Full name: Nana Kwame Asomani-Appah
 - Location: Accra, Ghana
-- Phone: +233557023768 | Email: Nanakwameasomani2@gmail.com
+- Phone: +233557023768
+- Email: Nanakwameasomani2@gmail.com
 - LinkedIn: https://www.linkedin.com/in/nana-kwame-asomani
-- Do NOT state, estimate, or imply his age or date of birth under any circumstances, even if directly asked. If asked, politely decline and redirect to his professional background instead.
+- Do NOT state, estimate, or imply his age or date of birth under any circumstances. If asked, politely decline and redirect to his professional background.
 
 EDUCATION:
-- BSc Chemical Engineering, KNUST (2016–2020)
-- WASSCE General Science, Accra Academy SHS (2013–2016)
+- BSc Chemical Engineering — KNUST (2016–2020)
+- WASSCE General Science — Accra Academy SHS (2013–2016)
 
 PROFESSIONAL EXPERIENCE:
 1. Head of Academics | OpenLabs Ghana (May 2025 – Present)
-   Leads academic strategy, evaluates staff, coordinates events, prepares institutional reports.
-
+   Leads academic strategy, evaluates staff, coordinates events and institutional programs, prepares reports informing institutional decision-making.
 2. Head Facilitator & Senior Administrator | Novelty Montessori School (Sep 2022 – Apr 2025)
-   Managed full school operations, staff training, curriculum planning, budgeting, safety compliance.
-
+   Managed full school operations, staff training, curriculum delivery, budgeting, facility management and safety compliance.
 3. Quality Control Engineer (Contract) | Lucky Core International (Nov 2021 – Feb 2022)
-   Implemented QMS, conducted audits, supported continuous improvement.
-
+   Implemented QMS, conducted compliance audits, supported continuous improvement.
 4. QA/QC Engineer (National Service) | Chocomac Ghana Limited (Dec 2020 – Oct 2021)
-   Lab testing, quality inspections, process optimisation, documentation.
-
+   Lab testing, quality inspections, process optimisation, QA documentation.
 5. QA/QC Officer (Intern) | Pharmanova Ghana Limited
-   Lab quality testing, equipment calibration, production quality assurance.
+   Lab quality testing, equipment calibration, production QA support.
 
 CORE COMPETENCIES:
-Strategic Leadership, Team Management, Academic Administration, Curriculum Coordination, Quality Assurance, Process Improvement, Data Analysis, Reporting, Internal Auditing, Compliance Monitoring, Project Coordination, Operations Support, Stakeholder Communication, Systems Thinking, Problem Solving.
+Strategic Leadership, Team Management, Academic Administration, Curriculum Coordination, Quality Assurance, Process Improvement, Data Analysis, Reporting, Internal Auditing, Compliance Monitoring, Project Coordination, Operations Support, Stakeholder Communication, Problem Solving.
 
 CERTIFICATIONS:
-ISO 9001:2015, ISO 45001:2018, ISO 22301, Lean Six Sigma White Belt, Internal Auditing, MEAL Essentials, PMP Beginner, CSRD Fundamentals, Operations Management Essentials, Educational Leadership & Collaboration, Effective Leadership Skills & Strategies, Data Engineering on AWS, Essentials of Prompt Engineering, Data Analytics for Lean Six Sigma (University of Amsterdam/Coursera), Business Analysis & Process Management (Coursera).
+ISO 9001:2015, ISO 45001:2018, ISO 22301, Lean Six Sigma White Belt, Internal Auditing, MEAL Essentials, PMP Beginner, CSRD Fundamentals, Operations Management Essentials, Educational Leadership & Collaboration, Effective Leadership Skills & Strategies, Data Engineering on AWS, Essentials of Prompt Engineering, Data Analytics for Lean Six Sigma (UoA/Coursera), Business Analysis & Process Management (Coursera).
 
 TECHNICAL SKILLS:
 Microsoft Excel (Data Analysis), Power BI (Basic Analytics), MySQL (Basic), HTML/CSS, Python (Beginner), Process Mapping & Optimisation, Report Writing & Documentation.
 
-CAREER STORY (use this exact narrative arc and tone as the model for how to talk about his journey — flowing, connected sentences, never choppy fragments):
-I began my career with a Chemical Engineering degree from KNUST, which led me into quality assurance and quality control roles in industrial and pharmaceutical settings, including positions at Chocomac Ghana Limited and Pharmanova Ghana Limited. This foundation of technical rigor and process optimization then transitioned into educational leadership, where I managed the full operations of Novelty Montessori School for three years, and now I lead the academic strategy as Head of Academics at OpenLabs Ghana, blending my analytical skills with a passion for people-centered leadership.
+FILE-HANDLING RULE:
+If the user attaches one or more files (image, PDF, Word document, text, etc.), carefully read and interpret each attachment, then tailor your answer to the user's specific query about it — for example, reviewing a job description against Nana Kwame's profile, summarising a document, extracting information from an image, or comparing requirements to his certifications and experience. Always ground your answer in the attached content plus Nana Kwame's real background. If no query is given alongside the attachment, briefly summarise it and offer next steps.
 
-WRITING CRAFT — ELITE STANDARD (this is the bar every answer must hit, modeled on the CAREER STORY above):
-- Connect ideas with subordinating and linking phrases rather than stacking short, disconnected sentences — use constructions like "which led me into," "this foundation then transitioned into," "blending X with Y," or "building on that experience" so one idea flows naturally into the next
-- Vary sentence length and structure on purpose — follow a longer, multi-clause sentence with a shorter one for emphasis, the way skilled writers do, rather than letting every sentence follow the same flat subject-verb-object rhythm
-- Prefer specific, concrete language over vague generalities — name the actual organisations, roles, and outcomes rather than saying things like "various roles" or "different responsibilities"
-- Avoid robotic listing language such as "firstly," "secondly," "additionally," or "moreover" used mechanically — let transitions feel like natural speech from someone reflecting on their own career, not like a structured outline being read aloud
-- Every answer should read as if a sharp, articulate professional is speaking confidently about himself in conversation — never like a CV bullet point converted into a sentence
-
-TONE RULES:
-- Match the length and depth of the answer to the question. For simple factual questions (contact info, a single certification, a specific date), 1-2 sentences is correct and sufficient. For substantive questions about his background, career, skills, experience, or leadership style, write a genuinely comprehensive answer — multiple full paragraphs if the topic warrants it, with no artificial word ceiling. Depth and substance are the goal, not brevity for its own sake
-- Open with a real answer or a strong opening line; do not warm up with "Great question" or restating what was asked
-- Every paragraph must add genuinely new information, detail, or angle on the topic — never restate, summarize, or rephrase a point already made earlier in the same response. A longer answer should cover more distinct ground (different roles, different skills, different examples, different time periods), not repeat the same point in slightly different words to fill space
-- Always write in proper, complete paragraph form — full grammatical sentences flowing into one another, never sentence fragments, never a single isolated line standing alone as if it were a list item. When a topic genuinely has multiple distinct angles or career chapters worth covering, break it into separate paragraphs, each covering new ground
-- Give exactly ONE complete response per query and then stop — do not produce multiple drafts, alternate phrasings, or restart the answer; one well-developed response, as long as the topic warrants, is the final output
-- Be warm, confident, and professional, but every sentence must carry new information — no sentence that only sets up, repeats, or restates another sentence
-- If asked about salary: "Happy to discuss based on the scope of the role"
-- ALWAYS write in full prose. Never use bullet points, numbered lists, or dashes anywhere in your answer, even when listing several items — instead, weave items into one flowing sentence (e.g. "My certifications include ISO 9001, ISO 45001, and Lean Six Sigma White Belt, among others" rather than a bulleted list)
-- Always interpret the user's actual question carefully and answer that specific question fresh — never reuse a previous answer verbatim just because a new question sounds similar
-- Every answer must be grounded in Nana Kwame's specific, real details from the KEY FACTS, EDUCATION, PROFESSIONAL EXPERIENCE, CERTIFICATIONS, TECHNICAL SKILLS, or CAREER STORY above — never give a generic, vague, or textbook-style answer that could apply to anyone. If a question is broad (e.g. "what makes a good leader"), still answer it through his actual experience and specifics (e.g. his time managing Novelty Montessori School or leading academics at OpenLabs Ghana), not generic theory
-- If a question can't be answered using his real background, say so honestly rather than inventing or generalising
-
-CERTIFICATIONS RULE — IMPORTANT:
-- If the user mentions a specific role, job title, or industry anywhere in the conversation, only mention the certifications most relevant to that role, woven naturally into a paragraph, and explain briefly why they apply
-- If no role or context has been mentioned, give a general but still paragraph-style overview of the full certification portfolio
-- Never dump the full raw certification list when a role has been specified — be selective and relevant`;
+TONE:
+Warm, professional, confident. Match length to the question — short for factual queries, fuller paragraphs for substantive ones. Always full prose, never bullet points or numbered lists. If asked about salary: "Happy to discuss based on the scope of the role." If a target role or industry is mentioned, only highlight the most relevant certifications and experience; otherwise speak about his background generally.`;
 
 const CV_SYSTEM = `You are an expert ATS-optimisation CV writer. Rewrite Nana Kwame Asomani-Appah's CV to perfectly target the given role AND to pass through Applicant Tracking Systems (ATS) with a high parse and match score.
 
@@ -646,14 +636,145 @@ function trimHistory(history, keepLast) {
   return history.slice(history.length - keepLast);
 }
 
+
+// ===== File attachment support =====
+let pendingAttachments = []; // {name, mediaType, kind:'image'|'document'|'text', data:base64 or text}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => {
+      const s = r.result || '';
+      const i = s.indexOf(',');
+      resolve(i >= 0 ? s.slice(i + 1) : s);
+    };
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
+function fileToText(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result || '');
+    r.onerror = reject;
+    r.readAsText(file);
+  });
+}
+function fileToArrayBuffer(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = reject;
+    r.readAsArrayBuffer(file);
+  });
+}
+
+async function handleFiles(ev) {
+  const files = Array.from(ev.target.files || []);
+  ev.target.value = '';
+  for (const f of files) {
+    try {
+      await ingestFile(f);
+    } catch (e) {
+      alert('Could not read ' + f.name + ': ' + (e && e.message ? e.message : e));
+    }
+  }
+  renderAttachChips();
+}
+
+async function ingestFile(f) {
+  const name = f.name;
+  const type = (f.type || '').toLowerCase();
+  const ext = (name.split('.').pop() || '').toLowerCase();
+  // Images -> base64 image block
+  if (type.startsWith('image/')) {
+    const data = await fileToBase64(f);
+    pendingAttachments.push({ name, kind: 'image', mediaType: type || 'image/png', data });
+    return;
+  }
+  // PDF -> base64 document block (Claude supports application/pdf)
+  if (type === 'application/pdf' || ext === 'pdf') {
+    const data = await fileToBase64(f);
+    pendingAttachments.push({ name, kind: 'document', mediaType: 'application/pdf', data });
+    return;
+  }
+  // Word docx -> extract text with mammoth
+  if (ext === 'docx' || type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+    if (!window.mammoth) throw new Error('Document parser not loaded yet, please retry');
+    const buf = await fileToArrayBuffer(f);
+    const result = await window.mammoth.extractRawText({ arrayBuffer: buf });
+    pendingAttachments.push({ name, kind: 'text', mediaType: 'text/plain', data: result.value || '' });
+    return;
+  }
+  // Legacy .doc -> not parseable client-side; ask to convert
+  if (ext === 'doc') {
+    throw new Error('Old .doc format is not supported in-browser. Please save as .docx or PDF and re-upload.');
+  }
+  // Plain text-like
+  const textExts = ['txt','md','csv','rtf','html','htm','json','xml','log','tsv','yaml','yml'];
+  if (type.startsWith('text/') || textExts.includes(ext)) {
+    const text = await fileToText(f);
+    pendingAttachments.push({ name, kind: 'text', mediaType: type || 'text/plain', data: text });
+    return;
+  }
+  // Fallback: try text
+  try {
+    const text = await fileToText(f);
+    pendingAttachments.push({ name, kind: 'text', mediaType: 'text/plain', data: text });
+  } catch (e) {
+    throw new Error('Unsupported file type: ' + (type || ext));
+  }
+}
+
+function renderAttachChips() {
+  const row = document.getElementById('attach-row');
+  if (!pendingAttachments.length) { row.style.display = 'none'; row.innerHTML = ''; return; }
+  row.style.display = 'flex';
+  row.innerHTML = pendingAttachments.map((a, i) => {
+    const ic = a.kind === 'image' ? 'ti-photo' : (a.kind === 'document' ? 'ti-file-type-pdf' : 'ti-file-text');
+    return '<div class="attach-chip"><i class="ti ' + ic + '"></i><span class="name">' + escapeHtml(a.name) + '</span><span class="x" onclick="removeAttachment(' + i + ')">✕</span></div>';
+  }).join('');
+}
+function removeAttachment(i) { pendingAttachments.splice(i,1); renderAttachChips(); }
+
+function buildUserContent(text, attachments) {
+  if (!attachments || !attachments.length) return text;
+  const blocks = [];
+  for (const a of attachments) {
+    if (a.kind === 'image') {
+      blocks.push({ type: 'image', source: { type: 'base64', media_type: a.mediaType, data: a.data } });
+    } else if (a.kind === 'document') {
+      blocks.push({ type: 'document', source: { type: 'base64', media_type: a.mediaType, data: a.data } });
+    } else if (a.kind === 'text') {
+      blocks.push({ type: 'text', text: 'Attached file "' + a.name + '" (text contents):\n' + a.data });
+    }
+  }
+  blocks.push({ type: 'text', text: text || 'Please review the attached file(s) and tailor your response to my request.' });
+  return blocks;
+}
+
+function renderAttachmentPreview(attachments) {
+  if (!attachments || !attachments.length) return '';
+  return attachments.map(a => {
+    if (a.kind === 'image') {
+      return '<img class="file-msg-thumb" src="data:' + a.mediaType + ';base64,' + a.data + '" alt="' + escapeHtml(a.name) + '">';
+    }
+    const ic = a.kind === 'document' ? 'ti-file-type-pdf' : 'ti-file-text';
+    return '<div class="file-msg-card"><i class="ti ' + ic + '"></i>' + escapeHtml(a.name) + '</div>';
+  }).join('');
+}
+
 async function sendChat() {
   const inp = document.getElementById('chat-input');
   const text = inp.value.trim();
-  if (!text) return;
+  const atts = pendingAttachments.slice();
+  if (!text && !atts.length) return;
   inp.value = ''; inp.style.height = 'auto';
+  pendingAttachments = []; renderAttachChips();
   document.getElementById('send-btn').disabled = true;
-  addMsg('user', text);
-  chatHistory.push({ role: 'user', content: text });
+  addUserMsg(text, atts);
+  const userContent = buildUserContent(text, atts);
+  chatHistory.push({ role: 'user', content: userContent });
   chatHistory = trimHistory(chatHistory, 16);
   showTyping();
   try {
@@ -668,6 +789,22 @@ async function sendChat() {
     addMsg('bot', 'Sorry, I had a connection issue. Please try again.');
   }
   document.getElementById('send-btn').disabled = false;
+}
+
+function addUserMsg(text, attachments) {
+  const box = document.getElementById('messages');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg user';
+  const av = document.createElement('div');
+  av.className = 'msg-av user-av';
+  av.textContent = 'You';
+  const bub = document.createElement('div');
+  bub.className = 'bubble';
+  const textHtml = text ? textToParagraphs(text) : '';
+  bub.innerHTML = textHtml + renderAttachmentPreview(attachments);
+  wrap.appendChild(av); wrap.appendChild(bub);
+  box.appendChild(wrap);
+  box.scrollTop = box.scrollHeight;
 }
 
 function sendQuick(q) { document.getElementById('chat-input').value = q; sendChat(); }
