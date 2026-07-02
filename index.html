@@ -23,7 +23,7 @@
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 16px; }
   #app { width: 100%; max-width: 480px; height: min(700px, 88vh); height: min(700px, 88dvh); background: #fff; border-radius: 18px; box-shadow: 0 8px 40px rgba(4,44,83,0.15); display: flex; flex-direction: column; overflow: hidden; }
   #header { background: linear-gradient(135deg, #042C53 0%, #185FA5 100%); color: white; padding: 16px 18px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-  .avatar { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; }
+  .avatar { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; overflow: hidden; }
   .info h2 { font-size: 15px; font-weight: 600; }
   .info p { font-size: 11px; color: #B5D4F4; margin-top: 2px; }
   .status { margin-left: auto; display: flex; align-items: center; gap: 5px; font-size: 11px; color: #9FE1CB; white-space: nowrap; }
@@ -43,7 +43,7 @@
   .bubble p:last-child { margin-bottom: 0; }
   .msg.bot .bubble { background: #f0f4f8; color: #1a1a2e; border-bottom-left-radius: 4px; }
   .msg.user .bubble { background: linear-gradient(135deg, #042C53, #185FA5); color: white; border-bottom-right-radius: 4px; }
-  .msg-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+  .msg-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; overflow: hidden; }
   .msg-av.bot-av { background: #042C53; color: white; }
   .msg-av.user-av { background: #e9ecef; color: #6c757d; }
   #quick-btns { padding: 8px 14px; display: flex; gap: 6px; flex-wrap: wrap; border-top: 1px solid #f0f0f0; background: #fafafa; }
@@ -121,13 +121,32 @@
   .file-msg-thumb { max-width: 200px; max-height: 160px; border-radius: 10px; margin-top: 6px; display: block; }
   .file-msg-card { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.18); padding: 6px 10px; border-radius: 10px; margin-top: 6px; font-size: 12px; }
   .msg.bot .file-msg-card { background: #e9ecef; color: #1a1a2e; }
+
+  /* Shared mini-chat + attach UI reused inside CV / Interview / Update panels */
+  .attach-row-mini { display: flex; flex-wrap: wrap; gap: 6px; }
+  .mini-chat { max-height: 170px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+  .mini-chat:empty { display: none; }
+  .mini-msg { display: flex; }
+  .mini-msg.user { justify-content: flex-end; }
+  .mini-msg.bot { justify-content: flex-start; }
+  .mini-bubble { max-width: 88%; padding: 8px 12px; border-radius: 14px; font-size: 13px; line-height: 1.6; letter-spacing: 0.1px; }
+  .mini-bubble p { margin: 0 0 6px 0; }
+  .mini-bubble p:last-child { margin-bottom: 0; }
+  .mini-msg.bot .mini-bubble { background: #f0f4f8; color: #1a1a2e; border-bottom-left-radius: 4px; }
+  .mini-msg.user .mini-bubble { background: linear-gradient(135deg, #042C53, #185FA5); color: white; border-bottom-right-radius: 4px; }
+  .mini-input-row { display: flex; gap: 6px; align-items: flex-end; }
+  .mini-input-row textarea { flex: 1; resize: none; min-height: 36px; max-height: 84px; padding: 8px 12px; font-size: 13px; border-radius: 18px; font-family: inherit; border: 1.5px solid #dee2e6; outline: none; transition: border-color 0.15s; }
+  .mini-input-row textarea:focus { border-color: #185FA5; }
+  .mini-input-row .icon-btn { width: 36px; height: 36px; flex-shrink: 0; }
+  .panel-attach-btn-row { display: flex; gap: 8px; align-items: center; }
+  .panel-attach-btn-row .primary-btn { flex: 1; }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 </head>
 <body>
 <div id="app">
   <div id="header">
-    <div class="avatar"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCADIAMgDASIAAhEBAxEB/8QAHQAAAAcBAQEAAAAAAAAAAAAAAAIDBAUGBwgBCf/EAEkQAAEDAwIDBQQFCAYKAwEAAAECAwQABREGIRIxQQcTIlFhFDJxgRWRobHBCBYjQlJicoIkJTNTc+EnNDVDg5KywtHwRWOU0v/EABoBAAIDAQEAAAAAAAAAAAAAAAACAQMEBQb/xAAqEQACAgEEAQQBBAMBAAAAAAAAAQIRAwQSITFBBRMyUfAiI2HBFEKh8f/aAAwDAQACEQMRAD8AzHtHdjr0c42hspWHUEn51dYy7c5ptGeHPsvVP7tN+2bTr0PQcqQptpKULR7vxqywdOur0vHX7KjBig89/drA1wjWvkzk66NjjlY/vVffQsQxcI48lCjXkKbnzmv2XlD7aPYU/wBYME/titngymvRGv6On1FKhunENv8Ao6PhShbwaoLqEW2x0pdDfpSjSAKXS3QSIIb86OG/SnSGxnlQLe+aCBsW/Si92MU74NqHd7b08RWM+7xXim9sU7S2PKvS1VqEI8tbV4pryp/3XpRVNb0wrGHdnO4r3u808LZHOvAilaJQ0LYxmkHG+ZxUipvHSkXUZFIxiEmoJSfPFZhOQBPk/wAZrWJjfhNZZcRi4St8eM0R7CRauzpHeQ3CcK8fPkK7z0cmVA0lbg5IsFka7hO7CQsnbpnA+w1wh2c5MFwY4sr/AFetd76GhORNLW9cew2qz4jpyt90LKdvT/zW2HxMU/kKuQ4NwUFmBd9Rr/VVKV3Uf5BXCn6kmhTt6THfJS/fLjcVcixbWilPwygZ+tVCiyKX5+M527fG/wDRfctuXCftFWizJCtIRT5wx/01UO2e82q6dnmo4MGY2/IgFKJCEndCsg4NWi0XO3MaetlteltImSIAU0yVeJQCdyBXK8HW8nEupBw365p8pK/+o04sLZVLjlIzhQJpPU44dSXUEZxJXt/MaldO8CS28hGVge6ner8uT242ZDWoAHsyRkchSqketUhF0uaXTxR5CUHG5bOMVa7Ut2Q2l9wqAI8KcVlx5d/guUrJBpA2xThKD5UVhG+9O20+lXWMJhFe93kU4DdGLe1ADUt4FAI2p13YoFG21WREY1SivSjFLhGDTS8T4lrhmTLc4U8kJHvLPkB1NWIQPwZ6Ui73aM94pKP4iBVQfuWrb7xm0xhb4fILdUEqPz5n5YqAmaM1VIUpb1yjuE7nKlEq+dG5ItjgnLpGmhIUnIIUPMHNecA8qx9ULWWnSZCW3y2k5UqOvIPy8vlVz0HrNi+KTBm4amcknkHD5EdFVPYkoOPDLYUZpF1sAGn2AOVIOozk0jIRDTG/Caye5j+sZXIeM1sE5HgNZFdB/WcvkPGaiPYS6Lb2bNJ9gcyk7r5J613po23pGmrb3OmylSY6Me3SArh2/mNcHdmiT7C5zT4+Q613to+OwvS9uS3bbtIHs6cJlukdOuT+FbI/ExyVzJKTJdaHdyr7CgJ/uojQUv5Zz/00KcJRMjIJbYtNsR+0o8R+zA+2hUE8/n/pzB2xMWCP2c6getwhoky0BTqmyOJw+vnU1YIFjlWK0XeQiMufGgBDbqiOJAKdwK4zVq24qbKFtBaDzBJwaWRrS6pSEpLqQBgBLigMVztkvo6VwvsJq3B1Nd8HIMpZB/mqy9izzTesYaH0JWlYwAoZGaprl9StSi5CbJVzJ5mlrdf3I0pt6JH7p5B8Ck9DVk7lFqiuKjGSdnY13jRjHQO4j44f2BWev8HfrCUgDiOAKzSLfdbzEBaZMggjqaU9v1LEda9td4UuHHrVGHE4qmW5cik7RpTJ3xTxr0qLtqyuK0tRyopBJqVjkY5VZQqFEgk70qlIoADpR0jFBAQo86BRtSo9RRsA52qyIjGykADngdTVdhWtN+Uq9SyVtcSkxWuiWxtxfEnepm8PN+xS47TyPae4VhtKhx7g4OKP3Rg22Na2CkcDQQVKOBsNzVOqze3A3+nab3cnPgaGK4UhDaPCNhijtsONDCkZGOtVic/erRdm1sOoLajjCT4SM+R/GrpEuyH4TbsxtDS1J3xy+Nc+Wp2tWehw6ZTTVEZNDKkcKgPh51n+qtHe0PG82BPczW/GppBx3mOqfJVaBcF22elaLfOZW6NygL8QqGYfehuKQrO3PO1dPTaiMuJHJ1+m44F9G3f6csTUtY4X0EtSE9QtPP4Z51KuAdBVR0C5wajvEYbNugPpSfMHB++rm4Bg1fJHDapkVOGxrHLqMXOZ/iGtmne4axq84+kpg694aSPYPotvZmeGE5klPjrvnSSmHtM24+0XqbmOj3klBO3XYVwN2ZY9gc34fH1rv3Sclt3TFuJvEuQDHR4mmOEq2HkNq2L4mR/Mk24eDxMWNkH9uS6CfxNCvCww7v8AR9xleryyB9p/ChSk1+fiPkyWnxzQcfCh3Uj+7V9VdBdqOlrJbtHyJcKEht5K0YUE4xk1IztGWBOkVTBESHxF48hPXFZt5r2M5nDfGFlQ3TS0HKXGFY/XH30soJzIA9aLFGzH8Q++nKzaLI5mM2P3RTbV6cIiK/foWbIjtHzSK81acsxCf26qXyLH0XC2JHsDGP2BUkwMVF2pwfRzH8AqSYVSMddD5vGN6WSBjlSLODTlI2oRLC4oY6cs0YAUMHOasQjKvYIyZOqZCu5S7xu+0SHV8kpAIaQn7Ptqwaptb0iMnhDa1AhaO8QFAKHIkH7q9bZLDjj6SgJXhCUpTgjfJz5/GpZ+QtURKUjKgNielcPUynCdM9loVizY011SRllo0bd2JSC886tvvFKOVlSRnGyQeX+dSvaJ3EVtDKFlo8ICsnAHzqy2fV9nSt5M6LPbVHIwp1CUtugE5UhXUbcuYqL1E1Ev89Tra0utPt8TSwrIURz++s+/3clzNiwxw4XHH5M7iWNKgZ0KehbjZClNJVhXz8vnUu/cSu3hTiuJxI5nmfjXi9GONXJU0yXO8UAFLPv4HTOcHy5bioS+sSUKFuhJU9IeUG0JHmfuHrW+CbklFnHy/t425qiY7M0KmXm5XLH6NCEsg+aicn7APrq8Ogb030tZmrDYmLe2QtafE6v9tZ94/DoPQCnT+1ddKlR5eUt0myKnDwGsau4zdZgx/vDWzTcFKqxq7f7Wm/4hqF2D6LV2aJKYbmBjx8z0r6A6TlKVpe3KXe2F5jo8bLI8W3TnXAPZkf6I9lJPj2zXf2kX3PzWtyjOtrf9HRu2nbl03rUviZH8yS4mnPelXJ/+BJSPsAoUDKH694z6NtD/ADoVA3Byx27soHZnPUEJGCg5x6ipiXHSrs9UeBO8Dy/dpj29I/0X3L0Sk/aKmVJ4+zjPQ2//ALaxG7ycPObSJA9T99Gje6wf3x99CWMTJHxP30eKnwMfxj76vM5sNmRxRGv4RTbWIKY8T/EqUsrX9Ca/hFMtboxEin/7KqT5LWuCftCibex5cAqXjr2FRNqTi2sH9wVKRk5qH2NRLRsYzTnpTNC0tMqdWcIQkqUfIDnWcy9XXtTpcD5Zad8aEIAASk8h8cYzRRFmpJxmjFJPQ/VWOvakuaz45sg/8Q0zfvkxXOQ8fi4r/wA0ysVmv3WV3C2GvPJ+NRx+mZ0taI+VRwnYNvBKvmCN/lVS0e3cltfSM1pxuC7juXHVY7xQOCUg7lI5ZG2dudSVymvxiXmFApSfdJ2VXM1MayNnpfTJp4oqXSGV/jRxHcSFqUo4C23knJOeWD1pxpRuBabSFRyAOMqHIcOegA2qM1DqSVc2O6nhDoCcJ7wZUj1CudJ6WsN1ubLu0mPDACkuraJCyfLln41VOC2Wza80Y5v2+US951KFJPCQNjvVKefemyJHcuqQpbYShYPCErKup+FWS56KkIQ4U3Vor4cpC2VDPrzqga6lXayTmoUgR+FbQWhxgKCVjkdjywelXabDu4TMGt1TjcpI221TbbDtUWE5eYshxhlLa3VyEkrIG5znzpYyYr5wxKYdJ5BDgJ+w1zQLzJX+tVl0h38iczxEhbiFLaIJBStJSUkY9elddK+DzDfk2OaBwmsau4H0xN/xDW0TiCFHFYref9sTcf3h5VWuxn0Wzs0wY7wHGfHXfukUuo0pbv0NtQoR0e6fDyHKuAezIgMPfpFjx+Vd56PSDpK2oFuYbHcJ2UvYbVrXxMr+ZYUvugbzoTfolP8AnQphGmlXfoMaE2tg4UCsHboaFLQ25HLfa1BvzGiNUybncG5EF1KDEaSnBbG2cnrUsIV9cskeai4NptItHCqNweIr4eea54vvaldr1anbZcLg87GdGFJ4ANqVR2s3lNtFu+kHvZg13QTwD3cYrCr+jfS+zO5v+vSf4lffS0UfoGD++Pvpw6/ZlrW4UPFSudGYkWvhQENugBQxk9as3/wVrH/KNpsCcwWM8+AVXNaXeNMkN2yMFd80vKjjlSlil3lxpoRw2EYGOLyrbOzn8nafqWCzqe83aJFExrvGmm2ytQB5ZOwrNLLtaSVs0rGmuXSM+0sv2uxMu8OOEcJqVYThVWTUfZ1dezxK4s9bD8SQ4TGeZVkHHMEHcGsr7QNWuWZSLdbFJ9udHEpwjPcp88ftGmxzc2Lkioqyz6xkGNpScpJwpxAaHxUQPxNZXdZqe9ShJACEhP1VE3K+3e4JCJtxkyEjklS9vq5VEPuqOxJJrSoGZyJt2eyn3nB8t6vnYPosdoOrFe0ocTYran2i4unw8YAyGUnqpeOnJOT5VkjbSnleNRSPLFdP/kgXCE1pG8W95PgYvDATwjxLLyAnHr7n1Zp0lZC5ZUu0S8IXroRyEISYCcNJSEoZSVEoQlI2ACQkAVTL1cSxJbPjfSo4ASMqB9B1p12rCSx2vXxtZBUzIDAxywlAxits7BOztcKGNX3mA+ie+j+hJWjdhkjdz0Uvp1Cf4qxyxueZpHXjlUMNmEWFhV6vceM/FmezcWX3FMraSlGM7rKcDPKthbkRnoqvZVpUEYSSgk8PpxGtJ1laWLtZpMVtxzLjZSgZOEqzkZPxArni0JuWlddlia+4iDcXS06wpSgGnNuEkHnvtnyNZNfieNquv7Nvp2b3E934izSEr4iHFKJ6E1m3bRbxItMaeAAqK7wqP7q9vvA+utjucaO+kOskIUNlo8jVE7Q7a7L03cIiG/0pa4kDzKSFY+yo0WdSaG9RwP22YQxFUSCBkeYrQbK0IblleTtlS9/Pkfwqhx1kYIJqRjT5DKkKbdV4DlIO4BrtLg8ub5POxI5Vi12H9czcZ/tDVqtPaAl9CWbrG4CAB3rP4pP4GoINtP3mQ8xISQtXEnbYiqJvZyyW+Cf7NAUMLJeI4l7EDNdmWrUEWyaKhTJlomSIbbCe8U14lJGOfD1rjHTc5DKwiOpDeV8JI5D4V1Bab+/F0VBcbgSJTZCW+7UoePOw2q3TZfdg7MWRtOyidp891eso8yyTH1We9BtXdJkEEAHxJ57ZH40Kq3afbrfE1CiTbJAakOuEu2/iwGF+mOQPpQrDLjJK1fJW1aTObw1npRgxmnqWsinDMfI5VolKjqxjZEstEl0Y5CnEKOpxhogc1D76cQmQZEpJ6INSFgbSuIwk/t/jSTyUh4Y7Zpum4jrcVkgH3BV1s3afrHRFoSLTdnBD4ylLDqQ4hOfIK5fKiWWAhNqS4QMBnP2VXdfxUsdnEeSNlKfzn51y45Vlmk/s6c8Ptwb/AILnqbWl+1HY03fUE9chthlTuOEJSkAZOANt+Vc2y5r1yuMq5SDlx5ZPwH/v3Vfu03UbSNKW/TsFZ7xLKFyynkVEAoR8uZ+IrOchADaeSRgV09LCo3RztTJOVIV2wTSSRvnG/wB1GztzrxutRnDE8CfCCVq2SAMkmu3PybOzePpLs+hTZTbhu88ibKS5yacwQgAdOFJwfMk1gH5KmiG9WdoYu0+K49bbMA6E8PgcfPuJJ9Pe+Qrt5lt1CAhAbQkdBvVkVSsEY9rvsgtV97S7RqRxbZgNsZuLCQeOQ62f0Yx5EHCj5Jx1rQZ6rhIHdJRwNjos4H1CrOllKAp9Yyem1RrzIJKlZJPnTRgk2/sd5G0k/BnOvZEDTmnJ+oLvIU6zCZLxQF8KSR7qEpHUqwPnXCM/Ut6k3SXcX5ri3pS1rcC1cSUlR34QeWMAAjyrpT8tXVKWm7boqI543MTp2D+qMhpB+J4lfJNctON5NJlSl+lrghTlF3F0bf2d65h3Gxx1z5SfpRn9FKQrm9j3XAOuRz9Qaucot3OKtbZbC0AKHnXK7Tz0SW09GUUPNqC0KHQiunOzeBM1XCj3C2pZZipYD8yVIc7uPERjxFxZ2AGDtz2rh59G8eRSxeWeh0XqCy43DN4XZhOvbQmz6idbZSEsPfpGwOQydwPQH76hWweVab2w3fR9xdRZ9MtO3H2d0qXenypvvVcillro3+8vKlYHujnmSgpsFJGFZx867MU9q3dnnsu3e9vQo0cknoOVO4UosykKUTwE4UM8xTM5CAlAyaCWOIElRCuhNS1aorLtp3HdvONpT+jc4kgDyrYV6kjT+y9twagfReWFpKGG9gMK2BHWsZtTy2YjhCynKQSfPIp4qdDj6eXF7hYnqeC+/C9uDyrCsjxtr7RmnGy06zvtwfkRLXfY7cWUjKzcFDxOoUOZxQqs3Bu5XS0G+SpIfaZWlkBxzK/q8qFVZJ/qtoiMeClobp2wkAUdNsuJ5RXKcM2u47D2VdWznH7OvCEvoh4W02X6oNLWRzgaZ/j/ABp5GsN2Et9fsisKSQKUt2mryhpGYigQvPP1qJzhXZMMc76NzhS+HTilj+4/CoDtUeSjsyhtqUAONBPzNCZMXC0yW3WnOItgHA5edULtG1W1eYca1xeIRI6RxLO3eLxzHoOlYdNhcpprwzbqcyjBp9tFSnyVybm64s5C1ceB0IFEFNIjhW+rO/hO/nTjiArtpUca7FCdsUYkpT4UlSjsAOZNJp3UBWm/k16STrDtbtyJDXeQLX/TpORseAjgSfivH1GmSt0Qdb/k96L/ADH7MrbbH2wie+Papp696sAkfyjCflWjxgHFkAZSOdNt1DAOB19afw2w2wAOpzVoBJp2SkbCo24PsRIj0mQ4lphltTjriuSUpGVH5AGnclRW6ojkDisY/K21V+b3ZRJgMu8Mu9uiC3g7hvHE6f8AlAT/AD0dAce9pepX9Y66u+o3irE2QVtJP6jQ8LafkgJ+2q07woQVq6UsQTuaZyFd6/wJ91HP1NVsBNEdxxKl48R6+VaJqztJut80rbdIwY0Wy6fgstpVBhJ4EyXkpAU86R7xKgSAdh6nes/UvgUBkgda9Qo8WBnn5bfXUXQIfpVSctIWkOD3kbkedFaXnrXoOXD5VJA2SXTulXCKWQFqASpRA6mkJiHEOf23C2eWBvSDaGVq4Q9lXqTn7agC4sKCrMlzHEgAIHD6bUW+98GI3A2lKe74ilJyQPM0bTgbesaWQsJQlwpJVtnfP41ZLazbITVwVPjJkB2Nws8K+RrHkhc2Uy4ZAwFqFvSXsFLqxw586FM7297RHisssrYS3jA9fOhWPZfMmLRdGr5aR/8AGvf/AKz/AOKdtajtSRtbnh/xwf8AtqpW23OzWQtt9lG6grvF8OCMffn7DT1FjmEAokRFA8iHedbHgxPwdNZ8q6ZZU6htBP8AqspPwcSfwpdq/wBqG6RLSfgg1Qlhbbim1+8klJ36ijIWR1o/x8T/ANSVqcq8l5vt3gXe1Ltzk2bGacxxlplviIHTOeRqpP6T06/v9OXFHXeKg/8AdSAcNKJcOOdWY8ccaqKoryZJZHcnYlH0PYW3FLTqSUOIYwqCPwVSv5kWsnKdT7fvQlf/ANUZK/Wjh0+dWWyukJ/mTEGeDUsU/GK4K2P8nO86T7NYNy+lJ6pc+c8kl1hk8IbSPCnffmVH51kIdOedDvlDbiNMptBSOwWu2rQbnvzpSPTuDUuntn7Pi1hu8LSQnACmFCuKEyFZ50qJCjyNN7jCkdvab11pjUMr2a2XVp57o2fCo/AHnXK/5Z2pfpftNZsbK+JiyREtEA7d85hxfzAKB8qhtBXb6L1nZ7i4spbjzG1uHOPBnxfZms91leXtQ6rut8kElyfMdkKz04lEgfIYHypt1oVkHMd7lgq5qOyR603jthDY6k8yetJOr9plEgngRsn49TTkABGN/rpSBnKBOTR4TheR3RypaN08TvCAOv115IAPICmzKi3IBBwTtUASbYUMFWQfLypRB8ajSKXONOc0dB5n1qQDuJ4wcEcSeQPWk1xm5CMEBK+hpRtRHiz60psolQ5dRUkEtp2U19FqafQkOsr4SfPO4NO5ZbKkllwlQGDnkah4Kg268ojPG2OnMg09aDjziEeFPmc7VzM8X7hVLsUmvvtlaXEBzKR4sbChQmLU2mQ0h5C0pwFDn9VCl2/ZC5Em1UslZzzpmlWKVQqt5qHaVZOaUSremqVY60oFVJI5ChRgvemwWKOlXnQA4C8UdK6bBQxRkroAc8VeE0jx5FGBB60ALJOaUCqQScYoyVZNSQOW1dPOqFeXSwVtJPjUopHp61em/eBqh3ptRvcoq5JcIT8KZESG0ZHAgDypZRwK8RjG1BZGKYVCDp3pnI2VkbU6cO9NH96UgesrylKh1G9OM7VHRFBSOAnCk8jTxpWRg8xQiRdJ8NKpPQ7gjBpAc6MCc4pgoVadKHC0ok7ZQr9oeR9auVt0/c5duRNt6mpLTSAuUQQA0knmSaohcBc23IOR8v8A0/XWkdlplMz33GoT7kXhKXHkrAS0RvuDsfPfyrDrZ+3HcVyXJVrnGWzKeYZQHnFEboGcfKhW3QbBYbPdmdSQe9YU8FhbClZSM4AIPqck5zzoVxMvq0YuoRtEKvJhrqFNPLaWMKQopI9QaCFb1JaujCNqGUke64Q6n+YZ+/NROd69DjnuipfZrnHbJx+hcKpQLpslXWjhXlTijgK8qOF02C6OlVADgLo3FSGaMlVADhKsUdCt6ahdHSr1qaAdJO9KpIpohR60qldBA8QoVUdTICLw704gFfZVoQrlVc1iMXBpY/WaH2GmQrIkeEZpJ5zyoq3SRiicCl1NihFHfnSTgyM067oAb0hJ4U7DnUAN2zwuDFPELIPOmjYJWmnBKA4UKOCOSv8AzQA8SrrmjcXgJHM8qZocxkE0oHMHnU2BK6bhPyL1B4YSpLSpSELHCSlR58Jx1IB2rbNJu26JdJsiO0YjT7f6SOMcwScny54x5Csv0LerlbG1gLWYgWHQykAZWOSycZ26VbHtXSxGV7PJ4UuAh1aGweHcnBzvnc1x/UIZMqcUv+/0KxxdbxKQ+gNuhTDrxIGfAMHPCf8AKhVXF4i9457e8FmMO9YSkeFzJ9z0oVy1pZ1xEqY+7R2U9/DkozugtqOOoOR95qpCr7rVgSLCtxABUysLAG5xyP31nwdSeShXodOlGCivB0c8t03J+RWjCkgtJ60YKGedXlNimQKMDtSYI869BooLFQujBVIg0YHepoLF0mjg5pvxUcKoAcJUKVSaaJUM0qlVADlCt6Su1rFybac70t91lJIAOc714lW9SFtWytDrbwcVyKAgDJPzqVyQQP5spxn2kn4JFF/N4D/fL/5atLcKM+r9G69jfJLIIB8iQef3U1uMu32hvicWVucuEHJz5elNtf2Ra+iuuWDI/tlj5CgnRjrkJc4KfVHbcDa3OHKUqIyASBtkVJRJsyctT5ZU0g7JSBy/zq59nuppunTLYVHbudtllPtcF1sAuYGApKuigCdjsaqbp9jqKa6M2/Nhsb+0Kz/76V4rTLSl8RfXmtnu+ibffre5ftCSDLjg/p4C9nmFdU4O/wAj8iaoKozjbim3UKQtJwpKhgg+RFWxSZXK0VdWmY5UVd+4j0SNh9dSNg0oJXtDtvHt62FcKmgpKngP2g17xHqAflUyGgdsUV63svlC1JKXUHKHEHhWk+YI3FS4/Qqf2ObGmOhXdOxw4g5SoA8Kvr86i9cxbfBnNptiXG2VspUpK1EkKyQd6stivEuLcmfp+CjUUEHC8uhmXgDYB39bHkoH4iojtKEB2R7RbA+mKOINpfUkuJBOQFcJxmobT4rkFFp3ZX7bIWnGFmhTSCRn1oUoyNDnOtsRVOBScgbA7VRb1EM1zvC4gDn+j2oUKzQ4NM+SM+ilp9198fzUPo+WPclL28wKFCrbZVtQPZbknk+g/FNDguif1WlY+IoUKm2G1HveXFPvRkH4Loe2SU+/Dc+RBoUKLIoAuBHOM+P5c0YXWOPf40n1SaFCmsViiLpDJ/tkj40u3cIyuTyProUKkLFky2TycH11MaWdguXBYmrT3KWVrUCcA4GcetChR0AhdtRvzVmLaW08JwMp2SnzBPXpsNqRg2IhwSpyi66d9yAB8PKhQpZSY0UiRLSU4CCQB04xQbCEqyBv6LoUKUsJex3afa7m3cbZLchTEDAcTulY/ZWnkpPxrT7Xqbsx1Kv2nX0Jy1XRCMLVHS4WpH7wKASfgdxQoULsPBJe3dgTA/QwJksj9mFJXn68URWquyGMD7FoK5PnofowDP8AzroUKGCI2dr7R4BELsyk5HIrbjt/iazLtU1I3erUhljTDdnbbe4uNLyFFW2MYSBQoVEasWTdGeQ14VQoUKtsqP/Z" alt="Nana Kwame Asomani-Appah" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>
+    <div class="avatar" id="header-avatar"></div>
     <div class="info">
       <h2>Nana Kwame Asomani-Appah</h2>
       <p>Head of Academics · QA Engineer · Chemical Engineer</p>
@@ -145,8 +164,8 @@
   <div id="chat-panel" class="panel active">
     <div id="messages">
       <div class="msg bot">
-        <div class="msg-av bot-av"><img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCADIAMgDASIAAhEBAxEB/8QAHQAAAAcBAQEAAAAAAAAAAAAAAAIDBAUGBwgBCf/EAEkQAAEDAwIDBQQFCAYKAwEAAAECAwQABREGIRIxQQcTIlFhFDJxgRWRobHBCBYjQlJicoIkJTNTc+EnNDVDg5KywtHwRWOU0v/EABoBAAIDAQEAAAAAAAAAAAAAAAACAQMEBQb/xAAqEQACAgEEAQQBBAMBAAAAAAAAAQIRAwQSITFBBRMyUfAiI2HBFEKh8f/aAAwDAQACEQMRAD8AzHtHdjr0c42hspWHUEn51dYy7c5ptGeHPsvVP7tN+2bTr0PQcqQptpKULR7vxqywdOur0vHX7KjBig89/drA1wjWvkzk66NjjlY/vVffQsQxcI48lCjXkKbnzmv2XlD7aPYU/wBYME/titngymvRGv6On1FKhunENv8Ao6PhShbwaoLqEW2x0pdDfpSjSAKXS3QSIIb86OG/SnSGxnlQLe+aCBsW/Si92MU74NqHd7b08RWM+7xXim9sU7S2PKvS1VqEI8tbV4pryp/3XpRVNb0wrGHdnO4r3u808LZHOvAilaJQ0LYxmkHG+ZxUipvHSkXUZFIxiEmoJSfPFZhOQBPk/wAZrWJjfhNZZcRi4St8eM0R7CRauzpHeQ3CcK8fPkK7z0cmVA0lbg5IsFka7hO7CQsnbpnA+w1wh2c5MFwY4sr/AFetd76GhORNLW9cew2qz4jpyt90LKdvT/zW2HxMU/kKuQ4NwUFmBd9Rr/VVKV3Uf5BXCn6kmhTt6THfJS/fLjcVcixbWilPwygZ+tVCiyKX5+M527fG/wDRfctuXCftFWizJCtIRT5wx/01UO2e82q6dnmo4MGY2/IgFKJCEndCsg4NWi0XO3MaetlteltImSIAU0yVeJQCdyBXK8HW8nEupBw365p8pK/+o04sLZVLjlIzhQJpPU44dSXUEZxJXt/MaldO8CS28hGVge6ner8uT242ZDWoAHsyRkchSqketUhF0uaXTxR5CUHG5bOMVa7Ut2Q2l9wqAI8KcVlx5d/guUrJBpA2xThKD5UVhG+9O20+lXWMJhFe93kU4DdGLe1ADUt4FAI2p13YoFG21WREY1SivSjFLhGDTS8T4lrhmTLc4U8kJHvLPkB1NWIQPwZ6Ui73aM94pKP4iBVQfuWrb7xm0xhb4fILdUEqPz5n5YqAmaM1VIUpb1yjuE7nKlEq+dG5ItjgnLpGmhIUnIIUPMHNecA8qx9ULWWnSZCW3y2k5UqOvIPy8vlVz0HrNi+KTBm4amcknkHD5EdFVPYkoOPDLYUZpF1sAGn2AOVIOozk0jIRDTG/Caye5j+sZXIeM1sE5HgNZFdB/WcvkPGaiPYS6Lb2bNJ9gcyk7r5J613po23pGmrb3OmylSY6Me3SArh2/mNcHdmiT7C5zT4+Q613to+OwvS9uS3bbtIHs6cJlukdOuT+FbI/ExyVzJKTJdaHdyr7CgJ/uojQUv5Zz/00KcJRMjIJbYtNsR+0o8R+zA+2hUE8/n/pzB2xMWCP2c6getwhoky0BTqmyOJw+vnU1YIFjlWK0XeQiMufGgBDbqiOJAKdwK4zVq24qbKFtBaDzBJwaWRrS6pSEpLqQBgBLigMVztkvo6VwvsJq3B1Nd8HIMpZB/mqy9izzTesYaH0JWlYwAoZGaprl9StSi5CbJVzJ5mlrdf3I0pt6JH7p5B8Ck9DVk7lFqiuKjGSdnY13jRjHQO4j44f2BWev8HfrCUgDiOAKzSLfdbzEBaZMggjqaU9v1LEda9td4UuHHrVGHE4qmW5cik7RpTJ3xTxr0qLtqyuK0tRyopBJqVjkY5VZQqFEgk70qlIoADpR0jFBAQo86BRtSo9RRsA52qyIjGykADngdTVdhWtN+Uq9SyVtcSkxWuiWxtxfEnepm8PN+xS47TyPae4VhtKhx7g4OKP3Rg22Na2CkcDQQVKOBsNzVOqze3A3+nab3cnPgaGK4UhDaPCNhijtsONDCkZGOtVic/erRdm1sOoLajjCT4SM+R/GrpEuyH4TbsxtDS1J3xy+Nc+Wp2tWehw6ZTTVEZNDKkcKgPh51n+qtHe0PG82BPczW/GppBx3mOqfJVaBcF22elaLfOZW6NygL8QqGYfehuKQrO3PO1dPTaiMuJHJ1+m44F9G3f6csTUtY4X0EtSE9QtPP4Z51KuAdBVR0C5wajvEYbNugPpSfMHB++rm4Bg1fJHDapkVOGxrHLqMXOZ/iGtmne4axq84+kpg694aSPYPotvZmeGE5klPjrvnSSmHtM24+0XqbmOj3klBO3XYVwN2ZY9gc34fH1rv3Sclt3TFuJvEuQDHR4mmOEq2HkNq2L4mR/Mk24eDxMWNkH9uS6CfxNCvCww7v8AR9xleryyB9p/ChSk1+fiPkyWnxzQcfCh3Uj+7V9VdBdqOlrJbtHyJcKEht5K0YUE4xk1IztGWBOkVTBESHxF48hPXFZt5r2M5nDfGFlQ3TS0HKXGFY/XH30soJzIA9aLFGzH8Q++nKzaLI5mM2P3RTbV6cIiK/foWbIjtHzSK81acsxCf26qXyLH0XC2JHsDGP2BUkwMVF2pwfRzH8AqSYVSMddD5vGN6WSBjlSLODTlI2oRLC4oY6cs0YAUMHOasQjKvYIyZOqZCu5S7xu+0SHV8kpAIaQn7Ptqwaptb0iMnhDa1AhaO8QFAKHIkH7q9bZLDjj6SgJXhCUpTgjfJz5/GpZ+QtURKUjKgNielcPUynCdM9loVizY011SRllo0bd2JSC886tvvFKOVlSRnGyQeX+dSvaJ3EVtDKFlo8ICsnAHzqy2fV9nSt5M6LPbVHIwp1CUtugE5UhXUbcuYqL1E1Ev89Tra0utPt8TSwrIURz++s+/3clzNiwxw4XHH5M7iWNKgZ0KehbjZClNJVhXz8vnUu/cSu3hTiuJxI5nmfjXi9GONXJU0yXO8UAFLPv4HTOcHy5bioS+sSUKFuhJU9IeUG0JHmfuHrW+CbklFnHy/t425qiY7M0KmXm5XLH6NCEsg+aicn7APrq8Ogb030tZmrDYmLe2QtafE6v9tZ94/DoPQCnT+1ddKlR5eUt0myKnDwGsau4zdZgx/vDWzTcFKqxq7f7Wm/4hqF2D6LV2aJKYbmBjx8z0r6A6TlKVpe3KXe2F5jo8bLI8W3TnXAPZkf6I9lJPj2zXf2kX3PzWtyjOtrf9HRu2nbl03rUviZH8yS4mnPelXJ/+BJSPsAoUDKH694z6NtD/ADoVA3Byx27soHZnPUEJGCg5x6ipiXHSrs9UeBO8Dy/dpj29I/0X3L0Sk/aKmVJ4+zjPQ2//ALaxG7ycPObSJA9T99Gje6wf3x99CWMTJHxP30eKnwMfxj76vM5sNmRxRGv4RTbWIKY8T/EqUsrX9Ca/hFMtboxEin/7KqT5LWuCftCibex5cAqXjr2FRNqTi2sH9wVKRk5qH2NRLRsYzTnpTNC0tMqdWcIQkqUfIDnWcy9XXtTpcD5Zad8aEIAASk8h8cYzRRFmpJxmjFJPQ/VWOvakuaz45sg/8Q0zfvkxXOQ8fi4r/wA0ysVmv3WV3C2GvPJ+NRx+mZ0taI+VRwnYNvBKvmCN/lVS0e3cltfSM1pxuC7juXHVY7xQOCUg7lI5ZG2dudSVymvxiXmFApSfdJ2VXM1MayNnpfTJp4oqXSGV/jRxHcSFqUo4C23knJOeWD1pxpRuBabSFRyAOMqHIcOegA2qM1DqSVc2O6nhDoCcJ7wZUj1CudJ6WsN1ubLu0mPDACkuraJCyfLln41VOC2Wza80Y5v2+US951KFJPCQNjvVKefemyJHcuqQpbYShYPCErKup+FWS56KkIQ4U3Vor4cpC2VDPrzqga6lXayTmoUgR+FbQWhxgKCVjkdjywelXabDu4TMGt1TjcpI221TbbDtUWE5eYshxhlLa3VyEkrIG5znzpYyYr5wxKYdJ5BDgJ+w1zQLzJX+tVl0h38iczxEhbiFLaIJBStJSUkY9elddK+DzDfk2OaBwmsau4H0xN/xDW0TiCFHFYref9sTcf3h5VWuxn0Wzs0wY7wHGfHXfukUuo0pbv0NtQoR0e6fDyHKuAezIgMPfpFjx+Vd56PSDpK2oFuYbHcJ2UvYbVrXxMr+ZYUvugbzoTfolP8AnQphGmlXfoMaE2tg4UCsHboaFLQ25HLfa1BvzGiNUybncG5EF1KDEaSnBbG2cnrUsIV9cskeai4NptItHCqNweIr4eea54vvaldr1anbZcLg87GdGFJ4ANqVR2s3lNtFu+kHvZg13QTwD3cYrCr+jfS+zO5v+vSf4lffS0UfoGD++Pvpw6/ZlrW4UPFSudGYkWvhQENugBQxk9as3/wVrH/KNpsCcwWM8+AVXNaXeNMkN2yMFd80vKjjlSlil3lxpoRw2EYGOLyrbOzn8nafqWCzqe83aJFExrvGmm2ytQB5ZOwrNLLtaSVs0rGmuXSM+0sv2uxMu8OOEcJqVYThVWTUfZ1dezxK4s9bD8SQ4TGeZVkHHMEHcGsr7QNWuWZSLdbFJ9udHEpwjPcp88ftGmxzc2Lkioqyz6xkGNpScpJwpxAaHxUQPxNZXdZqe9ShJACEhP1VE3K+3e4JCJtxkyEjklS9vq5VEPuqOxJJrSoGZyJt2eyn3nB8t6vnYPosdoOrFe0ocTYran2i4unw8YAyGUnqpeOnJOT5VkjbSnleNRSPLFdP/kgXCE1pG8W95PgYvDATwjxLLyAnHr7n1Zp0lZC5ZUu0S8IXroRyEISYCcNJSEoZSVEoQlI2ACQkAVTL1cSxJbPjfSo4ASMqB9B1p12rCSx2vXxtZBUzIDAxywlAxits7BOztcKGNX3mA+ie+j+hJWjdhkjdz0Uvp1Cf4qxyxueZpHXjlUMNmEWFhV6vceM/FmezcWX3FMraSlGM7rKcDPKthbkRnoqvZVpUEYSSgk8PpxGtJ1laWLtZpMVtxzLjZSgZOEqzkZPxArni0JuWlddlia+4iDcXS06wpSgGnNuEkHnvtnyNZNfieNquv7Nvp2b3E934izSEr4iHFKJ6E1m3bRbxItMaeAAqK7wqP7q9vvA+utjucaO+kOskIUNlo8jVE7Q7a7L03cIiG/0pa4kDzKSFY+yo0WdSaG9RwP22YQxFUSCBkeYrQbK0IblleTtlS9/Pkfwqhx1kYIJqRjT5DKkKbdV4DlIO4BrtLg8ub5POxI5Vi12H9czcZ/tDVqtPaAl9CWbrG4CAB3rP4pP4GoINtP3mQ8xISQtXEnbYiqJvZyyW+Cf7NAUMLJeI4l7EDNdmWrUEWyaKhTJlomSIbbCe8U14lJGOfD1rjHTc5DKwiOpDeV8JI5D4V1Bab+/F0VBcbgSJTZCW+7UoePOw2q3TZfdg7MWRtOyidp891eso8yyTH1We9BtXdJkEEAHxJ57ZH40Kq3afbrfE1CiTbJAakOuEu2/iwGF+mOQPpQrDLjJK1fJW1aTObw1npRgxmnqWsinDMfI5VolKjqxjZEstEl0Y5CnEKOpxhogc1D76cQmQZEpJ6INSFgbSuIwk/t/jSTyUh4Y7Zpum4jrcVkgH3BV1s3afrHRFoSLTdnBD4ylLDqQ4hOfIK5fKiWWAhNqS4QMBnP2VXdfxUsdnEeSNlKfzn51y45Vlmk/s6c8Ptwb/AILnqbWl+1HY03fUE9chthlTuOEJSkAZOANt+Vc2y5r1yuMq5SDlx5ZPwH/v3Vfu03UbSNKW/TsFZ7xLKFyynkVEAoR8uZ+IrOchADaeSRgV09LCo3RztTJOVIV2wTSSRvnG/wB1GztzrxutRnDE8CfCCVq2SAMkmu3PybOzePpLs+hTZTbhu88ibKS5yacwQgAdOFJwfMk1gH5KmiG9WdoYu0+K49bbMA6E8PgcfPuJJ9Pe+Qrt5lt1CAhAbQkdBvVkVSsEY9rvsgtV97S7RqRxbZgNsZuLCQeOQ62f0Yx5EHCj5Jx1rQZ6rhIHdJRwNjos4H1CrOllKAp9Yyem1RrzIJKlZJPnTRgk2/sd5G0k/BnOvZEDTmnJ+oLvIU6zCZLxQF8KSR7qEpHUqwPnXCM/Ut6k3SXcX5ri3pS1rcC1cSUlR34QeWMAAjyrpT8tXVKWm7boqI543MTp2D+qMhpB+J4lfJNctON5NJlSl+lrghTlF3F0bf2d65h3Gxx1z5SfpRn9FKQrm9j3XAOuRz9Qaucot3OKtbZbC0AKHnXK7Tz0SW09GUUPNqC0KHQiunOzeBM1XCj3C2pZZipYD8yVIc7uPERjxFxZ2AGDtz2rh59G8eRSxeWeh0XqCy43DN4XZhOvbQmz6idbZSEsPfpGwOQydwPQH76hWweVab2w3fR9xdRZ9MtO3H2d0qXenypvvVcillro3+8vKlYHujnmSgpsFJGFZx867MU9q3dnnsu3e9vQo0cknoOVO4UosykKUTwE4UM8xTM5CAlAyaCWOIElRCuhNS1aorLtp3HdvONpT+jc4kgDyrYV6kjT+y9twagfReWFpKGG9gMK2BHWsZtTy2YjhCynKQSfPIp4qdDj6eXF7hYnqeC+/C9uDyrCsjxtr7RmnGy06zvtwfkRLXfY7cWUjKzcFDxOoUOZxQqs3Bu5XS0G+SpIfaZWlkBxzK/q8qFVZJ/qtoiMeClobp2wkAUdNsuJ5RXKcM2u47D2VdWznH7OvCEvoh4W02X6oNLWRzgaZ/j/ABp5GsN2Et9fsisKSQKUt2mryhpGYigQvPP1qJzhXZMMc76NzhS+HTilj+4/CoDtUeSjsyhtqUAONBPzNCZMXC0yW3WnOItgHA5edULtG1W1eYca1xeIRI6RxLO3eLxzHoOlYdNhcpprwzbqcyjBp9tFSnyVybm64s5C1ceB0IFEFNIjhW+rO/hO/nTjiArtpUca7FCdsUYkpT4UlSjsAOZNJp3UBWm/k16STrDtbtyJDXeQLX/TpORseAjgSfivH1GmSt0Qdb/k96L/ADH7MrbbH2wie+Papp696sAkfyjCflWjxgHFkAZSOdNt1DAOB19afw2w2wAOpzVoBJp2SkbCo24PsRIj0mQ4lphltTjriuSUpGVH5AGnclRW6ojkDisY/K21V+b3ZRJgMu8Mu9uiC3g7hvHE6f8AlAT/AD0dAce9pepX9Y66u+o3irE2QVtJP6jQ8LafkgJ+2q07woQVq6UsQTuaZyFd6/wJ91HP1NVsBNEdxxKl48R6+VaJqztJut80rbdIwY0Wy6fgstpVBhJ4EyXkpAU86R7xKgSAdh6nes/UvgUBkgda9Qo8WBnn5bfXUXQIfpVSctIWkOD3kbkedFaXnrXoOXD5VJA2SXTulXCKWQFqASpRA6mkJiHEOf23C2eWBvSDaGVq4Q9lXqTn7agC4sKCrMlzHEgAIHD6bUW+98GI3A2lKe74ilJyQPM0bTgbesaWQsJQlwpJVtnfP41ZLazbITVwVPjJkB2Nws8K+RrHkhc2Uy4ZAwFqFvSXsFLqxw586FM7297RHisssrYS3jA9fOhWPZfMmLRdGr5aR/8AGvf/AKz/AOKdtajtSRtbnh/xwf8AtqpW23OzWQtt9lG6grvF8OCMffn7DT1FjmEAokRFA8iHedbHgxPwdNZ8q6ZZU6htBP8AqspPwcSfwpdq/wBqG6RLSfgg1Qlhbbim1+8klJ36ijIWR1o/x8T/ANSVqcq8l5vt3gXe1Ltzk2bGacxxlplviIHTOeRqpP6T06/v9OXFHXeKg/8AdSAcNKJcOOdWY8ccaqKoryZJZHcnYlH0PYW3FLTqSUOIYwqCPwVSv5kWsnKdT7fvQlf/ANUZK/Wjh0+dWWyukJ/mTEGeDUsU/GK4K2P8nO86T7NYNy+lJ6pc+c8kl1hk8IbSPCnffmVH51kIdOedDvlDbiNMptBSOwWu2rQbnvzpSPTuDUuntn7Pi1hu8LSQnACmFCuKEyFZ50qJCjyNN7jCkdvab11pjUMr2a2XVp57o2fCo/AHnXK/5Z2pfpftNZsbK+JiyREtEA7d85hxfzAKB8qhtBXb6L1nZ7i4spbjzG1uHOPBnxfZms91leXtQ6rut8kElyfMdkKz04lEgfIYHypt1oVkHMd7lgq5qOyR603jthDY6k8yetJOr9plEgngRsn49TTkABGN/rpSBnKBOTR4TheR3RypaN08TvCAOv115IAPICmzKi3IBBwTtUASbYUMFWQfLypRB8ajSKXONOc0dB5n1qQDuJ4wcEcSeQPWk1xm5CMEBK+hpRtRHiz60psolQ5dRUkEtp2U19FqafQkOsr4SfPO4NO5ZbKkllwlQGDnkah4Kg268ojPG2OnMg09aDjziEeFPmc7VzM8X7hVLsUmvvtlaXEBzKR4sbChQmLU2mQ0h5C0pwFDn9VCl2/ZC5Em1UslZzzpmlWKVQqt5qHaVZOaUSremqVY60oFVJI5ChRgvemwWKOlXnQA4C8UdK6bBQxRkroAc8VeE0jx5FGBB60ALJOaUCqQScYoyVZNSQOW1dPOqFeXSwVtJPjUopHp61em/eBqh3ptRvcoq5JcIT8KZESG0ZHAgDypZRwK8RjG1BZGKYVCDp3pnI2VkbU6cO9NH96UgesrylKh1G9OM7VHRFBSOAnCk8jTxpWRg8xQiRdJ8NKpPQ7gjBpAc6MCc4pgoVadKHC0ok7ZQr9oeR9auVt0/c5duRNt6mpLTSAuUQQA0knmSaohcBc23IOR8v8A0/XWkdlplMz33GoT7kXhKXHkrAS0RvuDsfPfyrDrZ+3HcVyXJVrnGWzKeYZQHnFEboGcfKhW3QbBYbPdmdSQe9YU8FhbClZSM4AIPqck5zzoVxMvq0YuoRtEKvJhrqFNPLaWMKQopI9QaCFb1JaujCNqGUke64Q6n+YZ+/NROd69DjnuipfZrnHbJx+hcKpQLpslXWjhXlTijgK8qOF02C6OlVADgLo3FSGaMlVADhKsUdCt6ahdHSr1qaAdJO9KpIpohR60qldBA8QoVUdTICLw704gFfZVoQrlVc1iMXBpY/WaH2GmQrIkeEZpJ5zyoq3SRiicCl1NihFHfnSTgyM067oAb0hJ4U7DnUAN2zwuDFPELIPOmjYJWmnBKA4UKOCOSv8AzQA8SrrmjcXgJHM8qZocxkE0oHMHnU2BK6bhPyL1B4YSpLSpSELHCSlR58Jx1IB2rbNJu26JdJsiO0YjT7f6SOMcwScny54x5Csv0LerlbG1gLWYgWHQykAZWOSycZ26VbHtXSxGV7PJ4UuAh1aGweHcnBzvnc1x/UIZMqcUv+/0KxxdbxKQ+gNuhTDrxIGfAMHPCf8AKhVXF4i9457e8FmMO9YSkeFzJ9z0oVy1pZ1xEqY+7R2U9/DkozugtqOOoOR95qpCr7rVgSLCtxABUysLAG5xyP31nwdSeShXodOlGCivB0c8t03J+RWjCkgtJ60YKGedXlNimQKMDtSYI869BooLFQujBVIg0YHepoLF0mjg5pvxUcKoAcJUKVSaaJUM0qlVADlCt6Su1rFybac70t91lJIAOc714lW9SFtWytDrbwcVyKAgDJPzqVyQQP5spxn2kn4JFF/N4D/fL/5atLcKM+r9G69jfJLIIB8iQef3U1uMu32hvicWVucuEHJz5elNtf2Ra+iuuWDI/tlj5CgnRjrkJc4KfVHbcDa3OHKUqIyASBtkVJRJsyctT5ZU0g7JSBy/zq59nuppunTLYVHbudtllPtcF1sAuYGApKuigCdjsaqbp9jqKa6M2/Nhsb+0Kz/76V4rTLSl8RfXmtnu+ibffre5ftCSDLjg/p4C9nmFdU4O/wAj8iaoKozjbim3UKQtJwpKhgg+RFWxSZXK0VdWmY5UVd+4j0SNh9dSNg0oJXtDtvHt62FcKmgpKngP2g17xHqAflUyGgdsUV63svlC1JKXUHKHEHhWk+YI3FS4/Qqf2ObGmOhXdOxw4g5SoA8Kvr86i9cxbfBnNptiXG2VspUpK1EkKyQd6stivEuLcmfp+CjUUEHC8uhmXgDYB39bHkoH4iojtKEB2R7RbA+mKOINpfUkuJBOQFcJxmobT4rkFFp3ZX7bIWnGFmhTSCRn1oUoyNDnOtsRVOBScgbA7VRb1EM1zvC4gDn+j2oUKzQ4NM+SM+ilp9198fzUPo+WPclL28wKFCrbZVtQPZbknk+g/FNDguif1WlY+IoUKm2G1HveXFPvRkH4Loe2SU+/Dc+RBoUKLIoAuBHOM+P5c0YXWOPf40n1SaFCmsViiLpDJ/tkj40u3cIyuTyProUKkLFky2TycH11MaWdguXBYmrT3KWVrUCcA4GcetChR0AhdtRvzVmLaW08JwMp2SnzBPXpsNqRg2IhwSpyi66d9yAB8PKhQpZSY0UiRLSU4CCQB04xQbCEqyBv6LoUKUsJex3afa7m3cbZLchTEDAcTulY/ZWnkpPxrT7Xqbsx1Kv2nX0Jy1XRCMLVHS4WpH7wKASfgdxQoULsPBJe3dgTA/QwJksj9mFJXn68URWquyGMD7FoK5PnofowDP8AzroUKGCI2dr7R4BELsyk5HIrbjt/iazLtU1I3erUhljTDdnbbe4uNLyFFW2MYSBQoVEasWTdGeQ14VQoUKtsqP/Z" alt="NK" style="width:100%;height:100%;border-radius:50%;object-fit:cover;"></div>
-        <div class="bubble">Hi! 👋 I'm Nana Kwame's personal assistant. Ask me about his background, skills, career journey, certifications, or anything professional. How can I help you today?</div>
+        <div class="msg-av bot-av" id="init-bot-avatar"></div>
+        <div class="bubble">Hi! 👋 I'm Nana Kwame's personal assistant. Ask me about his background, skills, career journey, certifications, or anything professional. I can also see anything you've generated in the CV or Interview tabs, and any updates you've added — just ask. How can I help you today?</div>
       </div>
     </div>
     <div id="quick-btns">
@@ -160,7 +179,7 @@
     <div id="attach-row" style="display:none"></div>
     <div id="input-row">
       <button class="icon-btn" id="attach-btn" type="button" onclick="document.getElementById('file-input').click()" title="Attach files"><i class="ti ti-paperclip" style="font-size:18px"></i></button>
-      <input type="file" id="file-input" multiple accept="image/*,.pdf,.doc,.docx,.txt,.md,.csv,.rtf,.html,.htm,.json,.xml" style="display:none" onchange="handleFiles(event)" />
+      <input type="file" id="file-input" multiple accept="image/*,.pdf,.doc,.docx,.txt,.md,.csv,.rtf,.html,.htm,.json,.xml" style="display:none" onchange="handleFiles(event,'chat')" />
       <textarea id="chat-input" placeholder="Ask anything about Nana Kwame..." rows="1" onkeydown="handleKey(event)"></textarea>
       <button id="send-btn" onclick="sendChat()"><i class="ti ti-send" style="font-size:16px"></i></button>
     </div>
@@ -171,7 +190,7 @@
     <div class="scroll-panel">
       <div class="info-box blue">
         <i class="ti ti-sparkles" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
-        <span>Enter a job title and optional description. The AI will rewrite the CV to perfectly match the role — ready to paste into Word as Times New Roman size 12.</span>
+        <span>Enter a job title and optional description (or attach the job posting as a file) and I'll rewrite the CV to match the role — ready to paste into Word as Times New Roman size 12. After generating, ask follow-up questions below to refine it.</span>
       </div>
       <div>
         <div class="section-label">Target role or job title</div>
@@ -181,13 +200,26 @@
         <div class="section-label">Job description or key requirements (optional)</div>
         <textarea id="role-desc" rows="4" placeholder="Paste the job description here for a more targeted CV..."></textarea>
       </div>
-      <button class="primary-btn" id="gen-cv-btn" onclick="generateCV()"><i class="ti ti-wand"></i> Generate Tailored CV</button>
+      <div id="cv-attach-row" class="attach-row-mini" style="display:none"></div>
+      <div class="panel-attach-btn-row">
+        <button class="icon-btn" type="button" onclick="document.getElementById('cv-file-input').click()" title="Attach files"><i class="ti ti-paperclip" style="font-size:18px"></i></button>
+        <input type="file" id="cv-file-input" multiple accept="image/*,.pdf,.doc,.docx,.txt,.md,.csv,.rtf,.html,.htm,.json,.xml" style="display:none" onchange="handleFiles(event,'cv')" />
+        <button class="primary-btn" id="gen-cv-btn" onclick="generateCV()"><i class="ti ti-wand"></i> Generate Tailored CV</button>
+      </div>
       <div id="cv-output" style="display:none">
         <div class="section-label">Your tailored CV</div>
         <div class="output-box" id="cv-preview"></div>
         <div class="action-row" style="margin-top:8px">
           <button class="sec-btn" onclick="copyCV()"><i class="ti ti-copy"></i> Copy text</button>
           <button class="sec-btn" onclick="generateCV()"><i class="ti ti-refresh"></i> Regenerate</button>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">Ask a follow-up or request changes</div>
+        <div id="cv-messages" class="mini-chat"></div>
+        <div class="mini-input-row">
+          <textarea id="cv-query" placeholder="e.g. Make it more concise, emphasise leadership, add my new certification..." rows="1" onkeydown="handleKeyPanel(event,'cv')"></textarea>
+          <button class="icon-btn" onclick="sendPanelQuery('cv')"><i class="ti ti-send" style="font-size:16px"></i></button>
         </div>
       </div>
       <div class="info-box green">
@@ -202,7 +234,7 @@
     <div class="scroll-panel">
       <div class="info-box blue">
         <i class="ti ti-microphone" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
-        <span>Type an interview question and get a confident, structured answer based on Nana Kwame's real experience. Use during online interviews on a second screen or phone.</span>
+        <span>Type an interview question and get a confident, structured answer based on Nana Kwame's real experience. Attach a job posting if it helps target the answer, and ask follow-ups below. Use during online interviews on a second screen or phone.</span>
       </div>
       <div>
         <div class="section-label">Interview question</div>
@@ -212,13 +244,26 @@
         <div class="section-label">Role you're interviewing for (optional)</div>
         <input type="text" id="interview-role" placeholder="e.g. Operations Manager, QA Lead, Academic Coordinator..." />
       </div>
-      <button class="primary-btn" id="interview-btn" onclick="answerInterview()"><i class="ti ti-player-play"></i> Generate Answer</button>
+      <div id="interview-attach-row" class="attach-row-mini" style="display:none"></div>
+      <div class="panel-attach-btn-row">
+        <button class="icon-btn" type="button" onclick="document.getElementById('interview-file-input').click()" title="Attach files"><i class="ti ti-paperclip" style="font-size:18px"></i></button>
+        <input type="file" id="interview-file-input" multiple accept="image/*,.pdf,.doc,.docx,.txt,.md,.csv,.rtf,.html,.htm,.json,.xml" style="display:none" onchange="handleFiles(event,'interview')" />
+        <button class="primary-btn" id="interview-btn" onclick="answerInterview()"><i class="ti ti-player-play"></i> Generate Answer</button>
+      </div>
       <div id="interview-output" style="display:none">
         <div class="section-label">Suggested answer</div>
         <div class="output-box" id="interview-answer"></div>
         <div class="action-row" style="margin-top:8px">
           <button class="sec-btn" onclick="copyInterview()"><i class="ti ti-copy"></i> Copy answer</button>
           <button class="sec-btn" onclick="answerInterview()"><i class="ti ti-refresh"></i> Regenerate</button>
+        </div>
+      </div>
+      <div>
+        <div class="section-label">Ask me anything about interview prep</div>
+        <div id="interview-messages" class="mini-chat"></div>
+        <div class="mini-input-row">
+          <textarea id="interview-query" placeholder="e.g. How should I answer a question about my weaknesses?" rows="1" onkeydown="handleKeyPanel(event,'interview')"></textarea>
+          <button class="icon-btn" onclick="sendPanelQuery('interview')"><i class="ti ti-send" style="font-size:16px"></i></button>
         </div>
       </div>
       <div class="info-box yellow">
@@ -233,20 +278,30 @@
     <div class="scroll-panel">
       <div class="info-box blue">
         <i class="ti ti-refresh" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
-        <span>Keep this assistant current as you grow. Add a new role, certification, skill, or achievement below — the chatbot, CV builder, and interview coach will all use it immediately. Save your data file to keep updates across sessions.</span>
+        <span>Keep this assistant current as you grow. Anything added here — manually or via smart add below — is used immediately by the chatbot, CV builder, and interview coach. Save your data file to keep updates across sessions.</span>
       </div>
+
       <div>
-        <div class="section-label">Update type</div>
-        <select id="update-type" style="width:100%;padding:10px 14px;border-radius:10px;font-size:13px;font-family:inherit;border:1.5px solid #dee2e6;outline:none;background:white">
+        <div class="section-label">Smart add — paste anything or attach a file</div>
+        <div id="profile-messages" class="mini-chat"></div>
+        <div id="profile-attach-row" class="attach-row-mini" style="display:none"></div>
+        <div class="mini-input-row">
+          <button class="icon-btn" type="button" onclick="document.getElementById('profile-file-input').click()" title="Attach files"><i class="ti ti-paperclip" style="font-size:16px"></i></button>
+          <input type="file" id="profile-file-input" multiple accept="image/*,.pdf,.doc,.docx,.txt,.md,.csv,.rtf,.html,.htm,.json,.xml" style="display:none" onchange="handleFiles(event,'profile')" />
+          <textarea id="profile-query" placeholder="e.g. Paste a certificate confirmation email, or just describe your update in your own words..." rows="1" onkeydown="handleKeyPanel(event,'profile')"></textarea>
+          <button class="icon-btn" onclick="sendPanelQuery('profile')"><i class="ti ti-send" style="font-size:16px"></i></button>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Or add manually</div>
+        <select id="update-type" style="width:100%;padding:10px 14px;border-radius:10px;font-size:13px;font-family:inherit;border:1.5px solid #dee2e6;outline:none;background:white;margin-bottom:8px">
           <option value="role">New job role / position</option>
           <option value="certification">New certification</option>
           <option value="skill">New skill or expertise</option>
           <option value="achievement">New achievement / milestone</option>
           <option value="other">Other life or career update</option>
         </select>
-      </div>
-      <div>
-        <div class="section-label">Details</div>
         <textarea id="update-text" rows="4" placeholder="e.g. 'Promoted to Director of Academics at OpenLabs Ghana, June 2026, now overseeing 3 campuses' or 'Completed Six Sigma Green Belt certification, June 2026'"></textarea>
       </div>
       <button class="primary-btn" onclick="addUpdate()"><i class="ti ti-plus"></i> Add to profile</button>
@@ -316,10 +371,13 @@ Microsoft Excel (Data Analysis), Power BI (Basic Analytics), MySQL (Basic), HTML
 FILE-HANDLING RULE:
 If the user attaches one or more files (image, PDF, Word document, text, etc.), carefully read and interpret each attachment, then tailor your answer to the user's specific query about it — for example, reviewing a job description against Nana Kwame's profile, summarising a document, extracting information from an image, or comparing requirements to his certifications and experience. Always ground your answer in the attached content plus Nana Kwame's real background. If no query is given alongside the attachment, briefly summarise it and offer next steps.
 
+CROSS-TAB CONTEXT RULE:
+The user may also be working in this assistant's CV Builder tab or Interview Coach tab in the same session. If the conversation or context makes clear that a CV was just generated or an interview answer was just prepared, feel free to reference that naturally (e.g. confirm what's in the generated CV, suggest an interview angle that matches it). If asked to generate a full tailored CV or a full interview answer from scratch, briefly do your best in prose, but mention the dedicated CV and Interview tabs exist for a more complete, ATS-optimised version.
+
 TONE:
 Warm, professional, confident. Match length to the question — short for factual queries, fuller paragraphs for substantive ones. Always full prose, never bullet points or numbered lists. If asked about salary: "Happy to discuss based on the scope of the role." If a target role or industry is mentioned, only highlight the most relevant certifications and experience; otherwise speak about his background generally.`;
 
-const CV_SYSTEM = `You are an expert ATS-optimisation CV writer. Rewrite Nana Kwame Asomani-Appah's CV to perfectly target the given role AND to pass through Applicant Tracking Systems (ATS) with a high parse and match score.
+const CV_SYSTEM = `You are an expert ATS-optimisation CV writer. Rewrite Nana Kwame Asomani-Appah's CV to perfectly target the given role AND to pass through Applicant Tracking Systems (ATS) with a high parse and match score. You are also available for follow-up questions and edit requests about the CV after the first draft — treat those as revision instructions against the most recent CV version in this conversation, and reply with the full updated CV text again unless the user is just asking a question (in which case answer conversationally in prose).
 
 FORMATTING RULE (STRICT): Output plain text only. Never use markdown syntax — no asterisks for bold or italics, no hash symbols for section headers, no backticks. Section headers should simply be plain capitalised text on their own line (e.g. PROFESSIONAL SUMMARY), not wrapped in any special characters. For bullet points, use a simple hyphen and a space at the start of the line (e.g. "- Led the team...") and nothing else — no asterisks as bullet markers.
 
@@ -385,7 +443,7 @@ ATS-OPTIMISATION RULES (CRITICAL):
 - Keep the whole CV to roughly one page worth of content
 - Do NOT fabricate new skills, employers, or experiences beyond what's listed above, EXCEPT for any items explicitly provided under "RECENT UPDATES TO NANA KWAME'S PROFILE" if present, which should be treated as real, current, and incorporated naturally (e.g. a new role becomes the most recent EXPERIENCE entry, a new certification is added to the relevant list, a new skill is added where appropriate)`;
 
-const INTERVIEW_SYSTEM = `You are helping Nana Kwame Asomani-Appah prepare strong answers for job interviews based entirely on his real background.
+const INTERVIEW_SYSTEM = `You are helping Nana Kwame Asomani-Appah prepare strong answers for job interviews based entirely on his real background. You are also available for follow-up questions after the first answer — general interview-prep advice, refining the previous answer, or new questions — reply conversationally in prose.
 
 FORMATTING RULE (STRICT): Output plain text only. Never use markdown syntax — no asterisks, no hash symbols, no backticks, no markdown bullet dashes. Write in completely plain prose with no special formatting characters.
 
@@ -409,15 +467,38 @@ ANSWER GUIDELINES:
 - Sound natural and confident, not robotic
 - Write ONLY in full prose paragraphs — never use bullet points, dashes, or numbered lists; separate distinct ideas into separate paragraphs`;
 
+const UPDATE_SYSTEM = `You help Nana Kwame Asomani-Appah keep his professional profile up to date. He will send you free-form text (pasted messages, emails, certificate confirmations, promotion letters, etc.), a short description in his own words, and/or an attached file (image of a certificate, a PDF, a document). Your job is to figure out whether this describes a genuine new update to his profile, and if so extract it cleanly.
+
+FORMATTING RULE (STRICT): Reply in EXACTLY this structure, plain text, nothing extra before or after it:
+TYPE: <one word: role, certification, skill, achievement, or other — leave blank if no update was found>
+TEXT: <a single, clear, concise sentence describing the update in third person, suitable for use on a CV or by a chatbot — leave blank if no update was found>
+NOTE: <one short, warm, first-person sentence to show Nana Kwame confirming what you added, or answering his question / commenting on the attachment if there was no clear update to extract>
+
+RULES:
+- If the message clearly describes a new role, certification, skill, or achievement, fill in TYPE and TEXT with a clean factual sentence (e.g. "Completed Six Sigma Green Belt certification in June 2026" or "Promoted to Director of Academics at OpenLabs Ghana, overseeing 3 campuses").
+- If an attached image or document is a certificate, letter, or similar, extract the relevant fact (certification name, issuing body, date, or new role/title) into TEXT.
+- If the message is just a question, a greeting, or doesn't contain a clear factual update, leave TYPE and TEXT blank and use NOTE to answer helpfully in one sentence.
+- Never fabricate details that aren't present in the message or attachment.
+- Keep TEXT to one sentence — no bullet points, no markdown.`;
+
 let chatHistory = [];
 let currentCV = '';
 let currentInterview = '';
 let profileUpdates = [];
+let panelHistory = { cv: [], interview: [], profile: [] };
+let pendingAttachments = { chat: [], cv: [], interview: [], profile: [] };
 
 function buildUpdatesText() {
   if (profileUpdates.length === 0) return '';
   const lines = profileUpdates.map(u => `- [${u.type.toUpperCase()}] ${u.text}`).join('\n');
   return `\n\nRECENT UPDATES TO NANA KWAME'S PROFILE (most current information — these take priority over anything above if there's a conflict, since they reflect his latest progress):\n${lines}`;
+}
+
+function buildCrossTabText() {
+  let extra = '';
+  if (currentCV) extra += `\n\nMOST RECENTLY GENERATED CV (for reference, from the CV tab):\n${currentCV}`;
+  if (currentInterview) extra += `\n\nMOST RECENTLY GENERATED INTERVIEW ANSWER (for reference, from the Interview tab):\n${currentInterview}`;
+  return extra;
 }
 
 function renderUpdatesList() {
@@ -439,6 +520,12 @@ function addUpdate() {
   if (!text) { alert('Please describe the update first.'); return; }
   profileUpdates.push({ type, text, date: new Date().toISOString().slice(0,10) });
   document.getElementById('update-text').value = '';
+  renderUpdatesList();
+}
+
+function addUpdateProgrammatic(type, text) {
+  const allowed = ['role','certification','skill','achievement','other'];
+  profileUpdates.push({ type: allowed.includes(type) ? type : 'other', text, date: new Date().toISOString().slice(0,10) });
   renderUpdatesList();
 }
 
@@ -526,6 +613,9 @@ function escapeHtml(s) {
 
 const AVATAR_URI = "data:image/jpeg;base64,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";
 
+document.getElementById('header-avatar').innerHTML = '<img src="' + AVATAR_URI + '" alt="Nana Kwame Asomani-Appah" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
+document.getElementById('init-bot-avatar').innerHTML = '<img src="' + AVATAR_URI + '" alt="NK" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
+
 function addMsg(role, text) {
   const box = document.getElementById('messages');
   const wrap = document.createElement('div');
@@ -580,7 +670,7 @@ function stripMarkdown(text) {
 const PROXY_URL = 'https://nk-personal-assistant-proxy-production.up.railway.app/v1/messages';
 
 async function callClaude(system, messages, maxTokens) {
-  const fullSystem = system + buildUpdatesText();
+  const fullSystem = system + buildUpdatesText() + buildCrossTabText();
   const res = await fetch(PROXY_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -592,7 +682,7 @@ async function callClaude(system, messages, maxTokens) {
 }
 
 async function callClaudeStreaming(system, messages, maxTokens, onChunk) {
-  const fullSystem = system + buildUpdatesText();
+  const fullSystem = system + buildUpdatesText() + buildCrossTabText();
   const res = await fetch(PROXY_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -637,8 +727,7 @@ function trimHistory(history, keepLast) {
 }
 
 
-// ===== File attachment support =====
-let pendingAttachments = []; // {name, mediaType, kind:'image'|'document'|'text', data:base64 or text}
+// ===== File attachment support (shared across Chat / CV / Interview / Update panels) =====
 
 function fileToBase64(file) {
   return new Promise((resolve, reject) => {
@@ -669,33 +758,35 @@ function fileToArrayBuffer(file) {
   });
 }
 
-async function handleFiles(ev) {
+async function handleFiles(ev, panel) {
+  panel = panel || 'chat';
   const files = Array.from(ev.target.files || []);
   ev.target.value = '';
   for (const f of files) {
     try {
-      await ingestFile(f);
+      await ingestFile(f, panel);
     } catch (e) {
       alert('Could not read ' + f.name + ': ' + (e && e.message ? e.message : e));
     }
   }
-  renderAttachChips();
+  renderAttachChips(panel);
 }
 
-async function ingestFile(f) {
+async function ingestFile(f, panel) {
+  panel = panel || 'chat';
   const name = f.name;
   const type = (f.type || '').toLowerCase();
   const ext = (name.split('.').pop() || '').toLowerCase();
   // Images -> base64 image block
   if (type.startsWith('image/')) {
     const data = await fileToBase64(f);
-    pendingAttachments.push({ name, kind: 'image', mediaType: type || 'image/png', data });
+    pendingAttachments[panel].push({ name, kind: 'image', mediaType: type || 'image/png', data });
     return;
   }
   // PDF -> base64 document block (Claude supports application/pdf)
   if (type === 'application/pdf' || ext === 'pdf') {
     const data = await fileToBase64(f);
-    pendingAttachments.push({ name, kind: 'document', mediaType: 'application/pdf', data });
+    pendingAttachments[panel].push({ name, kind: 'document', mediaType: 'application/pdf', data });
     return;
   }
   // Word docx -> extract text with mammoth
@@ -703,7 +794,7 @@ async function ingestFile(f) {
     if (!window.mammoth) throw new Error('Document parser not loaded yet, please retry');
     const buf = await fileToArrayBuffer(f);
     const result = await window.mammoth.extractRawText({ arrayBuffer: buf });
-    pendingAttachments.push({ name, kind: 'text', mediaType: 'text/plain', data: result.value || '' });
+    pendingAttachments[panel].push({ name, kind: 'text', mediaType: 'text/plain', data: result.value || '' });
     return;
   }
   // Legacy .doc -> not parseable client-side; ask to convert
@@ -714,28 +805,35 @@ async function ingestFile(f) {
   const textExts = ['txt','md','csv','rtf','html','htm','json','xml','log','tsv','yaml','yml'];
   if (type.startsWith('text/') || textExts.includes(ext)) {
     const text = await fileToText(f);
-    pendingAttachments.push({ name, kind: 'text', mediaType: type || 'text/plain', data: text });
+    pendingAttachments[panel].push({ name, kind: 'text', mediaType: type || 'text/plain', data: text });
     return;
   }
   // Fallback: try text
   try {
     const text = await fileToText(f);
-    pendingAttachments.push({ name, kind: 'text', mediaType: 'text/plain', data: text });
+    pendingAttachments[panel].push({ name, kind: 'text', mediaType: 'text/plain', data: text });
   } catch (e) {
     throw new Error('Unsupported file type: ' + (type || ext));
   }
 }
 
-function renderAttachChips() {
-  const row = document.getElementById('attach-row');
-  if (!pendingAttachments.length) { row.style.display = 'none'; row.innerHTML = ''; return; }
+function attachRowId(panel) {
+  return panel === 'chat' ? 'attach-row' : panel + '-attach-row';
+}
+
+function renderAttachChips(panel) {
+  panel = panel || 'chat';
+  const row = document.getElementById(attachRowId(panel));
+  const atts = pendingAttachments[panel];
+  if (!row) return;
+  if (!atts.length) { row.style.display = 'none'; row.innerHTML = ''; return; }
   row.style.display = 'flex';
-  row.innerHTML = pendingAttachments.map((a, i) => {
+  row.innerHTML = atts.map((a, i) => {
     const ic = a.kind === 'image' ? 'ti-photo' : (a.kind === 'document' ? 'ti-file-type-pdf' : 'ti-file-text');
-    return '<div class="attach-chip"><i class="ti ' + ic + '"></i><span class="name">' + escapeHtml(a.name) + '</span><span class="x" onclick="removeAttachment(' + i + ')">✕</span></div>';
+    return '<div class="attach-chip"><i class="ti ' + ic + '"></i><span class="name">' + escapeHtml(a.name) + '</span><span class="x" onclick="removeAttachment(\'' + panel + '\',' + i + ')">✕</span></div>';
   }).join('');
 }
-function removeAttachment(i) { pendingAttachments.splice(i,1); renderAttachChips(); }
+function removeAttachment(panel, i) { pendingAttachments[panel].splice(i,1); renderAttachChips(panel); }
 
 function buildUserContent(text, attachments) {
   if (!attachments || !attachments.length) return text;
@@ -767,10 +865,10 @@ function renderAttachmentPreview(attachments) {
 async function sendChat() {
   const inp = document.getElementById('chat-input');
   const text = inp.value.trim();
-  const atts = pendingAttachments.slice();
+  const atts = pendingAttachments.chat.slice();
   if (!text && !atts.length) return;
   inp.value = ''; inp.style.height = 'auto';
-  pendingAttachments = []; renderAttachChips();
+  pendingAttachments.chat = []; renderAttachChips('chat');
   document.getElementById('send-btn').disabled = true;
   addUserMsg(text, atts);
   const userContent = buildUserContent(text, atts);
@@ -810,19 +908,115 @@ function addUserMsg(text, attachments) {
 function sendQuick(q) { document.getElementById('chat-input').value = q; sendChat(); }
 function handleKey(e) { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } }
 
+// ===== Mini-chat (used by CV / Interview / Update panels for follow-up queries) =====
+
+function addPanelMsg(panel, role, text, attachments) {
+  const box = document.getElementById(panel + '-messages');
+  const wrap = document.createElement('div');
+  wrap.className = 'mini-msg ' + (role === 'user' ? 'user' : 'bot');
+  const bub = document.createElement('div');
+  bub.className = 'mini-bubble';
+  const textHtml = text ? textToParagraphs(text) : '';
+  bub.innerHTML = textHtml + (attachments ? renderAttachmentPreview(attachments) : '');
+  wrap.appendChild(bub);
+  box.appendChild(wrap);
+  box.scrollTop = box.scrollHeight;
+  return bub;
+}
+
+function showPanelTyping(panel) {
+  const box = document.getElementById(panel + '-messages');
+  const wrap = document.createElement('div');
+  wrap.className = 'mini-msg bot'; wrap.id = panel + '-typer';
+  const bub = document.createElement('div');
+  bub.className = 'mini-bubble';
+  bub.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+  wrap.appendChild(bub); box.appendChild(wrap); box.scrollTop = box.scrollHeight;
+}
+function removePanelTyping(panel) { const t = document.getElementById(panel + '-typer'); if (t) t.remove(); }
+function handleKeyPanel(e, panel) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendPanelQuery(panel); } }
+
+async function sendPanelQuery(panel) {
+  const inputEl = document.getElementById(panel + '-query');
+  const text = inputEl.value.trim();
+  const atts = pendingAttachments[panel].slice();
+  if (!text && !atts.length) return;
+  inputEl.value = ''; inputEl.style.height = 'auto';
+  pendingAttachments[panel] = []; renderAttachChips(panel);
+  addPanelMsg(panel, 'user', text, atts);
+  const userContent = buildUserContent(text, atts);
+  panelHistory[panel].push({ role: 'user', content: userContent });
+  panelHistory[panel] = trimHistory(panelHistory[panel], 16);
+  const sysPrompt = panel === 'cv' ? CV_SYSTEM : panel === 'interview' ? INTERVIEW_SYSTEM : UPDATE_SYSTEM;
+  showPanelTyping(panel);
+  try {
+    let bub = null;
+    let firstChunkHandled = false;
+    const reply = await callClaudeStreaming(sysPrompt, panelHistory[panel], 1200, (partial, isDone) => {
+      if (panel === 'profile') {
+        // Don't stream the raw TYPE/TEXT/NOTE structure to the user; wait for completion.
+        if (isDone) {
+          removePanelTyping(panel);
+          finalizeProfileReply(partial);
+        }
+        return;
+      }
+      if (!bub) { removePanelTyping(panel); bub = addPanelMsg(panel, 'bot', partial); }
+      else { bub.innerHTML = textToParagraphs(partial); document.getElementById(panel + '-messages').scrollTop = document.getElementById(panel + '-messages').scrollHeight; }
+    });
+    panelHistory[panel].push({ role: 'assistant', content: reply });
+    panelHistory[panel] = trimHistory(panelHistory[panel], 16);
+    if (panel === 'cv' && /PROFESSIONAL SUMMARY/i.test(reply) && /PROFESSIONAL EXPERIENCE/i.test(reply)) {
+      currentCV = reply;
+      document.getElementById('cv-preview').innerHTML = renderCV(currentCV);
+      document.getElementById('cv-output').style.display = 'block';
+    }
+    if (panel === 'interview' && reply.split(/\s+/).length > 40) {
+      currentInterview = reply;
+    }
+  } catch (e) {
+    removePanelTyping(panel);
+    addPanelMsg(panel, 'bot', 'Sorry, I had a connection issue. Please try again.');
+  }
+}
+
+function finalizeProfileReply(raw) {
+  const typeMatch = raw.match(/TYPE:\s*([a-zA-Z]*)/i);
+  const textMatch = raw.match(/TEXT:\s*([^\n]*)/i);
+  const noteMatch = raw.match(/NOTE:\s*([^\n]*)/i);
+  const type = typeMatch ? typeMatch[1].trim().toLowerCase() : '';
+  const text = textMatch ? textMatch[1].trim() : '';
+  const note = noteMatch ? noteMatch[1].trim() : '';
+  if (type && text) {
+    addUpdateProgrammatic(type, text);
+    addPanelMsg('profile', 'bot', note || ('Added to your profile: ' + text));
+  } else {
+    addPanelMsg('profile', 'bot', note || raw);
+  }
+}
+
+// ===== CV generation (structured flow, now attachment + follow-up aware) =====
+
 async function generateCV() {
   const role = document.getElementById('role-input').value.trim();
   const desc = document.getElementById('role-desc').value.trim();
   if (!role) { alert('Please enter a target role first.'); return; }
+  const atts = pendingAttachments.cv.slice();
+  pendingAttachments.cv = []; renderAttachChips('cv');
   const btn = document.getElementById('gen-cv-btn');
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Tailoring your CV...';
   document.getElementById('cv-output').style.display = 'none';
   try {
-    const prompt = `TARGET ROLE: ${role}\n${desc ? 'JOB DESCRIPTION:\n' + desc + '\n' : ''}Please write the tailored CV now.`;
-    currentCV = await callClaude(CV_SYSTEM, [{ role: 'user', content: prompt }], 1700);
+    const promptText = `TARGET ROLE: ${role}\n${desc ? 'JOB DESCRIPTION:\n' + desc + '\n' : ''}Please write the tailored CV now.`;
+    const userContent = buildUserContent(promptText, atts);
+    currentCV = await callClaude(CV_SYSTEM, [{ role: 'user', content: userContent }], 1700);
     document.getElementById('cv-preview').innerHTML = renderCV(currentCV);
     document.getElementById('cv-output').style.display = 'block';
+    panelHistory.cv.push({ role: 'user', content: userContent });
+    panelHistory.cv.push({ role: 'assistant', content: currentCV });
+    panelHistory.cv = trimHistory(panelHistory.cv, 16);
+    if (atts.length) addPanelMsg('cv', 'user', 'Generate CV for: ' + role, atts);
   } catch(e) {
     alert('Error generating CV. Please try again.');
   }
@@ -838,19 +1032,28 @@ function copyCV() {
   });
 }
 
+// ===== Interview answer generation (structured flow, now attachment + follow-up aware) =====
+
 async function answerInterview() {
   const q = document.getElementById('interview-q').value.trim();
   const role = document.getElementById('interview-role').value.trim();
   if (!q) { alert('Please enter an interview question.'); return; }
+  const atts = pendingAttachments.interview.slice();
+  pendingAttachments.interview = []; renderAttachChips('interview');
   const btn = document.getElementById('interview-btn');
   btn.disabled = true;
   btn.innerHTML = '<div class="spinner"></div> Crafting your answer...';
   document.getElementById('interview-output').style.display = 'none';
   try {
-    const prompt = `INTERVIEW QUESTION: "${q}"${role ? '\nROLE: ' + role : ''}\n\nGenerate a strong, authentic interview answer.`;
-    currentInterview = await callClaude(INTERVIEW_SYSTEM, [{ role: 'user', content: prompt }], 700);
+    const promptText = `INTERVIEW QUESTION: "${q}"${role ? '\nROLE: ' + role : ''}\n\nGenerate a strong, authentic interview answer.`;
+    const userContent = buildUserContent(promptText, atts);
+    currentInterview = await callClaude(INTERVIEW_SYSTEM, [{ role: 'user', content: userContent }], 700);
     document.getElementById('interview-answer').innerHTML = textToParagraphs(currentInterview);
     document.getElementById('interview-output').style.display = 'block';
+    panelHistory.interview.push({ role: 'user', content: userContent });
+    panelHistory.interview.push({ role: 'assistant', content: currentInterview });
+    panelHistory.interview = trimHistory(panelHistory.interview, 16);
+    if (atts.length) addPanelMsg('interview', 'user', 'Generate answer for: ' + q, atts);
   } catch(e) {
     alert('Error generating answer. Please try again.');
   }
@@ -900,9 +1103,14 @@ function shareWA() {
   window.open('https://wa.me/?text=' + msg, '_blank');
 }
 
-document.getElementById('chat-input').addEventListener('input', function() {
-  this.style.height = 'auto';
-  this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+['chat-input', 'cv-query', 'interview-query', 'profile-query'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) {
+    el.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+    });
+  }
 });
 </script>
 </body>
