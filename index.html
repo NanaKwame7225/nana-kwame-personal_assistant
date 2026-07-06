@@ -1,161 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Nana Kwame Asomani-Appah | Personal Assistant</title>
-<meta name="description" content="Chat with Nana Kwame Asomani-Appah's personal AI assistant about his background, skills, career journey, and certifications." />
-
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Nana Kwame Asomani-Appah | Personal Assistant" />
-<meta property="og:description" content="Chat with my personal AI assistant about my background, skills, career journey, and certifications." />
-<meta property="og:image" content="https://nanakwame7225.github.io/nana-kwame-personal_assistant/nk-avatar.jpg" />
-<meta property="og:url" content="https://nanakwame7225.github.io/nana-kwame-personal_assistant/" />
-
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="Nana Kwame Asomani-Appah | Personal Assistant" />
-<meta name="twitter:description" content="Chat with my personal AI assistant about my background, skills, career journey, and certifications." />
-<meta name="twitter:image" content="https://nanakwame7225.github.io/nana-kwame-personal_assistant/nk-avatar.jpg" />
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f0f4f8; min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; justify-content: center; padding: 16px; }
-  #app { width: 100%; max-width: 480px; height: min(700px, 88vh); height: min(700px, 88dvh); background: #fff; border-radius: 18px; box-shadow: 0 8px 40px rgba(4,44,83,0.15); display: flex; flex-direction: column; overflow: hidden; }
-  #header { background: linear-gradient(135deg, #042C53 0%, #185FA5 100%); color: white; padding: 16px 18px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
-  .avatar { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; overflow: hidden; }
-  .info h2 { font-size: 15px; font-weight: 600; }
-  .info p { font-size: 11px; color: #B5D4F4; margin-top: 2px; }
-  .status { margin-left: auto; display: flex; align-items: center; gap: 5px; font-size: 11px; color: #9FE1CB; white-space: nowrap; }
-  .dot { width: 7px; height: 7px; border-radius: 50%; background: #1D9E75; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-  #tabs { display: flex; background: #f8f9fa; border-bottom: 1px solid #e9ecef; flex-shrink: 0; }
-  .tab { flex: 1; padding: 11px 6px; font-size: 12px; border: none; background: transparent; color: #6c757d; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; border-bottom: 2.5px solid transparent; transition: all 0.15s; font-family: inherit; }
-  .tab.active { color: #042C53; border-bottom-color: #042C53; background: #fff; font-weight: 600; }
-  .tab:hover:not(.active) { color: #185FA5; background: #f0f4f8; }
-  .panel { display: none; flex: 1; flex-direction: column; overflow: hidden; }
-  .panel.active { display: flex; }
-  #messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
-  .msg { display: flex; gap: 8px; align-items: flex-end; }
-  .msg.user { flex-direction: row-reverse; }
-  .bubble { max-width: 82%; padding: 12px 16px; border-radius: 18px; font-size: 15px; line-height: 1.7; letter-spacing: 0.1px; }
-  .bubble p { margin: 0 0 10px 0; }
-  .bubble p:last-child { margin-bottom: 0; }
-  .msg.bot .bubble { background: #f0f4f8; color: #1a1a2e; border-bottom-left-radius: 4px; }
-  .msg.user .bubble { background: linear-gradient(135deg, #042C53, #185FA5); color: white; border-bottom-right-radius: 4px; }
-  .msg-av { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; overflow: hidden; }
-  .msg-av.bot-av { background: #042C53; color: white; }
-  .msg-av.user-av { background: #e9ecef; color: #6c757d; }
-  #quick-btns { padding: 8px 14px; display: flex; gap: 6px; flex-wrap: wrap; border-top: 1px solid #f0f0f0; background: #fafafa; }
-  .qbtn { font-size: 11px; padding: 5px 11px; border: 1px solid #dee2e6; border-radius: 20px; background: white; color: #495057; cursor: pointer; white-space: nowrap; transition: all 0.15s; font-family: inherit; }
-  .qbtn:hover { background: #042C53; color: white; border-color: #042C53; }
-  #input-row { display: flex; gap: 8px; padding: 12px 14px; border-top: 1px solid #f0f0f0; flex-shrink: 0; align-items: flex-end; }
-  #chat-input { flex: 1; resize: none; min-height: 40px; max-height: 100px; padding: 10px 14px; font-size: 14px; border-radius: 22px; font-family: inherit; border: 1.5px solid #dee2e6; outline: none; transition: border-color 0.15s; }
-  #chat-input:focus { border-color: #185FA5; }
-  #send-btn { width: 40px; height: 40px; border-radius: 50%; background: #042C53; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s; }
-  #send-btn:hover { background: #185FA5; }
-  #send-btn:disabled { background: #ccc; cursor: not-allowed; }
-  .typing { display: flex; gap: 4px; align-items: center; padding: 4px 2px; }
-  .typing span { width: 8px; height: 8px; background: #adb5bd; border-radius: 50%; animation: bounce 1.2s infinite; }
-  .typing span:nth-child(2) { animation-delay: 0.2s; }
-  .typing span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
-  .scroll-panel { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
-  .section-label { font-size: 11px; font-weight: 600; color: #6c757d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
-  input[type=text], textarea { width: 100%; padding: 10px 14px; border-radius: 10px; font-size: 13px; font-family: inherit; border: 1.5px solid #dee2e6; outline: none; transition: border-color 0.15s; background: white; }
-  input[type=text]:focus, textarea:focus { border-color: #185FA5; }
-  textarea { resize: vertical; }
-  .primary-btn { width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #042C53, #185FA5); color: white; border: none; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit; font-weight: 600; transition: opacity 0.15s; }
-  .primary-btn:hover { opacity: 0.9; }
-  .primary-btn:disabled { background: #ccc; cursor: not-allowed; opacity: 1; }
-  .output-box { background: #f8f9fa; border-radius: 10px; padding: 16px 18px; border: 1px solid #e9ecef; font-size: 14.5px; line-height: 1.8; letter-spacing: 0.1px; color: #212529; max-height: 240px; overflow-y: auto; }
-  .output-box p { margin: 0 0 12px 0; }
-  .output-box p:last-child { margin-bottom: 0; }
-  .output-box p.cv-header { font-weight: 700; color: #042C53; text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px; margin-top: 16px; margin-bottom: 6px; border-bottom: 1px solid #dee2e6; padding-bottom: 4px; }
-  .output-box p.cv-header:first-child { margin-top: 0; }
-  .output-box ul { margin: 0 0 12px 18px; padding: 0; }
-  .output-box li { margin-bottom: 6px; }
-  .action-row { display: flex; gap: 8px; flex-wrap: wrap; }
-  .sec-btn { padding: 8px 14px; border-radius: 8px; border: 1.5px solid #dee2e6; background: white; color: #495057; cursor: pointer; font-size: 12px; display: flex; align-items: center; gap: 6px; font-family: inherit; transition: all 0.15s; }
-  .sec-btn:hover { border-color: #042C53; color: #042C53; }
-  .info-box { border-radius: 10px; padding: 10px 14px; font-size: 12px; line-height: 1.6; display: flex; gap: 8px; align-items: flex-start; }
-  .info-box.green { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-  .info-box.blue { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
-  .info-box.yellow { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
-  .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .share-bar { background: #f8f9fa; border-top: 1px solid #e9ecef; padding: 10px 14px; display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
-  .share-bar span { font-size: 11px; color: #6c757d; }
-  .share-btn { padding: 6px 12px; border-radius: 16px; border: 1px solid #dee2e6; background: white; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 4px; color: #495057; font-family: inherit; transition: all 0.15s; }
-  .share-btn:hover { background: #042C53; color: white; border-color: #042C53; }
-  @media (max-width: 580px) {
-    body { padding: 0; align-items: flex-end; }
-    #app { max-width: 100%; width: 100%; height: 100vh; height: 100dvh; border-radius: 0; }
-  }
-  @media (min-width: 581px) and (max-width: 900px) {
-    #app { max-width: 520px; height: min(720px, 90vh); height: min(720px, 90dvh); }
-  }
-  @media (min-width: 901px) {
-    #app { max-width: 460px; height: min(700px, 85vh); height: min(700px, 85dvh); }
-  }
-  @media (max-height: 560px) and (orientation: landscape) {
-    body { padding: 0; align-items: stretch; justify-content: stretch; }
-    #app { height: 100vh; height: 100dvh; max-width: 100%; border-radius: 0; }
-    #header { padding: 10px 16px; }
-    #quick-btns { display: none; }
-  }
-  @media (max-width: 360px) {
-    .bubble { font-size: 13.5px; padding: 10px 13px; }
-    .info h2 { font-size: 13.5px; }
-    #header { padding: 12px 14px; gap: 9px; }
-    .tab { font-size: 11px; padding: 10px 4px; }
-  }
-
-  #attach-row { padding: 0 14px 4px; display: flex; flex-wrap: wrap; gap: 6px; }
-  .attach-chip { display: inline-flex; align-items: center; gap: 6px; background: #eef2f7; border: 1px solid #dee2e6; border-radius: 14px; padding: 4px 10px; font-size: 11px; color: #495057; max-width: 220px; }
-  .attach-chip i { font-size: 13px; }
-  .attach-chip .x { cursor: pointer; color: #c0392b; font-weight: 700; padding-left: 4px; }
-  .attach-chip .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .icon-btn { width: 40px; height: 40px; border-radius: 50%; background: #f0f4f8; color: #495057; border: 1.5px solid #dee2e6; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s, color 0.15s, border-color 0.15s; }
-  .icon-btn:hover { background: #e9ecef; color: #042C53; border-color: #042C53; }
-  .file-msg-thumb { max-width: 200px; max-height: 160px; border-radius: 10px; margin-top: 6px; display: block; }
-  .file-msg-card { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.18); padding: 6px 10px; border-radius: 10px; margin-top: 6px; font-size: 12px; }
-  .msg.bot .file-msg-card { background: #e9ecef; color: #1a1a2e; }
-
-  /* Shared mini-chat + attach UI reused inside CV / Interview / Update panels */
-  .attach-row-mini { display: flex; flex-wrap: wrap; gap: 6px; }
-  .mini-chat { max-height: 170px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-  .mini-chat:empty { display: none; }
-  .mini-msg { display: flex; }
-  .mini-msg.user { justify-content: flex-end; }
-  .mini-msg.bot { justify-content: flex-start; }
-  .mini-bubble { max-width: 88%; padding: 8px 12px; border-radius: 14px; font-size: 13px; line-height: 1.6; letter-spacing: 0.1px; }
-  .mini-bubble p { margin: 0 0 6px 0; }
-  .mini-bubble p:last-child { margin-bottom: 0; }
-  .mini-msg.bot .mini-bubble { background: #f0f4f8; color: #1a1a2e; border-bottom-left-radius: 4px; }
-  .mini-msg.user .mini-bubble { background: linear-gradient(135deg, #042C53, #185FA5); color: white; border-bottom-right-radius: 4px; }
-  .mini-input-row { display: flex; gap: 6px; align-items: flex-end; }
-  .mini-input-row textarea { flex: 1; resize: none; min-height: 36px; max-height: 84px; padding: 8px 12px; font-size: 13px; border-radius: 18px; font-family: inherit; border: 1.5px solid #dee2e6; outline: none; transition: border-color 0.15s; }
-  .mini-input-row textarea:focus { border-color: #185FA5; }
-  .mini-input-row .icon-btn { width: 36px; height: 36px; flex-shrink: 0; }
-  .panel-attach-btn-row { display: flex; gap: 8px; align-items: center; }
-  .panel-attach-btn-row .primary-btn { flex: 1; }
-</style>
+<meta name="description" content="Chat with Nana Kwame Asomani-Appah's personal AI assistant about his background, skills, career journey, and certifications."/>
+<link rel="icon" type="image/jpeg" href="data:image/jpeg;base64,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"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#042C53;--blue-mid:#185FA5;--blue-bg:#f0f4f8;
+  --surface:#fff;--border:#e9ecef;--text:#1a1a2e;--muted:#6c757d;
+  --accent-bg:#f0f6fc;--accent-border:#b9d2e8;
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--blue-bg);display:flex;align-items:stretch;justify-content:center}
+#app{width:100%;max-width:960px;height:100vh;height:100dvh;background:var(--surface);display:flex;flex-direction:column;box-shadow:0 0 60px rgba(4,44,83,.18)}
+#header{background:linear-gradient(135deg,var(--blue) 0%,var(--blue-mid) 100%);color:#fff;padding:14px 24px;display:flex;align-items:center;gap:14px;flex-shrink:0}
+.avatar{width:46px;height:46px;border-radius:50%;border:2px solid rgba(255,255,255,.55);overflow:hidden;flex-shrink:0;background:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block}
+.hinfo h2{font-size:15px;font-weight:700;letter-spacing:.2px}
+.hinfo p{font-size:11px;color:#B5D4F4;margin-top:1px}
+.hstatus{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:11px;color:#9FE1CB;white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:#1D9E75;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+#tabs{display:flex;background:#f8f9fa;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto}
+.tab{flex:1;min-width:72px;padding:11px 6px;font-size:11.5px;border:none;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;border-bottom:2.5px solid transparent;transition:all .14s;font-family:inherit;white-space:nowrap}
+.tab.active{color:var(--blue);border-bottom-color:var(--blue);background:#fff;font-weight:700}
+.tab:hover:not(.active){color:var(--blue-mid);background:var(--blue-bg)}
+.tab i{font-size:14px}
+.panel{display:none;flex:1;flex-direction:column;overflow:hidden}
+.panel.active{display:flex}
+#messages{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:14px;scroll-behavior:smooth}
+.msg{display:flex;gap:10px;align-items:flex-start}
+.msg.user{flex-direction:row-reverse}
+.msg-av{width:30px;height:30px;border-radius:50%;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700}
+.msg-av img{width:100%;height:100%;object-fit:cover;display:block}
+.msg-av.bot-av{background:var(--blue);color:#fff}
+.msg-av.user-av{background:#e9ecef;color:var(--muted)}
+.bubble{max-width:76%;padding:12px 16px;border-radius:18px;font-size:14.5px;line-height:1.75;letter-spacing:.08px}
+.bubble p{margin:0 0 9px}
+.bubble p:last-child{margin-bottom:0}
+.msg.bot .bubble{background:#f0f4f8;color:var(--text);border-top-left-radius:4px}
+.msg.user .bubble{background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:#fff;border-top-right-radius:4px}
+.file-thumb{max-width:220px;max-height:180px;border-radius:10px;margin-top:7px;display:block;cursor:pointer}
+.file-card{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.18);padding:7px 12px;border-radius:10px;margin-top:7px;font-size:12px}
+.msg.bot .file-card{background:#e9ecef;color:var(--text)}
+.audio-msg{margin-top:7px;max-width:240px}
+.audio-msg audio{width:100%;border-radius:8px}
+.typing{display:flex;gap:5px;align-items:center;padding:4px 2px}
+.typing span{width:8px;height:8px;background:#adb5bd;border-radius:50%;animation:bounce 1.1s infinite}
+.typing span:nth-child(2){animation-delay:.18s}
+.typing span:nth-child(3){animation-delay:.36s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+#quick-btns{padding:8px 20px;display:flex;gap:6px;flex-wrap:wrap;border-top:1px solid #f0f0f0;background:#fafafa;flex-shrink:0}
+.qbtn{font-size:11px;padding:5px 12px;border:1px solid var(--border);border-radius:20px;background:#fff;color:#495057;cursor:pointer;white-space:nowrap;transition:all .14s;font-family:inherit}
+.qbtn:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+#attach-preview{padding:0 20px 4px;display:flex;flex-wrap:wrap;gap:6px;flex-shrink:0}
+.attach-chip{display:inline-flex;align-items:center;gap:6px;background:#eef2f7;border:1px solid var(--border);border-radius:14px;padding:4px 10px;font-size:11px;color:#495057;max-width:200px}
+.attach-chip .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.attach-chip .rm{cursor:pointer;color:#c0392b;margin-left:3px;font-weight:700}
+#input-row{display:flex;gap:8px;padding:10px 20px 14px;border-top:1px solid #f0f0f0;flex-shrink:0;align-items:flex-end}
+#chat-input{flex:1;resize:none;min-height:42px;max-height:110px;padding:10px 15px;font-size:14px;border-radius:24px;font-family:inherit;border:1.5px solid var(--border);outline:none;transition:border-color .14s;line-height:1.5}
+#chat-input:focus{border-color:var(--blue-mid)}
+.icon-btn{width:38px;height:38px;border-radius:50%;background:var(--blue-bg);color:#495057;border:1.5px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .14s;font-size:16px}
+.icon-btn:hover{background:var(--accent-bg);color:var(--blue);border-color:var(--blue)}
+.icon-btn.recording{background:#c0392b;color:#fff;border-color:#c0392b;animation:pulse 1s infinite}
+#send-btn{width:42px;height:42px;border-radius:50%;background:var(--blue);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .14s;font-size:17px}
+#send-btn:hover{background:var(--blue-mid)}
+#send-btn:disabled{background:#ccc;cursor:not-allowed}
+.scroll-panel{flex:1;overflow-y:auto;padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+.section-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:3px}
+input[type=text],textarea,select{width:100%;padding:10px 14px;border-radius:10px;font-size:13px;font-family:inherit;border:1.5px solid var(--border);outline:none;transition:border-color .14s;background:#fff}
+input[type=text]:focus,textarea:focus,select:focus{border-color:var(--blue-mid)}
+textarea{resize:vertical}
+.primary-btn{width:100%;padding:12px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:#fff;border:none;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;font-weight:700;transition:opacity .14s}
+.primary-btn:hover{opacity:.88}
+.primary-btn:disabled{background:#ccc;cursor:not-allowed;opacity:1}
+.row-btns{display:flex;gap:8px;align-items:center}
+.row-btns .primary-btn{flex:1}
+.output-box{background:#f8f9fa;border-radius:10px;padding:16px 18px;border:1px solid var(--border);font-size:14px;line-height:1.8;color:var(--text);max-height:300px;overflow-y:auto}
+.output-box p{margin:0 0 11px}
+.output-box p:last-child{margin-bottom:0}
+.output-box .cv-hdr{font-weight:700;color:var(--blue);text-transform:uppercase;font-size:12px;letter-spacing:.5px;margin-top:14px;margin-bottom:5px;border-bottom:1px solid var(--border);padding-bottom:3px}
+.output-box .cv-hdr:first-child{margin-top:0}
+.output-box ul{margin:0 0 11px 18px;padding:0}
+.output-box li{margin-bottom:5px}
+.sec-btn{padding:8px 14px;border-radius:8px;border:1.5px solid var(--border);background:#fff;color:#495057;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:6px;font-family:inherit;transition:all .14s}
+.sec-btn:hover{border-color:var(--blue);color:var(--blue)}
+.action-row{display:flex;gap:8px;flex-wrap:wrap}
+.info-box{border-radius:10px;padding:10px 14px;font-size:12px;line-height:1.65;display:flex;gap:8px;align-items:flex-start}
+.info-box.green{background:#d4edda;color:#155724;border:1px solid #c3e6cb}
+.info-box.blue{background:#d1ecf1;color:#0c5460;border:1px solid #bee5eb}
+.info-box.yellow{background:#fff3cd;color:#856404;border:1px solid #ffeaa7}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.mini-chat{max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:8px}
+.mini-chat:empty{display:none}
+.mini-msg{display:flex}
+.mini-msg.user{justify-content:flex-end}
+.mini-bubble{max-width:88%;padding:8px 12px;border-radius:14px;font-size:13px;line-height:1.6}
+.mini-bubble p{margin:0 0 6px}
+.mini-bubble p:last-child{margin-bottom:0}
+.mini-msg.bot .mini-bubble{background:var(--blue-bg);color:var(--text);border-top-left-radius:4px}
+.mini-msg.user .mini-bubble{background:linear-gradient(135deg,var(--blue),var(--blue-mid));color:#fff;border-top-right-radius:4px}
+.mini-input-row{display:flex;gap:6px;align-items:flex-end}
+.mini-input-row textarea{flex:1;resize:none;min-height:36px;max-height:80px;padding:8px 12px;font-size:13px;border-radius:18px;font-family:inherit;border:1.5px solid var(--border);outline:none}
+.mini-input-row textarea:focus{border-color:var(--blue-mid)}
+.mini-input-row .icon-btn{width:36px;height:36px;flex-shrink:0}
+.panel-attach-row{display:flex;flex-wrap:wrap;gap:6px}
+.share-bar{background:#f8f9fa;border-top:1px solid var(--border);padding:9px 20px;display:flex;gap:8px;align-items:center;flex-shrink:0}
+.share-bar span{font-size:11px;color:var(--muted)}
+.share-btn{padding:5px 11px;border-radius:14px;border:1px solid var(--border);background:#fff;font-size:11px;cursor:pointer;display:flex;align-items:center;gap:4px;color:#495057;font-family:inherit;transition:all .14s}
+.share-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+@media(min-width:768px){
+  #messages{padding:22px 32px}
+  .scroll-panel{padding:22px 32px}
+  #input-row{padding:10px 28px 16px}
+  #attach-preview{padding:0 28px 4px}
+  #quick-btns{padding:8px 28px}
+  .share-bar{padding:9px 28px}
+  #header{padding:14px 32px}
+  #tabs .tab{font-size:12px;padding:11px 10px}
+}
+@media(max-width:580px){
+  body{align-items:flex-end}
+  #app{max-width:100%;border-radius:0}
+  .bubble{max-width:88%;font-size:14px}
+}
+</style>
 </head>
 <body>
 <div id="app">
   <div id="header">
-    <div class="avatar" id="header-avatar"></div>
-    <div class="info">
+    <div class="avatar" id="nk-hdr-av">NK</div>
+    <div class="hinfo">
       <h2>Nana Kwame Asomani-Appah</h2>
-      <p>Head of Academics · QA Engineer · Chemical Engineer</p>
+      <p>Head of Academics &middot; QA Engineer &middot; Chemical Engineer</p>
     </div>
-    <div class="status"><div class="dot"></div>Online</div>
+    <div class="hstatus"><div class="dot"></div>Online</div>
   </div>
   <div id="tabs">
     <button class="tab active" onclick="switchTab('chat')"><i class="ti ti-message-circle"></i> Chat</button>
     <button class="tab" onclick="switchTab('cv')"><i class="ti ti-file-cv"></i> CV</button>
+    <button class="tab" onclick="switchTab('cover')"><i class="ti ti-mail"></i> Cover Letter</button>
+    <button class="tab" onclick="switchTab('docs')"><i class="ti ti-file-text"></i> Docs</button>
     <button class="tab" onclick="switchTab('interview')"><i class="ti ti-presentation"></i> Interview</button>
     <button class="tab" onclick="switchTab('profile')"><i class="ti ti-user-edit"></i> Update</button>
   </div>
@@ -164,954 +155,558 @@
   <div id="chat-panel" class="panel active">
     <div id="messages">
       <div class="msg bot">
-        <div class="msg-av bot-av" id="init-bot-avatar"></div>
-        <div class="bubble">Hi! 👋 I'm Nana Kwame's personal assistant. Ask me about his background, skills, career journey, certifications, or anything professional. I can also see anything you've generated in the CV or Interview tabs, and any updates you've added — just ask. How can I help you today?</div>
+        <div class="msg-av bot-av" id="chat-bot-av">NK</div>
+        <div class="bubble"><p>Hi! I'm Nana Kwame's assistant. Ask me about his background, upload documents, send voice notes, or use the tabs to build a CV, Cover Letter, or process any document. All tabs share context.</p></div>
       </div>
     </div>
     <div id="quick-btns">
-      <button class="qbtn" onclick="sendQuick('Tell me about your professional background')">Background</button>
-      <button class="qbtn" onclick="sendQuick('What are your core skills?')">Core skills</button>
-      <button class="qbtn" onclick="sendQuick('Walk me through your career journey')">Career journey</button>
-      <button class="qbtn" onclick="sendQuick('What certifications do you hold?')">Certifications</button>
-      <button class="qbtn" onclick="sendQuick('Why should I hire you?')">Why hire me?</button>
-      <button class="qbtn" onclick="sendQuick('What are your career goals?')">Goals</button>
+      <button class="qbtn" onclick="sendQ('Tell me about your professional background')">Background</button>
+      <button class="qbtn" onclick="sendQ('What are your core skills?')">Core skills</button>
+      <button class="qbtn" onclick="sendQ('Walk me through your career journey')">Career journey</button>
+      <button class="qbtn" onclick="sendQ('What certifications do you hold?')">Certifications</button>
+      <button class="qbtn" onclick="sendQ('Why should I hire you?')">Why hire me?</button>
+      <button class="qbtn" onclick="sendQ('What are your career goals?')">Goals</button>
     </div>
-    <div id="attach-row" style="display:none"></div>
+    <div id="attach-preview"></div>
     <div id="input-row">
-      <button class="icon-btn" id="attach-btn" type="button" onclick="document.getElementById('file-input').click()" title="Attach files"><i class="ti ti-paperclip" style="font-size:18px"></i></button>
-      <input type="file" id="file-input" multiple accept="image/*,.pdf,.doc,.docx,.txt,.md,.csv,.rtf,.html,.htm,.json,.xml" style="display:none" onchange="handleFiles(event,'chat')" />
+      <button class="icon-btn" onclick="triggerFile('chat-file','chat')" title="Attach file"><i class="ti ti-paperclip"></i></button>
+      <input type="file" id="chat-file" multiple accept="image/*,video/*,audio/*,.pdf,.docx,.doc,.txt,.md,.csv" style="display:none" onchange="handleFiles(event,'chat')"/>
+      <button class="icon-btn" id="voice-btn" onclick="toggleVoice()" title="Voice message"><i class="ti ti-microphone"></i></button>
       <textarea id="chat-input" placeholder="Ask anything about Nana Kwame..." rows="1" onkeydown="handleKey(event)"></textarea>
-      <button id="send-btn" onclick="sendChat()"><i class="ti ti-send" style="font-size:16px"></i></button>
+      <button id="send-btn" onclick="sendChat()"><i class="ti ti-send"></i></button>
     </div>
   </div>
 
   <!-- CV PANEL -->
   <div id="cv-panel" class="panel">
     <div class="scroll-panel">
-      <div class="info-box blue">
-        <i class="ti ti-sparkles" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
-        <span>Enter a job title and optional description (or attach the job posting as a file) and I'll rewrite the CV to match the role — ready to paste into Word as Times New Roman size 12. After generating, ask follow-up questions below to refine it.</span>
-      </div>
-      <div>
-        <div class="section-label">Target role or job title</div>
-        <input type="text" id="role-input" placeholder="e.g. Operations Manager, Data Analyst, Project Manager..." />
-      </div>
-      <div>
-        <div class="section-label">Job description or key requirements (optional)</div>
-        <textarea id="role-desc" rows="4" placeholder="Paste the job description here for a more targeted CV..."></textarea>
-      </div>
-      <div id="cv-attach-row" class="attach-row-mini" style="display:none"></div>
-      <div class="panel-attach-btn-row">
-        <button class="icon-btn" type="button" onclick="document.getElementById('cv-file-input').click()" title="Attach files"><i class="ti ti-paperclip" style="font-size:18px"></i></button>
-        <input type="file" id="cv-file-input" multiple accept="image/*,.pdf,.doc,.docx,.txt,.md,.csv,.rtf,.html,.htm,.json,.xml" style="display:none" onchange="handleFiles(event,'cv')" />
-        <button class="primary-btn" id="gen-cv-btn" onclick="generateCV()"><i class="ti ti-wand"></i> Generate Tailored CV</button>
+      <div class="info-box blue"><i class="ti ti-sparkles" style="font-size:16px;flex-shrink:0;margin-top:1px"></i><span>Enter a target role and job description (or attach the posting) for an ATS-optimised CV. Follow up below to refine.</span></div>
+      <div><div class="section-label">Target role</div><input type="text" id="cv-role" placeholder="e.g. Operations Manager, Data Analyst, Academic Coordinator..."/></div>
+      <div><div class="section-label">Job description (optional)</div><textarea id="cv-desc" rows="4" placeholder="Paste the job description here for a more targeted CV..."></textarea></div>
+      <div id="cv-attach-preview" class="panel-attach-row"></div>
+      <div class="row-btns">
+        <button class="icon-btn" onclick="triggerFile('cv-file','cv')" title="Attach"><i class="ti ti-paperclip"></i></button>
+        <input type="file" id="cv-file" multiple accept="image/*,.pdf,.docx,.doc,.txt" style="display:none" onchange="handleFiles(event,'cv')"/>
+        <button class="primary-btn" id="cv-btn" onclick="generateCV()"><i class="ti ti-wand"></i> Generate Tailored CV</button>
       </div>
       <div id="cv-output" style="display:none">
-        <div class="section-label">Your tailored CV</div>
+        <div class="section-label">Tailored CV</div>
         <div class="output-box" id="cv-preview"></div>
         <div class="action-row" style="margin-top:8px">
-          <button class="sec-btn" onclick="copyCV()"><i class="ti ti-copy"></i> Copy text</button>
+          <button class="sec-btn" onclick="copyText(currentCV,this,'Copy CV')"><i class="ti ti-copy"></i> Copy CV</button>
           <button class="sec-btn" onclick="generateCV()"><i class="ti ti-refresh"></i> Regenerate</button>
         </div>
       </div>
-      <div>
-        <div class="section-label">Ask a follow-up or request changes</div>
-        <div id="cv-messages" class="mini-chat"></div>
-        <div class="mini-input-row">
-          <textarea id="cv-query" placeholder="e.g. Make it more concise, emphasise leadership, add my new certification..." rows="1" onkeydown="handleKeyPanel(event,'cv')"></textarea>
-          <button class="icon-btn" onclick="sendPanelQuery('cv')"><i class="ti ti-send" style="font-size:16px"></i></button>
+      <div><div class="section-label">Follow-up &amp; refinements</div><div id="cv-messages" class="mini-chat"></div><div class="mini-input-row"><textarea id="cv-q" placeholder="e.g. Emphasise leadership, add more data analytics focus..." rows="1" onkeydown="panelKey(event,'cv')"></textarea><button class="icon-btn" onclick="panelSend('cv')"><i class="ti ti-send"></i></button></div></div>
+      <div class="info-box green"><i class="ti ti-info-circle" style="font-size:16px;flex-shrink:0;margin-top:1px"></i><span>Copy text &rarr; paste into Word &rarr; Times New Roman 12pt &rarr; save and send.</span></div>
+    </div>
+  </div>
+
+  <!-- COVER LETTER PANEL -->
+  <div id="cover-panel" class="panel">
+    <div class="scroll-panel">
+      <div class="info-box blue"><i class="ti ti-mail" style="font-size:16px;flex-shrink:0;margin-top:1px"></i><span>Generate a personalised cover letter grounded in Nana Kwame's real experience. Attach the job posting or paste it below.</span></div>
+      <div><div class="section-label">Target role &amp; employer</div><input type="text" id="cl-role" placeholder="e.g. Head of Operations at TechCorp Ghana"/></div>
+      <div><div class="section-label">Job description / key requirements</div><textarea id="cl-desc" rows="4" placeholder="Paste the job description or key requirements here..."></textarea></div>
+      <div><div class="section-label">Tone</div>
+        <select id="cl-tone">
+          <option value="professional">Professional &amp; formal</option>
+          <option value="warm">Warm &amp; conversational</option>
+          <option value="confident">Confident &amp; assertive</option>
+          <option value="concise">Brief &amp; direct (one page max)</option>
+        </select>
+      </div>
+      <div><div class="section-label">Specific points to highlight (optional)</div><textarea id="cl-notes" rows="2" placeholder="e.g. Interest in MEAL roles, tech background, academic leadership..."></textarea></div>
+      <div id="cl-attach-preview" class="panel-attach-row"></div>
+      <div class="row-btns">
+        <button class="icon-btn" onclick="triggerFile('cl-file','cl')" title="Attach"><i class="ti ti-paperclip"></i></button>
+        <input type="file" id="cl-file" multiple accept="image/*,.pdf,.docx,.doc,.txt" style="display:none" onchange="handleFiles(event,'cl')"/>
+        <button class="primary-btn" id="cl-btn" onclick="generateCoverLetter()"><i class="ti ti-mail"></i> Generate Cover Letter</button>
+      </div>
+      <div id="cl-output" style="display:none">
+        <div class="section-label">Cover Letter</div>
+        <div class="output-box" id="cl-preview"></div>
+        <div class="action-row" style="margin-top:8px">
+          <button class="sec-btn" onclick="copyText(currentCL,this,'Copy letter')"><i class="ti ti-copy"></i> Copy letter</button>
+          <button class="sec-btn" onclick="generateCoverLetter()"><i class="ti ti-refresh"></i> Regenerate</button>
         </div>
       </div>
-      <div class="info-box green">
-        <i class="ti ti-info-circle" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
-        <span>Copy the CV text → paste into Microsoft Word → set font to Times New Roman, size 12 → save and send.</span>
+      <div><div class="section-label">Ask for changes</div><div id="cl-messages" class="mini-chat"></div><div class="mini-input-row"><textarea id="cl-q" placeholder="e.g. Add more about my tech background, shorten the intro..." rows="1" onkeydown="panelKey(event,'cl')"></textarea><button class="icon-btn" onclick="panelSend('cl')"><i class="ti ti-send"></i></button></div></div>
+    </div>
+  </div>
+
+  <!-- DOCS PANEL -->
+  <div id="docs-panel" class="panel">
+    <div class="scroll-panel">
+      <div class="info-box blue"><i class="ti ti-file-text" style="font-size:16px;flex-shrink:0;margin-top:1px"></i><span>Upload any document — PDF, Word, images, audio, video, or text. Describe what to do with it and the assistant will process it, tailored to your request.</span></div>
+      <div class="dropzone" id="doc-drop" onclick="triggerFile('docs-file','docs')" ondragover="ev.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="dropDocs(event)">
+        <i class="ti ti-cloud-upload" style="font-size:28px;color:var(--blue-mid)"></i>
+        <p style="font-size:13px;color:#495057;margin-top:6px">Click to upload or drag &amp; drop</p>
+        <p style="font-size:11px;color:#9aa5b1;margin-top:2px">PDF, DOCX, JPG, PNG, MP3, MP4, TXT &mdash; multiple files supported</p>
+        <input type="file" id="docs-file" multiple accept="image/*,video/*,audio/*,.pdf,.docx,.doc,.txt,.md,.csv,.rtf,.html,.json,.xml" style="display:none" onchange="handleFiles(event,'docs')"/>
       </div>
+      <style>.dropzone{border:2px dashed var(--accent-border);border-radius:12px;padding:20px 14px;text-align:center;cursor:pointer;background:#fafcff;transition:all .14s}.dropzone.drag,.dropzone:hover{border-color:var(--blue-mid);background:var(--accent-bg)}</style>
+      <div id="docs-attach-preview" class="panel-attach-row"></div>
+      <div><div class="section-label">What should I do with these?</div><textarea id="docs-q" rows="3" placeholder="e.g. Summarise this contract, Extract key dates, Compare these two documents, Rewrite my CV to match this job posting..."></textarea></div>
+      <button class="primary-btn" id="docs-btn" onclick="processDocs()"><i class="ti ti-wand"></i> Process Documents</button>
+      <div id="docs-output" style="display:none">
+        <div class="section-label">Result</div>
+        <div class="output-box" id="docs-result"></div>
+        <div class="action-row" style="margin-top:8px">
+          <button class="sec-btn" onclick="copyText(currentDocs,this,'Copy result')"><i class="ti ti-copy"></i> Copy result</button>
+          <button class="sec-btn" onclick="processDocs()"><i class="ti ti-refresh"></i> Reprocess</button>
+        </div>
+      </div>
+      <div class="info-box green"><i class="ti ti-info-circle" style="font-size:16px;flex-shrink:0;margin-top:1px"></i><span>Images are read visually. Scanned PDFs with no text layer should be uploaded as clear photos instead.</span></div>
     </div>
   </div>
 
   <!-- INTERVIEW PANEL -->
   <div id="interview-panel" class="panel">
     <div class="scroll-panel">
-      <div class="info-box blue">
-        <i class="ti ti-microphone" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
-        <span>Type an interview question and get a confident, structured answer based on Nana Kwame's real experience. Attach a job posting if it helps target the answer, and ask follow-ups below. Use during online interviews on a second screen or phone.</span>
+      <div class="info-box blue"><i class="ti ti-presentation" style="font-size:16px;flex-shrink:0;margin-top:1px"></i><span>Type an interview question and get a confident, structured answer based on Nana Kwame's real experience. Attach a job posting for extra context.</span></div>
+      <div><div class="section-label">Interview question</div><textarea id="iv-q" rows="3" placeholder='"Tell me about yourself" or "Why do you want this role?" or "Describe a challenge you overcame"...'></textarea></div>
+      <div><div class="section-label">Role (optional)</div><input type="text" id="iv-role" placeholder="e.g. Operations Manager, QA Lead, Academic Coordinator..."/></div>
+      <div id="iv-attach-preview" class="panel-attach-row"></div>
+      <div class="row-btns">
+        <button class="icon-btn" onclick="triggerFile('iv-file','iv')" title="Attach"><i class="ti ti-paperclip"></i></button>
+        <input type="file" id="iv-file" multiple accept="image/*,.pdf,.docx,.doc,.txt" style="display:none" onchange="handleFiles(event,'iv')"/>
+        <button class="primary-btn" id="iv-btn" onclick="genInterview()"><i class="ti ti-player-play"></i> Generate Answer</button>
       </div>
-      <div>
-        <div class="section-label">Interview question</div>
-        <textarea id="interview-q" rows="3" placeholder='"Tell me about yourself" or "Why do you want this role?" or "Describe a challenge you overcame"...'></textarea>
-      </div>
-      <div>
-        <div class="section-label">Role you're interviewing for (optional)</div>
-        <input type="text" id="interview-role" placeholder="e.g. Operations Manager, QA Lead, Academic Coordinator..." />
-      </div>
-      <div id="interview-attach-row" class="attach-row-mini" style="display:none"></div>
-      <div class="panel-attach-btn-row">
-        <button class="icon-btn" type="button" onclick="document.getElementById('interview-file-input').click()" title="Attach files"><i class="ti ti-paperclip" style="font-size:18px"></i></button>
-        <input type="file" id="interview-file-input" multiple accept="image/*,.pdf,.doc,.docx,.txt,.md,.csv,.rtf,.html,.htm,.json,.xml" style="display:none" onchange="handleFiles(event,'interview')" />
-        <button class="primary-btn" id="interview-btn" onclick="answerInterview()"><i class="ti ti-player-play"></i> Generate Answer</button>
-      </div>
-      <div id="interview-output" style="display:none">
+      <div id="iv-output" style="display:none">
         <div class="section-label">Suggested answer</div>
-        <div class="output-box" id="interview-answer"></div>
+        <div class="output-box" id="iv-preview"></div>
         <div class="action-row" style="margin-top:8px">
-          <button class="sec-btn" onclick="copyInterview()"><i class="ti ti-copy"></i> Copy answer</button>
-          <button class="sec-btn" onclick="answerInterview()"><i class="ti ti-refresh"></i> Regenerate</button>
+          <button class="sec-btn" onclick="copyText(currentIV,this,'Copy answer')"><i class="ti ti-copy"></i> Copy answer</button>
+          <button class="sec-btn" onclick="genInterview()"><i class="ti ti-refresh"></i> Regenerate</button>
         </div>
       </div>
-      <div>
-        <div class="section-label">Ask me anything about interview prep</div>
-        <div id="interview-messages" class="mini-chat"></div>
-        <div class="mini-input-row">
-          <textarea id="interview-query" placeholder="e.g. How should I answer a question about my weaknesses?" rows="1" onkeydown="handleKeyPanel(event,'interview')"></textarea>
-          <button class="icon-btn" onclick="sendPanelQuery('interview')"><i class="ti ti-send" style="font-size:16px"></i></button>
-        </div>
-      </div>
-      <div class="info-box yellow">
-        <i class="ti ti-bulb" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
-        <span>Tip: Keep this open on your phone during video calls. Personalise with specific memories and speak naturally — don't read word for word.</span>
-      </div>
+      <div><div class="section-label">Follow-up questions</div><div id="iv-messages" class="mini-chat"></div><div class="mini-input-row"><textarea id="iv-msg" placeholder="e.g. What if they ask about my tech background specifically?" rows="1" onkeydown="panelKey(event,'iv')"></textarea><button class="icon-btn" onclick="panelSend('iv')"><i class="ti ti-send"></i></button></div></div>
+      <div class="info-box yellow"><i class="ti ti-bulb" style="font-size:16px;flex-shrink:0;margin-top:1px"></i><span>Keep this open on a second screen during interviews. Personalise answers with your own memories and speak naturally.</span></div>
     </div>
   </div>
 
-  <!-- PROFILE UPDATE PANEL -->
+  <!-- PROFILE PANEL -->
   <div id="profile-panel" class="panel">
     <div class="scroll-panel">
-      <div class="info-box blue">
-        <i class="ti ti-refresh" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
-        <span>Keep this assistant current as you grow. Anything added here — manually or via smart add below — is used immediately by the chatbot, CV builder, and interview coach. Save your data file to keep updates across sessions.</span>
-      </div>
-
-      <div>
-        <div class="section-label">Smart add — paste anything or attach a file</div>
-        <div id="profile-messages" class="mini-chat"></div>
-        <div id="profile-attach-row" class="attach-row-mini" style="display:none"></div>
-        <div class="mini-input-row">
-          <button class="icon-btn" type="button" onclick="document.getElementById('profile-file-input').click()" title="Attach files"><i class="ti ti-paperclip" style="font-size:16px"></i></button>
-          <input type="file" id="profile-file-input" multiple accept="image/*,.pdf,.doc,.docx,.txt,.md,.csv,.rtf,.html,.htm,.json,.xml" style="display:none" onchange="handleFiles(event,'profile')" />
-          <textarea id="profile-query" placeholder="e.g. Paste a certificate confirmation email, or just describe your update in your own words..." rows="1" onkeydown="handleKeyPanel(event,'profile')"></textarea>
-          <button class="icon-btn" onclick="sendPanelQuery('profile')"><i class="ti ti-send" style="font-size:16px"></i></button>
+      <div class="info-box blue"><i class="ti ti-refresh" style="font-size:16px;flex-shrink:0;margin-top:1px"></i><span>Keep the assistant current. Add a new role, certification, skill, or achievement. The chatbot, CV builder, Cover Letter, and Interview coach all use it immediately.</span></div>
+      <div><div class="section-label">Smart add</div><div id="pr-messages" class="mini-chat"></div>
+        <div id="pr-attach-preview" class="panel-attach-row" style="margin-top:6px"></div>
+        <div class="mini-input-row" style="margin-top:6px">
+          <button class="icon-btn" onclick="triggerFile('pr-file','pr')" title="Attach"><i class="ti ti-paperclip"></i></button>
+          <input type="file" id="pr-file" multiple accept="image/*,.pdf,.docx,.doc,.txt" style="display:none" onchange="handleFiles(event,'pr')"/>
+          <textarea id="pr-q" placeholder="Paste a certificate email, promotion letter, or describe your update..." rows="1" onkeydown="panelKey(event,'pr')"></textarea>
+          <button class="icon-btn" onclick="panelSend('pr')"><i class="ti ti-send"></i></button>
         </div>
       </div>
-
-      <div>
-        <div class="section-label">Or add manually</div>
-        <select id="update-type" style="width:100%;padding:10px 14px;border-radius:10px;font-size:13px;font-family:inherit;border:1.5px solid #dee2e6;outline:none;background:white;margin-bottom:8px">
-          <option value="role">New job role / position</option>
+      <div><div class="section-label">Or add manually</div>
+        <select id="upd-type">
+          <option value="role">New job role</option>
           <option value="certification">New certification</option>
-          <option value="skill">New skill or expertise</option>
-          <option value="achievement">New achievement / milestone</option>
-          <option value="other">Other life or career update</option>
+          <option value="skill">New skill</option>
+          <option value="achievement">New achievement</option>
+          <option value="other">Other update</option>
         </select>
-        <textarea id="update-text" rows="4" placeholder="e.g. 'Promoted to Director of Academics at OpenLabs Ghana, June 2026, now overseeing 3 campuses' or 'Completed Six Sigma Green Belt certification, June 2026'"></textarea>
       </div>
-      <button class="primary-btn" onclick="addUpdate()"><i class="ti ti-plus"></i> Add to profile</button>
-
+      <div><div class="section-label">Details</div><textarea id="upd-text" rows="3" placeholder="e.g. Promoted to Director of Academics at OpenLabs Ghana, July 2026"></textarea></div>
+      <button class="primary-btn" onclick="addGeneric()"><i class="ti ti-plus"></i> Add to profile</button>
       <div>
-        <div class="section-label">Current saved updates (<span id="update-count">0</span>)</div>
-        <div id="updates-list" class="output-box" style="min-height:60px"><p style="color:#adb5bd">No updates added yet. New information you add here will be remembered by the chatbot, CV builder, and interview coach.</p></div>
+        <div class="section-label">Saved updates (<span id="upd-count">0</span>)</div>
+        <div id="upd-list" class="output-box" style="min-height:50px"><p style="color:#adb5bd">No updates yet.</p></div>
       </div>
-
       <div class="action-row">
-        <button class="sec-btn" onclick="exportProfile()"><i class="ti ti-download"></i> Save updates to file</button>
-        <button class="sec-btn" onclick="document.getElementById('import-file').click()"><i class="ti ti-upload"></i> Load updates from file</button>
-        <input type="file" id="import-file" accept=".json" style="display:none" onchange="importProfile(event)" />
+        <button class="sec-btn" onclick="exportUpdates()"><i class="ti ti-download"></i> Save updates</button>
+        <button class="sec-btn" onclick="document.getElementById('import-f').click()"><i class="ti ti-upload"></i> Load updates</button>
+        <input type="file" id="import-f" accept=".json" style="display:none" onchange="importUpdates(event)"/>
       </div>
-      <div class="info-box green">
-        <i class="ti ti-info-circle" style="font-size:16px;flex-shrink:0;margin-top:1px"></i>
-        <span>Since this page doesn't auto-save between visits, click "Save updates to file" before closing, and "Load updates from file" when you reopen it, to keep your full update history.</span>
-      </div>
+      <div class="info-box green"><i class="ti ti-info-circle" style="font-size:16px;flex-shrink:0;margin-top:1px"></i><span>Save updates before closing and reload them when you reopen the assistant to keep your full history.</span></div>
     </div>
   </div>
 
   <div class="share-bar">
-    <span>Share this assistant:</span>
+    <span>Share:</span>
     <button class="share-btn" onclick="copyLink()"><i class="ti ti-link"></i> Copy link</button>
     <button class="share-btn" onclick="shareWA()"><i class="ti ti-brand-whatsapp"></i> WhatsApp</button>
   </div>
 </div>
-
 <script>
-const PROFILE = `You are a friendly, professional personal assistant chatbot for Nana Kwame Asomani-Appah. Speak warmly and professionally, in first person as if representing him. Be confident, concise, and helpful.
+const PROXY = 'https://nk-personal-assistant-proxy-production.up.railway.app/v1/messages';
+const NK_AVATAR = 'data:image/jpeg;base64,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';
 
-FORMATTING RULE (STRICT): Never use markdown syntax of any kind — no asterisks for bold or italics, no hash symbols for headers, no backticks, no markdown bullet dashes. Write in completely plain text with no special formatting characters at all.
+// Inject avatar images
+(function(){
+  const hdrav = document.getElementById('nk-hdr-av');
+  const botav = document.getElementById('chat-bot-av');
+  const img1 = document.createElement('img');
+  img1.src = NK_AVATAR; img1.alt = 'NK';
+  img1.onerror = function(){this.style.display='none';};
+  img1.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+  hdrav.innerHTML = ''; hdrav.appendChild(img1);
+  const img2 = document.createElement('img');
+  img2.src = NK_AVATAR; img2.alt = 'NK';
+  img2.onerror = function(){this.parentElement.textContent='NK';};
+  img2.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+  botav.innerHTML = ''; botav.appendChild(img2);
+})();
+
+// ──── PERSONA ────
+const PROFILE_SYS = `You are a professional personal assistant chatbot for Nana Kwame Asomani-Appah. Speak warmly and professionally in first person as if representing him.
+
+FORMATTING: Plain text only — no asterisks, no hashes, no backticks. Full flowing prose paragraphs. Never use bullet points — weave items into sentences.
 
 KEY FACTS:
-- Full name: Nana Kwame Asomani-Appah
-- Location: Accra, Ghana
-- Phone: +233557023768
-- Email: Nanakwameasomani2@gmail.com
-- LinkedIn: https://www.linkedin.com/in/nana-kwame-asomani
-- Do NOT state, estimate, or imply his age or date of birth under any circumstances. If asked, politely decline and redirect to his professional background.
+- Contact: +233557023768 | Nanakwameasomani2@gmail.com | linkedin.com/in/nana-kwame-asomani | Accra, Ghana
+- Do NOT state or imply his age or date of birth under any circumstances.
 
-EDUCATION:
-- BSc Chemical Engineering — KNUST (2016–2020)
-- WASSCE General Science — Accra Academy SHS (2013–2016)
+EDUCATION: BSc Chemical Engineering — KNUST (2016–2020); WASSCE General Science — Accra Academy SHS (2013–2016)
 
-PROFESSIONAL EXPERIENCE:
-1. Head of Academics | OpenLabs Ghana (May 2025 – Present)
-   Leads academic strategy, evaluates staff, coordinates events and institutional programs, prepares reports informing institutional decision-making.
-2. Head Facilitator & Senior Administrator | Novelty Montessori School (Sep 2022 – Apr 2025)
-   Managed full school operations, staff training, curriculum delivery, budgeting, facility management and safety compliance.
-3. Quality Control Engineer (Contract) | Lucky Core International (Nov 2021 – Feb 2022)
-   Implemented QMS, conducted compliance audits, supported continuous improvement.
-4. QA/QC Engineer (National Service) | Chocomac Ghana Limited (Dec 2020 – Oct 2021)
-   Lab testing, quality inspections, process optimisation, QA documentation.
-5. QA/QC Officer (Intern) | Pharmanova Ghana Limited
-   Lab quality testing, equipment calibration, production QA support.
+EXPERIENCE:
+1. Head of Academics | OpenLabs Ghana (May 2025–Present): academic strategy, staff evaluation, events coordination, institutional reporting.
+2. Head Facilitator & Senior Administrator | Novelty Montessori School (Sep 2022–Apr 2025): full school operations, staff training, curriculum, budgeting, safety compliance.
+3. Quality Control Engineer (Contract) | Lucky Core International (Nov 2021–Feb 2022): QMS implementation, audits, continuous improvement.
+4. QA/QC Engineer (National Service) | Chocomac Ghana Limited (Dec 2020–Oct 2021): lab testing, quality inspections, process optimisation.
+5. QA/QC Officer (Intern) | Pharmanova Ghana Limited: lab quality testing, equipment calibration.
 
-CORE COMPETENCIES:
-Strategic Leadership, Team Management, Academic Administration, Curriculum Coordination, Quality Assurance, Process Improvement, Data Analysis, Reporting, Internal Auditing, Compliance Monitoring, Project Coordination, Operations Support, Stakeholder Communication, Problem Solving.
+COMPETENCIES: Strategic Leadership, Team Management, Academic Administration, Curriculum Coordination, Quality Assurance, Process Improvement, Data Analysis, Reporting, Internal Auditing, Compliance, Project Coordination, Stakeholder Communication.
 
-CERTIFICATIONS:
-ISO 9001:2015, ISO 45001:2018, ISO 22301, Lean Six Sigma White Belt, Internal Auditing, MEAL Essentials, PMP Beginner, CSRD Fundamentals, Operations Management Essentials, Educational Leadership & Collaboration, Effective Leadership Skills & Strategies, Data Engineering on AWS, Essentials of Prompt Engineering, Data Analytics for Lean Six Sigma (UoA/Coursera), Business Analysis & Process Management (Coursera).
+CERTIFICATIONS: ISO 9001:2015, ISO 45001:2018, ISO 22301, Lean Six Sigma White Belt, Internal Auditing, MEAL Essentials, PMP Beginner, CSRD Fundamentals, Operations Management Essentials, Educational Leadership & Collaboration, Effective Leadership Skills & Strategies, Data Engineering on AWS, Prompt Engineering, Data Analytics for Lean Six Sigma (UoA/Coursera), Business Analysis & Process Management (Coursera).
 
-TECHNICAL SKILLS:
-Microsoft Excel (Data Analysis), Power BI (Basic Analytics), MySQL (Basic), HTML/CSS, Python (Beginner), Process Mapping & Optimisation, Report Writing & Documentation.
+TECH SKILLS: Excel, Power BI, MySQL (basic), HTML/CSS, Python (beginner), Process Mapping, Report Writing.
 
-FILE-HANDLING RULE:
-If the user attaches one or more files (image, PDF, Word document, text, etc.), carefully read and interpret each attachment, then tailor your answer to the user's specific query about it — for example, reviewing a job description against Nana Kwame's profile, summarising a document, extracting information from an image, or comparing requirements to his certifications and experience. Always ground your answer in the attached content plus Nana Kwame's real background. If no query is given alongside the attachment, briefly summarise it and offer next steps.
+WRITING STYLE: Connect ideas with linking phrases — "which led me into", "building on that experience", "blending X with Y". Vary sentence length deliberately. Be specific — name real organisations and outcomes. Sound like a sharp professional speaking confidently about himself in conversation, not like a CV being read aloud.
 
-CROSS-TAB CONTEXT RULE:
-The user may also be working in this assistant's CV Builder tab or Interview Coach tab in the same session. If the conversation or context makes clear that a CV was just generated or an interview answer was just prepared, feel free to reference that naturally (e.g. confirm what's in the generated CV, suggest an interview angle that matches it). If asked to generate a full tailored CV or a full interview answer from scratch, briefly do your best in prose, but mention the dedicated CV and Interview tabs exist for a more complete, ATS-optimised version.
+VOICE/AUDIO: If the user sends a voice message or audio transcription, treat it as spoken text input and respond helpfully.
+FILE-READING: Read attached images, PDFs, Word docs, and text files carefully and answer grounded in their content plus his real background.`;
 
-TONE:
-Warm, professional, confident. Match length to the question — short for factual queries, fuller paragraphs for substantive ones. Always full prose, never bullet points or numbered lists. If asked about salary: "Happy to discuss based on the scope of the role." If a target role or industry is mentioned, only highlight the most relevant certifications and experience; otherwise speak about his background generally.`;
+const CV_SYS = `ATS-optimised CV writer for Nana Kwame Asomani-Appah. OUTPUT PLAIN TEXT ONLY — no markdown. UPPERCASE section headers. Hyphen bullets under PROFESSIONAL EXPERIENCE. Available for follow-up edits.
 
-const CV_SYSTEM = `You are an expert ATS-optimisation CV writer. Rewrite Nana Kwame Asomani-Appah's CV to perfectly target the given role AND to pass through Applicant Tracking Systems (ATS) with a high parse and match score. You are also available for follow-up questions and edit requests about the CV after the first draft — treat those as revision instructions against the most recent CV version in this conversation, and reply with the full updated CV text again unless the user is just asking a question (in which case answer conversationally in prose).
-
-FORMATTING RULE (STRICT): Output plain text only. Never use markdown syntax — no asterisks for bold or italics, no hash symbols for section headers, no backticks. Section headers should simply be plain capitalised text on their own line (e.g. PROFESSIONAL SUMMARY), not wrapped in any special characters. For bullet points, use a simple hyphen and a space at the start of the line (e.g. "- Led the team...") and nothing else — no asterisks as bullet markers.
-
-SOURCE DATA:
-Name: Nana Kwame Asomani-Appah
-Contact: +233557023768 | Nanakwameasomani2@gmail.com | linkedin.com/in/nana-kwame-asomani
-
-EDUCATION:
-BSc Chemical Engineering — KNUST (2016–2020)
-WASSCE General Science — Accra Academy SHS (2013–2016)
-
-EXPERIENCE (raw duties and known achievements to draw from — do not invent beyond what's implied here):
-Head of Academics | OpenLabs Ghana | May 2025–Present
-- Leads academic strategy development and implementation across the institution
-- Evaluates staff performance and oversees recruitment processes
-- Coordinates academic events and institutional programs
-- Ensures adherence to academic frameworks and methodologies
-- Prepares reports that inform institutional decision-making
-- Achievement angle: introduced/strengthened structured evaluation and reporting systems that improved consistency in academic decision-making and staff accountability
-
-Head Facilitator & Senior Administrator | Novelty Montessori School | Sep 2022–Apr 2025
-- Managed full school operations and administrative systems for nearly 3 years
-- Supervised staff training and performance evaluation
-- Coordinated curriculum delivery and academic planning
-- Managed budgeting and resource allocation
-- Oversaw facility management and safety compliance
-- Achievement angle: ran the school's administrative and academic operations end-to-end for almost 3 years with no major compliance or safety incidents, while coordinating staff training that improved curriculum delivery consistency
-
-Quality Control Engineer (Contract) | Lucky Core International | Nov 2021–Feb 2022
-- Implemented quality management systems in production processes
-- Conducted compliance checks and process audits
-- Supported continuous improvement initiatives
-- Ensured adherence to industrial standards and procedures
-- Achievement angle: strengthened compliance through systematic process audits, supporting measurable continuous improvement in production quality
-
-QA/QC Engineer (National Service) | Chocomac Ghana Limited | Dec 2020–Oct 2021
-- Conducted laboratory testing and quality inspections
-- Assisted in process optimisation and production control
-- Maintained documentation for quality assurance processes
-- Achievement angle: improved documentation rigor and contributed to process optimisation efforts that supported more consistent production quality control
-
-QA/QC Officer (Intern) | Pharmanova Ghana Limited
-- Assisted in laboratory quality testing and analysis
-- Supported equipment calibration and maintenance
-- Contributed to production quality assurance processes
-- Achievement angle: gained hands-on grounding in pharmaceutical-grade QA discipline, supporting equipment reliability and accurate lab analysis
-
+CONTACT: NANA KWAME ASOMANI-APPAH | +233557023768 | Nanakwameasomani2@gmail.com | linkedin.com/in/nana-kwame-asomani (no DOB)
+EDUCATION: BSc Chemical Engineering — KNUST (2016–2020); WASSCE — Accra Academy SHS (2013–2016)
+EXPERIENCE:
+Head of Academics | OpenLabs Ghana | May 2025–Present (strategy, staff eval, events, reporting)
+Head Facilitator & Senior Administrator | Novelty Montessori School | Sep 2022–Apr 2025 (full ops, training, curriculum, budgeting, compliance, ~3 years)
+Quality Control Engineer (Contract) | Lucky Core International | Nov 2021–Feb 2022 (QMS, audits, CI)
+QA/QC Engineer (National Service) | Chocomac Ghana Limited | Dec 2020–Oct 2021 (lab, inspections, process opt, documentation)
+QA/QC Officer (Intern) | Pharmanova Ghana Limited (lab testing, calibration, production QA)
 CERTIFICATIONS: ISO 9001:2015, ISO 45001:2018, ISO 22301, Lean Six Sigma White Belt, Internal Auditing, MEAL Essentials, PMP Beginner, CSRD, Operations Management Essentials, Educational Leadership & Collaboration, Effective Leadership Skills & Strategies, Data Engineering on AWS, Prompt Engineering, Data Analytics for Lean Six Sigma (UoA/Coursera), Business Analysis & Process Management (Coursera)
+SKILLS: Excel, Power BI, MySQL (basic), HTML/CSS, Python (beginner), Process Mapping, Report Writing
+ATS RULES: Single-column layout, mirror JD keywords, section order: PROFESSIONAL SUMMARY, CORE COMPETENCIES, PROFESSIONAL EXPERIENCE, EDUCATION, CERTIFICATIONS, TECHNICAL SKILLS. Summary=3-4 sentences prose. Competencies=output as individual bullet lines, one per line starting with "- ", grouped into 2-3 thematic paragraph blocks separated by a blank line (group 1: Clinical/Technical; group 2: Operations/Quality; group 3: Leadership/Communication — adapt groups to the role). Each role: title|employer|dates then hyphen bullets with ≥1 achievement. ~1 page. Incorporate RECENT PROFILE UPDATES if present.`;
 
-SKILLS: Microsoft Excel, Power BI, MySQL, HTML/CSS, Python (Beginner), Process Mapping, Report Writing
+const CL_SYS = `You write compelling, personalised cover letters for Nana Kwame Asomani-Appah, a Chemical Engineer turned QA professional and academic leader based in Accra, Ghana. Plain text only — no markdown. Full paragraphs. Include: date, employer address (if known), salutation, engaging opening, 2-3 body paragraphs linking his real experience to role requirements, closing with CTA, professional sign-off as "Nana Kwame Asomani-Appah". Draw exclusively on: Head of Academics at OpenLabs Ghana (May 2025–present), Head Facilitator & Admin at Novelty Montessori (~3 years full ops), QA/QC roles at Chocomac/Lucky Core/Pharmanova, BSc Chemical Engineering (KNUST), ISO/Lean Six Sigma/MEAL certifications. Match tone to user's chosen style. Available for follow-up revisions.
+FORMAT RULES: Write in full prose paragraphs only — no bullet points anywhere in the letter. The letter must be formatted for Times New Roman 12pt when pasted into Word. At the very top of the output, before 'Dear', add a bold centred title line derived from the job title or role in the instruction (e.g. 'APPLICATION FOR THE POSITION OF OPERATIONS MANAGER'). Structure: Title line, blank line, date, employer address, salutation, opening paragraph, 2-3 body paragraphs, closing paragraph, sign-off.`;
 
-ATS-OPTIMISATION RULES (CRITICAL):
-- Use a single-column, simple layout with standard section headers in plain capital text — no tables, text boxes, columns, icons, or graphics, since these break ATS parsing
-- Mirror exact keywords and phrasing from the job title and job description wherever they truthfully apply (e.g. if the role description says "stakeholder management" and that matches his experience, use that exact phrase rather than a synonym)
-- Use standard section header names: PROFESSIONAL SUMMARY, CORE COMPETENCIES, PROFESSIONAL EXPERIENCE, EDUCATION, CERTIFICATIONS, TECHNICAL SKILLS
-- Under PROFESSIONAL EXPERIENCE, write each role's responsibilities AND achievements as clean, concise bullet points starting with a strong action verb (e.g. "Led", "Coordinated", "Implemented", "Improved") — ATS systems parse bullet points more reliably than dense prose, so bullets are required here, not paragraphs
-- Every role must include at least one distinct, clearly-labelled achievement bullet (not just a duty) that shows impact, scale, or improvement, phrased honestly based on the achievement angle provided — use phrases like "resulting in," "which led to," or "contributing to" rather than fabricated numeric metrics, unless a number is explicitly given above
-- Include a CORE COMPETENCIES section near the top as a short comma-separated keyword line (not bullets) packed with role-relevant skill keywords so ATS keyword-matching scans succeed
-- The PROFESSIONAL SUMMARY should be a tight 3–4 sentence paragraph, written in prose, placed right under the name and contact details
-- Select the 6–8 most relevant certifications for this specific role and list them as bullet points under CERTIFICATIONS (bullets parse better than a packed sentence for this section in ATS systems)
-- List TECHNICAL SKILLS as a comma-separated line of the most relevant tools and competencies for this role
-- Keep contact info exactly as provided — NO date of birth
-- Keep the whole CV to roughly one page worth of content
-- Do NOT fabricate new skills, employers, or experiences beyond what's listed above, EXCEPT for any items explicitly provided under "RECENT UPDATES TO NANA KWAME'S PROFILE" if present, which should be treated as real, current, and incorporated naturally (e.g. a new role becomes the most recent EXPERIENCE entry, a new certification is added to the relevant list, a new skill is added where appropriate)`;
+const DOCS_SYS = `You process uploaded documents for Nana Kwame Asomani-Appah. Read all attached content carefully — PDFs, images, Word docs, audio notes, or text. Follow the user's instruction precisely: summarise, extract key data, compare documents, draft responses, or tailor his CV to a job posting. If the instruction references his background, you may draw on: BSc Chemical Engineering (KNUST); Head of Academics, OpenLabs Ghana (May 2025–present); Head Facilitator & Admin, Novelty Montessori School (3 years); QA/QC roles at Lucky Core International, Chocomac Ghana, Pharmanova; ISO 9001, ISO 45001, Lean Six Sigma White Belt, MEAL, and other certifications; Excel, Power BI, report writing skills. If a PDF has no embedded text, say so and suggest uploading a clear photo instead. Plain text output — no markdown.`;
 
-const INTERVIEW_SYSTEM = `You are helping Nana Kwame Asomani-Appah prepare strong answers for job interviews based entirely on his real background. You are also available for follow-up questions after the first answer — general interview-prep advice, refining the previous answer, or new questions — reply conversationally in prose.
+const IV_SYS = `Help Nana Kwame Asomani-Appah prepare for interviews. Answer in first person as Nana Kwame. STAR method woven into flowing prose for behavioural questions. 150-250 words. Reference real employers and outcomes. End with forward-looking statement. Plain text only — no markdown, no bullets. Available for follow-up prep questions.`;
 
-FORMATTING RULE (STRICT): Output plain text only. Never use markdown syntax — no asterisks, no hash symbols, no backticks, no markdown bullet dashes. Write in completely plain prose with no special formatting characters.
+const UPDATE_SYS = `Help Nana Kwame Asomani-Appah update his profile. Extract any genuine update from the message/attachment and reply EXACTLY:
+TYPE: <role|certification|skill|achievement|other — blank if none>
+TEXT: <one concise third-person sentence — blank if none>
+NOTE: <one short warm first-person confirmation or answer>
+Never fabricate. Keep TEXT to one sentence.`;
 
-HIS PROFILE:
-- Based in Accra, Ghana
-- BSc Chemical Engineering, KNUST
-- Current role: Head of Academics, OpenLabs Ghana (May 2025–present)
-- Previous: Head Facilitator/Admin, Novelty Montessori School (3 years)
-- QA/QC background: Chocomac Ghana (national service), Lucky Core International (contract), Pharmanova (intern)
-- Key certifications: ISO 9001, ISO 45001, Lean Six Sigma White Belt, MEAL, Operations Management, Educational Leadership, Internal Auditing, and many more
-- Skills: Excel, Power BI, process improvement, team leadership, curriculum coordination, quality assurance
+// ──── STATE ────
+let chatHist=[], currentCV='', currentCL='', currentIV='', currentDocs='';
+let profileUpdates=[];
+let panelHist={cv:[],cl:[],docs:[],iv:[],pr:[]};
+let pendingAtts={chat:[],cv:[],cl:[],docs:[],iv:[],pr:[]};
+let mediaRecorder=null, audioChunks=[], isRecording=false;
 
-ANSWER GUIDELINES:
-- Respond in first person as Nana Kwame
-- Use STAR method (Situation → Task → Action → Result) for behavioural questions, but weave it into flowing paragraphs rather than labelled steps
-- For "Tell me about yourself" give a compelling 3-part arc: engineering roots → QA experience → education leadership
-- Keep answers 150–250 words: substantial but not rambling
-- Be specific — reference real roles, certifications, and outcomes
-- If a target role has been specified, mention only the certifications and experience most relevant to that role; if no role has been given, speak about his background generally
-- End with a forward-looking statement connecting to the role
-- Sound natural and confident, not robotic
-- Write ONLY in full prose paragraphs — never use bullet points, dashes, or numbered lists; separate distinct ideas into separate paragraphs`;
-
-const UPDATE_SYSTEM = `You help Nana Kwame Asomani-Appah keep his professional profile up to date. He will send you free-form text (pasted messages, emails, certificate confirmations, promotion letters, etc.), a short description in his own words, and/or an attached file (image of a certificate, a PDF, a document). Your job is to figure out whether this describes a genuine new update to his profile, and if so extract it cleanly.
-
-FORMATTING RULE (STRICT): Reply in EXACTLY this structure, plain text, nothing extra before or after it:
-TYPE: <one word: role, certification, skill, achievement, or other — leave blank if no update was found>
-TEXT: <a single, clear, concise sentence describing the update in third person, suitable for use on a CV or by a chatbot — leave blank if no update was found>
-NOTE: <one short, warm, first-person sentence to show Nana Kwame confirming what you added, or answering his question / commenting on the attachment if there was no clear update to extract>
-
-RULES:
-- If the message clearly describes a new role, certification, skill, or achievement, fill in TYPE and TEXT with a clean factual sentence (e.g. "Completed Six Sigma Green Belt certification in June 2026" or "Promoted to Director of Academics at OpenLabs Ghana, overseeing 3 campuses").
-- If an attached image or document is a certificate, letter, or similar, extract the relevant fact (certification name, issuing body, date, or new role/title) into TEXT.
-- If the message is just a question, a greeting, or doesn't contain a clear factual update, leave TYPE and TEXT blank and use NOTE to answer helpfully in one sentence.
-- Never fabricate details that aren't present in the message or attachment.
-- Keep TEXT to one sentence — no bullet points, no markdown.`;
-
-let chatHistory = [];
-let currentCV = '';
-let currentInterview = '';
-let profileUpdates = [];
-let panelHistory = { cv: [], interview: [], profile: [] };
-let pendingAttachments = { chat: [], cv: [], interview: [], profile: [] };
-
-function buildUpdatesText() {
-  if (profileUpdates.length === 0) return '';
-  const lines = profileUpdates.map(u => `- [${u.type.toUpperCase()}] ${u.text}`).join('\n');
-  return `\n\nRECENT UPDATES TO NANA KWAME'S PROFILE (most current information — these take priority over anything above if there's a conflict, since they reflect his latest progress):\n${lines}`;
+function updText(){
+  if(!profileUpdates.length) return '';
+  return '\n\nRECENT PROFILE UPDATES (highest priority):\n'+profileUpdates.map(u=>`- [${(u.type||'OTHER').toUpperCase()}] ${u.text||''}`).join('\n');
+}
+function crossCtx(){
+  let x='';
+  if(currentCV) x+='\n\nLATEST CV:\n'+currentCV;
+  if(currentCL) x+='\n\nLATEST COVER LETTER:\n'+currentCL;
+  if(currentIV) x+='\n\nLATEST INTERVIEW ANSWER:\n'+currentIV;
+  if(currentDocs) x+='\n\nLATEST DOC RESULT:\n'+currentDocs;
+  return x;
 }
 
-function buildCrossTabText() {
-  let extra = '';
-  if (currentCV) extra += `\n\nMOST RECENTLY GENERATED CV (for reference, from the CV tab):\n${currentCV}`;
-  if (currentInterview) extra += `\n\nMOST RECENTLY GENERATED INTERVIEW ANSWER (for reference, from the Interview tab):\n${currentInterview}`;
-  return extra;
+async function callClaude(sys,msgs,maxTok=800){
+  const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:maxTok,system:sys+updText()+crossCtx(),messages:msgs})});
+  const d=await r.json();return strip((d.content||[]).map(b=>b.text||'').join(''));
 }
-
-function renderUpdatesList() {
-  const box = document.getElementById('updates-list');
-  document.getElementById('update-count').textContent = profileUpdates.length;
-  if (profileUpdates.length === 0) {
-    box.innerHTML = '<p style="color:#adb5bd">No updates added yet. New information you add here will be remembered by the chatbot, CV builder, and interview coach.</p>';
-    return;
-  }
-  const typeLabels = { role: 'New role', certification: 'Certification', skill: 'Skill', achievement: 'Achievement', other: 'Update' };
-  box.innerHTML = profileUpdates.map((u, i) =>
-    `<p><strong>${escapeHtml(typeLabels[u.type] || 'Update')}:</strong> ${escapeHtml(u.text)} <a href="#" onclick="removeUpdate(${i});return false;" style="color:#c0392b;font-size:12px;margin-left:6px">[remove]</a></p>`
-  ).join('');
+async function streamClaude(sys,msgs,maxTok,onChunk){
+  const r=await fetch(PROXY,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:maxTok,system:sys+updText()+crossCtx(),messages:msgs,stream:true})});
+  if(!r.body||!r.body.getReader){const t=await callClaude(sys,msgs,maxTok);onChunk(t,true);return t;}
+  const reader=r.body.getReader();const dec=new TextDecoder();let buf='',ft='';
+  while(true){const{done,value}=await reader.read();if(done)break;buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();
+    for(const l of lines){if(!l.startsWith('data: '))continue;const p=l.slice(6).trim();if(!p||p==='[DONE]')continue;
+      try{const e=JSON.parse(p);if(e.type==='content_block_delta'&&e.delta?.text){ft+=e.delta.text;onChunk(strip(ft),false);}}catch{}}}
+  const final=strip(ft);onChunk(final,true);return final;
 }
-
-function addUpdate() {
-  const type = document.getElementById('update-type').value;
-  const text = document.getElementById('update-text').value.trim();
-  if (!text) { alert('Please describe the update first.'); return; }
-  profileUpdates.push({ type, text, date: new Date().toISOString().slice(0,10) });
-  document.getElementById('update-text').value = '';
-  renderUpdatesList();
+function strip(t){return(t||'').replace(/^#{1,6}\s+/gm,'').replace(/\*\*\*(.+?)\*\*\*/g,'$1').replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/__(.+?)__/g,'$1').replace(/_(.+?)_/g,'$1').replace(/^[ \t]*[-*]\s+/gm,'- ').replace(/`{1,3}([^`]*)`{1,3}/g,'$1').replace(/^>\s+/gm,'').trim();}
+function trimH(h,n=14){return h.length<=n?h:h.slice(h.length-n);}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function toParas(text){
+  const parts=(text||'').split(/\n\s*\n/).map(s=>s.trim()).filter(Boolean);
+  const blk=s=>{const iH=/^[A-Z][A-Z\s&/]{2,35}$/.test(s.trim());const e=esc(s.replace(/\n/g,' '));return iH?'<p><strong>'+e+'</strong></p>':'<p>'+e+'</p>';};
+  if(parts.length<=1)return(text||'').split(/\n/).map(s=>s.trim()).filter(Boolean).map(blk).join('');
+  return parts.map(blk).join('');
 }
-
-function addUpdateProgrammatic(type, text) {
-  const allowed = ['role','certification','skill','achievement','other'];
-  profileUpdates.push({ type: allowed.includes(type) ? type : 'other', text, date: new Date().toISOString().slice(0,10) });
-  renderUpdatesList();
+function renderCV(text){
+  const lines=(text||'').split(/\n/).map(l=>l.trim()).filter(Boolean);
+  let html='';let inL=false;const cL=()=>{if(inL){html+='</ul>';inL=false;}};
+  for(const l of lines){const iH=/^[A-Z][A-Z\s&/]{2,40}$/.test(l);const iB=/^[-•*]\s+/.test(l);
+    if(iH){cL();html+='<p class="cv-hdr">'+esc(l)+'</p>';}
+    else if(iB){if(!inL){html+='<ul>';inL=true;}html+='<li>'+esc(l.replace(/^[-•*]\s+/,''))+'</li>';}
+    else{cL();html+='<p>'+esc(l)+'</p>';}}cL();return html;
 }
-
-function removeUpdate(i) {
-  profileUpdates.splice(i, 1);
-  renderUpdatesList();
-}
-
-function exportProfile() {
-  const blob = new Blob([JSON.stringify(profileUpdates, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'nana-kwame-profile-updates.json';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function importProfile(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const loaded = JSON.parse(e.target.result);
-      if (Array.isArray(loaded)) {
-        profileUpdates = loaded;
-        renderUpdatesList();
-        alert('Profile updates loaded successfully.');
-      } else { alert('That file does not look like a valid updates file.'); }
-    } catch (err) { alert('Could not read that file. Please make sure it is a valid updates JSON file.'); }
-  };
-  reader.readAsText(file);
-  event.target.value = '';
-}
-
-function switchTab(tab) {
-  const order = ['chat','cv','interview','profile'];
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.getElementById(tab + '-panel').classList.add('active');
-  document.querySelectorAll('.tab')[order.indexOf(tab)].classList.add('active');
-}
-
-function textToParagraphs(text) {
-  const parts = text.split(/\n\s*\n/).map(s => s.trim()).filter(Boolean);
-  const renderBlock = (s) => {
-    const isHeader = /^[A-Z][A-Z\s&/]{2,30}$/.test(s.trim());
-    const escaped = escapeHtml(s.replace(/\n/g, ' '));
-    return isHeader ? '<p><strong>' + escaped + '</strong></p>' : '<p>' + escaped + '</p>';
-  };
-  if (parts.length <= 1) {
-    const lines = text.split(/\n/).map(s => s.trim()).filter(Boolean);
-    return lines.map(renderBlock).join('');
-  }
-  return parts.map(renderBlock).join('');
-}
-
-function renderCV(text) {
-  const lines = text.split(/\n/).map(l => l.trim()).filter(Boolean);
-  let html = '';
-  let inList = false;
-  const closeList = () => { if (inList) { html += '</ul>'; inList = false; } };
-  for (const line of lines) {
-    const isHeader = /^[A-Z][A-Z\s&/]{2,35}$/.test(line);
-    const isBullet = /^[-•*]\s+/.test(line);
-    if (isHeader) {
-      closeList();
-      html += '<p class="cv-header">' + escapeHtml(line) + '</p>';
-    } else if (isBullet) {
-      if (!inList) { html += '<ul>'; inList = true; }
-      html += '<li>' + escapeHtml(line.replace(/^[-•*]\s+/, '')) + '</li>';
-    } else {
-      closeList();
-      html += '<p>' + escapeHtml(line) + '</p>';
-    }
-  }
-  closeList();
-  return html;
-}
-
-function escapeHtml(s) {
-  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
-const AVATAR_URI = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCADIAMgDASIAAhEBAxEB/8QAHQAAAAcBAQEAAAAAAAAAAAAAAAIDBAUGBwgBCf/EAEkQAAEDAwIDBQQFCAYKAwEAAAECAwQABREGIRIxQQcTIlFhFDJxgRWRobHBCBYjQlJicoIkJTNTc+EnNDVDg5KywtHwRWOU0v/EABoBAAIDAQEAAAAAAAAAAAAAAAACAQMEBQb/xAAqEQACAgEEAQQBBAMBAAAAAAAAAQIRAwQSITFBBRMyUfAiI2HBFEKh8f/aAAwDAQACEQMRAD8AzHtHdjr0c42hspWHUEn51dYy7c5ptGeHPsvVP7tN+2bTr0PQcqQptpKULR7vxqywdOur0vHX7KjBig89/drA1wjWvkzk66NjjlY/vVffQsQxcI48lCjXkKbnzmv2XlD7aPYU/wBYME/titngymvRGv6On1FKhunENv8Ao6PhShbwaoLqEW2x0pdDfpSjSAKXS3QSIIb86OG/SnSGxnlQLe+aCBsW/Si92MU74NqHd7b08RWM+7xXim9sU7S2PKvS1VqEI8tbV4pryp/3XpRVNb0wrGHdnO4r3u808LZHOvAilaJQ0LYxmkHG+ZxUipvHSkXUZFIxiEmoJSfPFZhOQBPk/wAZrWJjfhNZZcRi4St8eM0R7CRauzpHeQ3CcK8fPkK7z0cmVA0lbg5IsFka7hO7CQsnbpnA+w1wh2c5MFwY4sr/AFetd76GhORNLW9cew2qz4jpyt90LKdvT/zW2HxMU/kKuQ4NwUFmBd9Rr/VVKV3Uf5BXCn6kmhTt6THfJS/fLjcVcixbWilPwygZ+tVCiyKX5+M527fG/wDRfctuXCftFWizJCtIRT5wx/01UO2e82q6dnmo4MGY2/IgFKJCEndCsg4NWi0XO3MaetlteltImSIAU0yVeJQCdyBXK8HW8nEupBw365p8pK/+o04sLZVLjlIzhQJpPU44dSXUEZxJXt/MaldO8CS28hGVge6ner8uT242ZDWoAHsyRkchSqketUhF0uaXTxR5CUHG5bOMVa7Ut2Q2l9wqAI8KcVlx5d/guUrJBpA2xThKD5UVhG+9O20+lXWMJhFe93kU4DdGLe1ADUt4FAI2p13YoFG21WREY1SivSjFLhGDTS8T4lrhmTLc4U8kJHvLPkB1NWIQPwZ6Ui73aM94pKP4iBVQfuWrb7xm0xhb4fILdUEqPz5n5YqAmaM1VIUpb1yjuE7nKlEq+dG5ItjgnLpGmhIUnIIUPMHNecA8qx9ULWWnSZCW3y2k5UqOvIPy8vlVz0HrNi+KTBm4amcknkHD5EdFVPYkoOPDLYUZpF1sAGn2AOVIOozk0jIRDTG/Caye5j+sZXIeM1sE5HgNZFdB/WcvkPGaiPYS6Lb2bNJ9gcyk7r5J613po23pGmrb3OmylSY6Me3SArh2/mNcHdmiT7C5zT4+Q613to+OwvS9uS3bbtIHs6cJlukdOuT+FbI/ExyVzJKTJdaHdyr7CgJ/uojQUv5Zz/00KcJRMjIJbYtNsR+0o8R+zA+2hUE8/n/pzB2xMWCP2c6getwhoky0BTqmyOJw+vnU1YIFjlWK0XeQiMufGgBDbqiOJAKdwK4zVq24qbKFtBaDzBJwaWRrS6pSEpLqQBgBLigMVztkvo6VwvsJq3B1Nd8HIMpZB/mqy9izzTesYaH0JWlYwAoZGaprl9StSi5CbJVzJ5mlrdf3I0pt6JH7p5B8Ck9DVk7lFqiuKjGSdnY13jRjHQO4j44f2BWev8HfrCUgDiOAKzSLfdbzEBaZMggjqaU9v1LEda9td4UuHHrVGHE4qmW5cik7RpTJ3xTxr0qLtqyuK0tRyopBJqVjkY5VZQqFEgk70qlIoADpR0jFBAQo86BRtSo9RRsA52qyIjGykADngdTVdhWtN+Uq9SyVtcSkxWuiWxtxfEnepm8PN+xS47TyPae4VhtKhx7g4OKP3Rg22Na2CkcDQQVKOBsNzVOqze3A3+nab3cnPgaGK4UhDaPCNhijtsONDCkZGOtVic/erRdm1sOoLajjCT4SM+R/GrpEuyH4TbsxtDS1J3xy+Nc+Wp2tWehw6ZTTVEZNDKkcKgPh51n+qtHe0PG82BPczW/GppBx3mOqfJVaBcF22elaLfOZW6NygL8QqGYfehuKQrO3PO1dPTaiMuJHJ1+m44F9G3f6csTUtY4X0EtSE9QtPP4Z51KuAdBVR0C5wajvEYbNugPpSfMHB++rm4Bg1fJHDapkVOGxrHLqMXOZ/iGtmne4axq84+kpg694aSPYPotvZmeGE5klPjrvnSSmHtM24+0XqbmOj3klBO3XYVwN2ZY9gc34fH1rv3Sclt3TFuJvEuQDHR4mmOEq2HkNq2L4mR/Mk24eDxMWNkH9uS6CfxNCvCww7v8AR9xleryyB9p/ChSk1+fiPkyWnxzQcfCh3Uj+7V9VdBdqOlrJbtHyJcKEht5K0YUE4xk1IztGWBOkVTBESHxF48hPXFZt5r2M5nDfGFlQ3TS0HKXGFY/XH30soJzIA9aLFGzH8Q++nKzaLI5mM2P3RTbV6cIiK/foWbIjtHzSK81acsxCf26qXyLH0XC2JHsDGP2BUkwMVF2pwfRzH8AqSYVSMddD5vGN6WSBjlSLODTlI2oRLC4oY6cs0YAUMHOasQjKvYIyZOqZCu5S7xu+0SHV8kpAIaQn7Ptqwaptb0iMnhDa1AhaO8QFAKHIkH7q9bZLDjj6SgJXhCUpTgjfJz5/GpZ+QtURKUjKgNielcPUynCdM9loVizY011SRllo0bd2JSC886tvvFKOVlSRnGyQeX+dSvaJ3EVtDKFlo8ICsnAHzqy2fV9nSt5M6LPbVHIwp1CUtugE5UhXUbcuYqL1E1Ev89Tra0utPt8TSwrIURz++s+/3clzNiwxw4XHH5M7iWNKgZ0KehbjZClNJVhXz8vnUu/cSu3hTiuJxI5nmfjXi9GONXJU0yXO8UAFLPv4HTOcHy5bioS+sSUKFuhJU9IeUG0JHmfuHrW+CbklFnHy/t425qiY7M0KmXm5XLH6NCEsg+aicn7APrq8Ogb030tZmrDYmLe2QtafE6v9tZ94/DoPQCnT+1ddKlR5eUt0myKnDwGsau4zdZgx/vDWzTcFKqxq7f7Wm/4hqF2D6LV2aJKYbmBjx8z0r6A6TlKVpe3KXe2F5jo8bLI8W3TnXAPZkf6I9lJPj2zXf2kX3PzWtyjOtrf9HRu2nbl03rUviZH8yS4mnPelXJ/+BJSPsAoUDKH694z6NtD/ADoVA3Byx27soHZnPUEJGCg5x6ipiXHSrs9UeBO8Dy/dpj29I/0X3L0Sk/aKmVJ4+zjPQ2//ALaxG7ycPObSJA9T99Gje6wf3x99CWMTJHxP30eKnwMfxj76vM5sNmRxRGv4RTbWIKY8T/EqUsrX9Ca/hFMtboxEin/7KqT5LWuCftCibex5cAqXjr2FRNqTi2sH9wVKRk5qH2NRLRsYzTnpTNC0tMqdWcIQkqUfIDnWcy9XXtTpcD5Zad8aEIAASk8h8cYzRRFmpJxmjFJPQ/VWOvakuaz45sg/8Q0zfvkxXOQ8fi4r/wA0ysVmv3WV3C2GvPJ+NRx+mZ0taI+VRwnYNvBKvmCN/lVS0e3cltfSM1pxuC7juXHVY7xQOCUg7lI5ZG2dudSVymvxiXmFApSfdJ2VXM1MayNnpfTJp4oqXSGV/jRxHcSFqUo4C23knJOeWD1pxpRuBabSFRyAOMqHIcOegA2qM1DqSVc2O6nhDoCcJ7wZUj1CudJ6WsN1ubLu0mPDACkuraJCyfLln41VOC2Wza80Y5v2+US951KFJPCQNjvVKefemyJHcuqQpbYShYPCErKup+FWS56KkIQ4U3Vor4cpC2VDPrzqga6lXayTmoUgR+FbQWhxgKCVjkdjywelXabDu4TMGt1TjcpI221TbbDtUWE5eYshxhlLa3VyEkrIG5znzpYyYr5wxKYdJ5BDgJ+w1zQLzJX+tVl0h38iczxEhbiFLaIJBStJSUkY9elddK+DzDfk2OaBwmsau4H0xN/xDW0TiCFHFYref9sTcf3h5VWuxn0Wzs0wY7wHGfHXfukUuo0pbv0NtQoR0e6fDyHKuAezIgMPfpFjx+Vd56PSDpK2oFuYbHcJ2UvYbVrXxMr+ZYUvugbzoTfolP8AnQphGmlXfoMaE2tg4UCsHboaFLQ25HLfa1BvzGiNUybncG5EF1KDEaSnBbG2cnrUsIV9cskeai4NptItHCqNweIr4eea54vvaldr1anbZcLg87GdGFJ4ANqVR2s3lNtFu+kHvZg13QTwD3cYrCr+jfS+zO5v+vSf4lffS0UfoGD++Pvpw6/ZlrW4UPFSudGYkWvhQENugBQxk9as3/wVrH/KNpsCcwWM8+AVXNaXeNMkN2yMFd80vKjjlSlil3lxpoRw2EYGOLyrbOzn8nafqWCzqe83aJFExrvGmm2ytQB5ZOwrNLLtaSVs0rGmuXSM+0sv2uxMu8OOEcJqVYThVWTUfZ1dezxK4s9bD8SQ4TGeZVkHHMEHcGsr7QNWuWZSLdbFJ9udHEpwjPcp88ftGmxzc2Lkioqyz6xkGNpScpJwpxAaHxUQPxNZXdZqe9ShJACEhP1VE3K+3e4JCJtxkyEjklS9vq5VEPuqOxJJrSoGZyJt2eyn3nB8t6vnYPosdoOrFe0ocTYran2i4unw8YAyGUnqpeOnJOT5VkjbSnleNRSPLFdP/kgXCE1pG8W95PgYvDATwjxLLyAnHr7n1Zp0lZC5ZUu0S8IXroRyEISYCcNJSEoZSVEoQlI2ACQkAVTL1cSxJbPjfSo4ASMqB9B1p12rCSx2vXxtZBUzIDAxywlAxits7BOztcKGNX3mA+ie+j+hJWjdhkjdz0Uvp1Cf4qxyxueZpHXjlUMNmEWFhV6vceM/FmezcWX3FMraSlGM7rKcDPKthbkRnoqvZVpUEYSSgk8PpxGtJ1laWLtZpMVtxzLjZSgZOEqzkZPxArni0JuWlddlia+4iDcXS06wpSgGnNuEkHnvtnyNZNfieNquv7Nvp2b3E934izSEr4iHFKJ6E1m3bRbxItMaeAAqK7wqP7q9vvA+utjucaO+kOskIUNlo8jVE7Q7a7L03cIiG/0pa4kDzKSFY+yo0WdSaG9RwP22YQxFUSCBkeYrQbK0IblleTtlS9/Pkfwqhx1kYIJqRjT5DKkKbdV4DlIO4BrtLg8ub5POxI5Vi12H9czcZ/tDVqtPaAl9CWbrG4CAB3rP4pP4GoINtP3mQ8xISQtXEnbYiqJvZyyW+Cf7NAUMLJeI4l7EDNdmWrUEWyaKhTJlomSIbbCe8U14lJGOfD1rjHTc5DKwiOpDeV8JI5D4V1Bab+/F0VBcbgSJTZCW+7UoePOw2q3TZfdg7MWRtOyidp891eso8yyTH1We9BtXdJkEEAHxJ57ZH40Kq3afbrfE1CiTbJAakOuEu2/iwGF+mOQPpQrDLjJK1fJW1aTObw1npRgxmnqWsinDMfI5VolKjqxjZEstEl0Y5CnEKOpxhogc1D76cQmQZEpJ6INSFgbSuIwk/t/jSTyUh4Y7Zpum4jrcVkgH3BV1s3afrHRFoSLTdnBD4ylLDqQ4hOfIK5fKiWWAhNqS4QMBnP2VXdfxUsdnEeSNlKfzn51y45Vlmk/s6c8Ptwb/AILnqbWl+1HY03fUE9chthlTuOEJSkAZOANt+Vc2y5r1yuMq5SDlx5ZPwH/v3Vfu03UbSNKW/TsFZ7xLKFyynkVEAoR8uZ+IrOchADaeSRgV09LCo3RztTJOVIV2wTSSRvnG/wB1GztzrxutRnDE8CfCCVq2SAMkmu3PybOzePpLs+hTZTbhu88ibKS5yacwQgAdOFJwfMk1gH5KmiG9WdoYu0+K49bbMA6E8PgcfPuJJ9Pe+Qrt5lt1CAhAbQkdBvVkVSsEY9rvsgtV97S7RqRxbZgNsZuLCQeOQ62f0Yx5EHCj5Jx1rQZ6rhIHdJRwNjos4H1CrOllKAp9Yyem1RrzIJKlZJPnTRgk2/sd5G0k/BnOvZEDTmnJ+oLvIU6zCZLxQF8KSR7qEpHUqwPnXCM/Ut6k3SXcX5ri3pS1rcC1cSUlR34QeWMAAjyrpT8tXVKWm7boqI543MTp2D+qMhpB+J4lfJNctON5NJlSl+lrghTlF3F0bf2d65h3Gxx1z5SfpRn9FKQrm9j3XAOuRz9Qaucot3OKtbZbC0AKHnXK7Tz0SW09GUUPNqC0KHQiunOzeBM1XCj3C2pZZipYD8yVIc7uPERjxFxZ2AGDtz2rh59G8eRSxeWeh0XqCy43DN4XZhOvbQmz6idbZSEsPfpGwOQydwPQH76hWweVab2w3fR9xdRZ9MtO3H2d0qXenypvvVcillro3+8vKlYHujnmSgpsFJGFZx867MU9q3dnnsu3e9vQo0cknoOVO4UosykKUTwE4UM8xTM5CAlAyaCWOIElRCuhNS1aorLtp3HdvONpT+jc4kgDyrYV6kjT+y9twagfReWFpKGG9gMK2BHWsZtTy2YjhCynKQSfPIp4qdDj6eXF7hYnqeC+/C9uDyrCsjxtr7RmnGy06zvtwfkRLXfY7cWUjKzcFDxOoUOZxQqs3Bu5XS0G+SpIfaZWlkBxzK/q8qFVZJ/qtoiMeClobp2wkAUdNsuJ5RXKcM2u47D2VdWznH7OvCEvoh4W02X6oNLWRzgaZ/j/ABp5GsN2Et9fsisKSQKUt2mryhpGYigQvPP1qJzhXZMMc76NzhS+HTilj+4/CoDtUeSjsyhtqUAONBPzNCZMXC0yW3WnOItgHA5edULtG1W1eYca1xeIRI6RxLO3eLxzHoOlYdNhcpprwzbqcyjBp9tFSnyVybm64s5C1ceB0IFEFNIjhW+rO/hO/nTjiArtpUca7FCdsUYkpT4UlSjsAOZNJp3UBWm/k16STrDtbtyJDXeQLX/TpORseAjgSfivH1GmSt0Qdb/k96L/ADH7MrbbH2wie+Papp696sAkfyjCflWjxgHFkAZSOdNt1DAOB19afw2w2wAOpzVoBJp2SkbCo24PsRIj0mQ4lphltTjriuSUpGVH5AGnclRW6ojkDisY/K21V+b3ZRJgMu8Mu9uiC3g7hvHE6f8AlAT/AD0dAce9pepX9Y66u+o3irE2QVtJP6jQ8LafkgJ+2q07woQVq6UsQTuaZyFd6/wJ91HP1NVsBNEdxxKl48R6+VaJqztJut80rbdIwY0Wy6fgstpVBhJ4EyXkpAU86R7xKgSAdh6nes/UvgUBkgda9Qo8WBnn5bfXUXQIfpVSctIWkOD3kbkedFaXnrXoOXD5VJA2SXTulXCKWQFqASpRA6mkJiHEOf23C2eWBvSDaGVq4Q9lXqTn7agC4sKCrMlzHEgAIHD6bUW+98GI3A2lKe74ilJyQPM0bTgbesaWQsJQlwpJVtnfP41ZLazbITVwVPjJkB2Nws8K+RrHkhc2Uy4ZAwFqFvSXsFLqxw586FM7297RHisssrYS3jA9fOhWPZfMmLRdGr5aR/8AGvf/AKz/AOKdtajtSRtbnh/xwf8AtqpW23OzWQtt9lG6grvF8OCMffn7DT1FjmEAokRFA8iHedbHgxPwdNZ8q6ZZU6htBP8AqspPwcSfwpdq/wBqG6RLSfgg1Qlhbbim1+8klJ36ijIWR1o/x8T/ANSVqcq8l5vt3gXe1Ltzk2bGacxxlplviIHTOeRqpP6T06/v9OXFHXeKg/8AdSAcNKJcOOdWY8ccaqKoryZJZHcnYlH0PYW3FLTqSUOIYwqCPwVSv5kWsnKdT7fvQlf/ANUZK/Wjh0+dWWyukJ/mTEGeDUsU/GK4K2P8nO86T7NYNy+lJ6pc+c8kl1hk8IbSPCnffmVH51kIdOedDvlDbiNMptBSOwWu2rQbnvzpSPTuDUuntn7Pi1hu8LSQnACmFCuKEyFZ50qJCjyNN7jCkdvab11pjUMr2a2XVp57o2fCo/AHnXK/5Z2pfpftNZsbK+JiyREtEA7d85hxfzAKB8qhtBXb6L1nZ7i4spbjzG1uHOPBnxfZms91leXtQ6rut8kElyfMdkKz04lEgfIYHypt1oVkHMd7lgq5qOyR603jthDY6k8yetJOr9plEgngRsn49TTkABGN/rpSBnKBOTR4TheR3RypaN08TvCAOv115IAPICmzKi3IBBwTtUASbYUMFWQfLypRB8ajSKXONOc0dB5n1qQDuJ4wcEcSeQPWk1xm5CMEBK+hpRtRHiz60psolQ5dRUkEtp2U19FqafQkOsr4SfPO4NO5ZbKkllwlQGDnkah4Kg268ojPG2OnMg09aDjziEeFPmc7VzM8X7hVLsUmvvtlaXEBzKR4sbChQmLU2mQ0h5C0pwFDn9VCl2/ZC5Em1UslZzzpmlWKVQqt5qHaVZOaUSremqVY60oFVJI5ChRgvemwWKOlXnQA4C8UdK6bBQxRkroAc8VeE0jx5FGBB60ALJOaUCqQScYoyVZNSQOW1dPOqFeXSwVtJPjUopHp61em/eBqh3ptRvcoq5JcIT8KZESG0ZHAgDypZRwK8RjG1BZGKYVCDp3pnI2VkbU6cO9NH96UgesrylKh1G9OM7VHRFBSOAnCk8jTxpWRg8xQiRdJ8NKpPQ7gjBpAc6MCc4pgoVadKHC0ok7ZQr9oeR9auVt0/c5duRNt6mpLTSAuUQQA0knmSaohcBc23IOR8v8A0/XWkdlplMz33GoT7kXhKXHkrAS0RvuDsfPfyrDrZ+3HcVyXJVrnGWzKeYZQHnFEboGcfKhW3QbBYbPdmdSQe9YU8FhbClZSM4AIPqck5zzoVxMvq0YuoRtEKvJhrqFNPLaWMKQopI9QaCFb1JaujCNqGUke64Q6n+YZ+/NROd69DjnuipfZrnHbJx+hcKpQLpslXWjhXlTijgK8qOF02C6OlVADgLo3FSGaMlVADhKsUdCt6ahdHSr1qaAdJO9KpIpohR60qldBA8QoVUdTICLw704gFfZVoQrlVc1iMXBpY/WaH2GmQrIkeEZpJ5zyoq3SRiicCl1NihFHfnSTgyM067oAb0hJ4U7DnUAN2zwuDFPELIPOmjYJWmnBKA4UKOCOSv8AzQA8SrrmjcXgJHM8qZocxkE0oHMHnU2BK6bhPyL1B4YSpLSpSELHCSlR58Jx1IB2rbNJu26JdJsiO0YjT7f6SOMcwScny54x5Csv0LerlbG1gLWYgWHQykAZWOSycZ26VbHtXSxGV7PJ4UuAh1aGweHcnBzvnc1x/UIZMqcUv+/0KxxdbxKQ+gNuhTDrxIGfAMHPCf8AKhVXF4i9457e8FmMO9YSkeFzJ9z0oVy1pZ1xEqY+7R2U9/DkozugtqOOoOR95qpCr7rVgSLCtxABUysLAG5xyP31nwdSeShXodOlGCivB0c8t03J+RWjCkgtJ60YKGedXlNimQKMDtSYI869BooLFQujBVIg0YHepoLF0mjg5pvxUcKoAcJUKVSaaJUM0qlVADlCt6Su1rFybac70t91lJIAOc714lW9SFtWytDrbwcVyKAgDJPzqVyQQP5spxn2kn4JFF/N4D/fL/5atLcKM+r9G69jfJLIIB8iQef3U1uMu32hvicWVucuEHJz5elNtf2Ra+iuuWDI/tlj5CgnRjrkJc4KfVHbcDa3OHKUqIyASBtkVJRJsyctT5ZU0g7JSBy/zq59nuppunTLYVHbudtllPtcF1sAuYGApKuigCdjsaqbp9jqKa6M2/Nhsb+0Kz/76V4rTLSl8RfXmtnu+ibffre5ftCSDLjg/p4C9nmFdU4O/wAj8iaoKozjbim3UKQtJwpKhgg+RFWxSZXK0VdWmY5UVd+4j0SNh9dSNg0oJXtDtvHt62FcKmgpKngP2g17xHqAflUyGgdsUV63svlC1JKXUHKHEHhWk+YI3FS4/Qqf2ObGmOhXdOxw4g5SoA8Kvr86i9cxbfBnNptiXG2VspUpK1EkKyQd6stivEuLcmfp+CjUUEHC8uhmXgDYB39bHkoH4iojtKEB2R7RbA+mKOINpfUkuJBOQFcJxmobT4rkFFp3ZX7bIWnGFmhTSCRn1oUoyNDnOtsRVOBScgbA7VRb1EM1zvC4gDn+j2oUKzQ4NM+SM+ilp9198fzUPo+WPclL28wKFCrbZVtQPZbknk+g/FNDguif1WlY+IoUKm2G1HveXFPvRkH4Loe2SU+/Dc+RBoUKLIoAuBHOM+P5c0YXWOPf40n1SaFCmsViiLpDJ/tkj40u3cIyuTyProUKkLFky2TycH11MaWdguXBYmrT3KWVrUCcA4GcetChR0AhdtRvzVmLaW08JwMp2SnzBPXpsNqRg2IhwSpyi66d9yAB8PKhQpZSY0UiRLSU4CCQB04xQbCEqyBv6LoUKUsJex3afa7m3cbZLchTEDAcTulY/ZWnkpPxrT7Xqbsx1Kv2nX0Jy1XRCMLVHS4WpH7wKASfgdxQoULsPBJe3dgTA/QwJksj9mFJXn68URWquyGMD7FoK5PnofowDP8AzroUKGCI2dr7R4BELsyk5HIrbjt/iazLtU1I3erUhljTDdnbbe4uNLyFFW2MYSBQoVEasWTdGeQ14VQoUKtsqP/Z";
-
-document.getElementById('header-avatar').innerHTML = '<img src="' + AVATAR_URI + '" alt="Nana Kwame Asomani-Appah" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
-document.getElementById('init-bot-avatar').innerHTML = '<img src="' + AVATAR_URI + '" alt="NK" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
-
-function addMsg(role, text) {
-  const box = document.getElementById('messages');
-  const wrap = document.createElement('div');
-  wrap.className = 'msg ' + (role === 'user' ? 'user' : 'bot');
-  const av = document.createElement('div');
-  av.className = 'msg-av ' + (role === 'user' ? 'user-av' : 'bot-av');
-  if (role === 'user') {
-    av.textContent = 'You';
-  } else {
-    av.innerHTML = '<img src="' + AVATAR_URI + '" alt="NK" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
-  }
-  const bub = document.createElement('div');
-  bub.className = 'bubble';
-  bub.innerHTML = textToParagraphs(text);
-  wrap.appendChild(av);
-  wrap.appendChild(bub);
-  box.appendChild(wrap);
-  box.scrollTop = box.scrollHeight;
-  return bub;
-}
-
-function showTyping() {
-  const box = document.getElementById('messages');
-  const wrap = document.createElement('div');
-  wrap.className = 'msg bot'; wrap.id = 'typer';
-  const av = document.createElement('div');
-  av.className = 'msg-av bot-av'; av.innerHTML = '<img src="' + AVATAR_URI + '" alt="NK" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">';
-  const bub = document.createElement('div');
-  bub.className = 'bubble';
-  bub.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
-  wrap.appendChild(av); wrap.appendChild(bub);
-  box.appendChild(wrap); box.scrollTop = box.scrollHeight;
-}
-function removeTyping() { const t = document.getElementById('typer'); if(t) t.remove(); }
-
-function stripMarkdown(text) {
-  return text
-    .replace(/^#{1,6}\s+/gm, '')
-    .replace(/\*\*\*(.+?)\*\*\*/g, '$1')
-    .replace(/\*\*(.+?)\*\*/g, '$1')
-    .replace(/\*(.+?)\*/g, '$1')
-    .replace(/__(.+?)__/g, '$1')
-    .replace(/_(.+?)_/g, '$1')
-    .replace(/^[ \t]*[-*]\s+/gm, '- ')
-    .replace(/`{1,3}([^`]*)`{1,3}/g, '$1')
-    .replace(/^>\s+/gm, '')
-    .trim();
-}
-
-// Set this to your deployed Railway proxy URL once it's live, e.g.
-// 'https://nk-personal-assistant-proxy-production.up.railway.app/v1/messages'
-const PROXY_URL = 'https://nk-personal-assistant-proxy-production.up.railway.app/v1/messages';
-
-async function callClaude(system, messages, maxTokens) {
-  const fullSystem = system + buildUpdatesText() + buildCrossTabText();
-  const res = await fetch(PROXY_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: maxTokens || 600, system: fullSystem, messages })
-  });
-  const data = await res.json();
-  const raw = data.content.map(b => b.text || '').join('');
-  return stripMarkdown(raw);
-}
-
-async function callClaudeStreaming(system, messages, maxTokens, onChunk) {
-  const fullSystem = system + buildUpdatesText() + buildCrossTabText();
-  const res = await fetch(PROXY_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: maxTokens || 600, system: fullSystem, messages, stream: true })
-  });
-  if (!res.body || !res.body.getReader) {
-    const reply = await callClaude(system, messages, maxTokens);
-    onChunk(reply, true);
-    return reply;
-  }
-  const reader = res.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = '';
-  let fullText = '';
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    buffer += decoder.decode(value, { stream: true });
-    const lines = buffer.split('\n');
-    buffer = lines.pop();
-    for (const line of lines) {
-      if (!line.startsWith('data: ')) continue;
-      const payload = line.slice(6).trim();
-      if (!payload || payload === '[DONE]') continue;
-      try {
-        const evt = JSON.parse(payload);
-        if (evt.type === 'content_block_delta' && evt.delta && evt.delta.text) {
-          fullText += evt.delta.text;
-          onChunk(stripMarkdown(fullText), false);
-        }
-      } catch (e) { /* ignore partial json */ }
-    }
-  }
-  const finalText = stripMarkdown(fullText);
-  onChunk(finalText, true);
-  return finalText;
-}
-
-function trimHistory(history, keepLast) {
-  if (history.length <= keepLast) return history;
-  return history.slice(history.length - keepLast);
-}
-
-
-// ===== File attachment support (shared across Chat / CV / Interview / Update panels) =====
-
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => {
-      const s = r.result || '';
-      const i = s.indexOf(',');
-      resolve(i >= 0 ? s.slice(i + 1) : s);
-    };
-    r.onerror = reject;
-    r.readAsDataURL(file);
-  });
-}
-function fileToText(file) {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(r.result || '');
-    r.onerror = reject;
-    r.readAsText(file);
-  });
-}
-function fileToArrayBuffer(file) {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(r.result);
-    r.onerror = reject;
-    r.readAsArrayBuffer(file);
-  });
-}
-
-async function handleFiles(ev, panel) {
-  panel = panel || 'chat';
-  const files = Array.from(ev.target.files || []);
-  ev.target.value = '';
-  for (const f of files) {
-    try {
-      await ingestFile(f, panel);
-    } catch (e) {
-      alert('Could not read ' + f.name + ': ' + (e && e.message ? e.message : e));
-    }
-  }
-  renderAttachChips(panel);
-}
-
-async function ingestFile(f, panel) {
-  panel = panel || 'chat';
-  const name = f.name;
-  const type = (f.type || '').toLowerCase();
-  const ext = (name.split('.').pop() || '').toLowerCase();
-  // Images -> base64 image block
-  if (type.startsWith('image/')) {
-    const data = await fileToBase64(f);
-    pendingAttachments[panel].push({ name, kind: 'image', mediaType: type || 'image/png', data });
-    return;
-  }
-  // PDF -> base64 document block (Claude supports application/pdf)
-  if (type === 'application/pdf' || ext === 'pdf') {
-    const data = await fileToBase64(f);
-    pendingAttachments[panel].push({ name, kind: 'document', mediaType: 'application/pdf', data });
-    return;
-  }
-  // Word docx -> extract text with mammoth
-  if (ext === 'docx' || type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
-    if (!window.mammoth) throw new Error('Document parser not loaded yet, please retry');
-    const buf = await fileToArrayBuffer(f);
-    const result = await window.mammoth.extractRawText({ arrayBuffer: buf });
-    pendingAttachments[panel].push({ name, kind: 'text', mediaType: 'text/plain', data: result.value || '' });
-    return;
-  }
-  // Legacy .doc -> not parseable client-side; ask to convert
-  if (ext === 'doc') {
-    throw new Error('Old .doc format is not supported in-browser. Please save as .docx or PDF and re-upload.');
-  }
-  // Plain text-like
-  const textExts = ['txt','md','csv','rtf','html','htm','json','xml','log','tsv','yaml','yml'];
-  if (type.startsWith('text/') || textExts.includes(ext)) {
-    const text = await fileToText(f);
-    pendingAttachments[panel].push({ name, kind: 'text', mediaType: type || 'text/plain', data: text });
-    return;
-  }
-  // Fallback: try text
-  try {
-    const text = await fileToText(f);
-    pendingAttachments[panel].push({ name, kind: 'text', mediaType: 'text/plain', data: text });
-  } catch (e) {
-    throw new Error('Unsupported file type: ' + (type || ext));
-  }
-}
-
-function attachRowId(panel) {
-  return panel === 'chat' ? 'attach-row' : panel + '-attach-row';
-}
-
-function renderAttachChips(panel) {
-  panel = panel || 'chat';
-  const row = document.getElementById(attachRowId(panel));
-  const atts = pendingAttachments[panel];
-  if (!row) return;
-  if (!atts.length) { row.style.display = 'none'; row.innerHTML = ''; return; }
-  row.style.display = 'flex';
-  row.innerHTML = atts.map((a, i) => {
-    const ic = a.kind === 'image' ? 'ti-photo' : (a.kind === 'document' ? 'ti-file-type-pdf' : 'ti-file-text');
-    return '<div class="attach-chip"><i class="ti ' + ic + '"></i><span class="name">' + escapeHtml(a.name) + '</span><span class="x" onclick="removeAttachment(\'' + panel + '\',' + i + ')">✕</span></div>';
+function attPreview(atts){
+  return(atts||[]).map(a=>{
+    if(a.kind==='image')return`<img class="file-thumb" src="data:${a.mt};base64,${a.data}" alt="${esc(a.name)}" onclick="window.open(this.src)"/>`;
+    if(a.kind==='audio')return`<div class="audio-msg"><div style="font-size:11px;color:#999;margin-bottom:3px"><i class="ti ti-microphone"></i> ${esc(a.name)}</div><audio controls src="${a.url}"></audio></div>`;
+    if(a.kind==='video')return`<video class="file-thumb" controls src="${a.url}"></video>`;
+    const ic=a.kind==='document'?'ti-file-type-pdf':'ti-file-text';
+    return`<div class="file-card"><i class="ti ${ic}"></i>${esc(a.name)}</div>`;
   }).join('');
 }
-function removeAttachment(panel, i) { pendingAttachments[panel].splice(i,1); renderAttachChips(panel); }
-
-function buildUserContent(text, attachments) {
-  if (!attachments || !attachments.length) return text;
-  const blocks = [];
-  for (const a of attachments) {
-    if (a.kind === 'image') {
-      blocks.push({ type: 'image', source: { type: 'base64', media_type: a.mediaType, data: a.data } });
-    } else if (a.kind === 'document') {
-      blocks.push({ type: 'document', source: { type: 'base64', media_type: a.mediaType, data: a.data } });
-    } else if (a.kind === 'text') {
-      blocks.push({ type: 'text', text: 'Attached file "' + a.name + '" (text contents):\n' + a.data });
-    }
+function chipRowId(p){return p==='chat'?'attach-preview':p+'-attach-preview';}
+function renderChips(p){
+  const row=document.getElementById(chipRowId(p));if(!row)return;
+  const atts=pendingAtts[p];if(!atts||!atts.length){row.style.display='none';row.innerHTML='';return;}
+  row.style.display='flex';
+  row.innerHTML=atts.map((a,i)=>{const ic=a.kind==='image'?'ti-photo':a.kind==='audio'?'ti-microphone':a.kind==='video'?'ti-video':a.kind==='document'?'ti-file-type-pdf':'ti-file-text';
+    return`<div class="attach-chip"><i class="ti ${ic}"></i><span class="name">${esc(a.name)}</span><span class="rm" onclick="rmAtt('${p}',${i})">&#x2715;</span></div>`;}).join('');
+}
+function rmAtt(p,i){pendingAtts[p].splice(i,1);renderChips(p);}
+function triggerFile(id){document.getElementById(id).click();}
+async function handleFiles(ev,panel){const files=Array.from(ev.target.files||[]);ev.target.value='';for(const f of files){try{await ingest(f,panel);}catch(e){alert('Could not read '+f.name+': '+(e?.message||e));}}renderChips(panel);}
+async function ingest(f,panel){
+  const name=f.name,type=(f.type||'').toLowerCase(),ext=(name.split('.').pop()||'').toLowerCase();
+  if(type.startsWith('image/')){const d=await toB64(f);pendingAtts[panel].push({name,kind:'image',mt:type,data:d});return;}
+  if(type.startsWith('video/')){const d=await toB64(f);pendingAtts[panel].push({name,kind:'video',mt:type,data:d,url:URL.createObjectURL(f)});return;}
+  if(type.startsWith('audio/')||['mp3','wav','ogg','m4a','webm'].includes(ext)){const d=await toB64(f);pendingAtts[panel].push({name,kind:'audio',mt:type||'audio/webm',data:d,url:URL.createObjectURL(f)});return;}
+  if(type==='application/pdf'||ext==='pdf'){const d=await toB64(f);pendingAtts[panel].push({name,kind:'document',mt:'application/pdf',data:d});return;}
+  if(ext==='docx'||type.includes('wordprocessingml')){if(!window.mammoth)throw new Error('Parser not loaded');const buf=await toAB(f);const res=await mammoth.extractRawText({arrayBuffer:buf});pendingAtts[panel].push({name,kind:'text',mt:'text/plain',data:res.value||''});return;}
+  const t=await toTxt(f);pendingAtts[panel].push({name,kind:'text',mt:'text/plain',data:t});
+}
+const toB64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const s=r.result||'';const i=s.indexOf(',');res(i>=0?s.slice(i+1):s);};r.onerror=rej;r.readAsDataURL(f);});
+const toTxt=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result||'');r.onerror=rej;r.readAsText(f);});
+const toAB=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsArrayBuffer(f);});
+function buildContent(text,atts){
+  if(!atts||!atts.length)return text||'Review attached files and respond to my request.';
+  const blocks=[];
+  for(const a of atts){
+    if(a.kind==='image')blocks.push({type:'image',source:{type:'base64',media_type:a.mt,data:a.data}});
+    else if(a.kind==='document')blocks.push({type:'document',source:{type:'base64',media_type:a.mt,data:a.data}});
+    else if(a.kind==='audio')blocks.push({type:'text',text:`[Audio/voice message: ${a.name}. Treat as spoken input.]`});
+    else if(a.kind==='video')blocks.push({type:'text',text:`[Video attached: ${a.name}]`});
+    else blocks.push({type:'text',text:`Attached "${a.name}":\n${a.data}`});
   }
-  blocks.push({ type: 'text', text: text || 'Please review the attached file(s) and tailor your response to my request.' });
+  blocks.push({type:'text',text:text||'Process the attached file(s) helpfully.'});
   return blocks;
 }
+function dropDocs(ev){ev.preventDefault();document.getElementById('doc-drop').classList.remove('drag');handleFiles({target:{files:ev.dataTransfer.files,value:''},'target':{files:ev.dataTransfer.files,value:''}},'docs');}
 
-function renderAttachmentPreview(attachments) {
-  if (!attachments || !attachments.length) return '';
-  return attachments.map(a => {
-    if (a.kind === 'image') {
-      return '<img class="file-msg-thumb" src="data:' + a.mediaType + ';base64,' + a.data + '" alt="' + escapeHtml(a.name) + '">';
-    }
-    const ic = a.kind === 'document' ? 'ti-file-type-pdf' : 'ti-file-text';
-    return '<div class="file-msg-card"><i class="ti ' + ic + '"></i>' + escapeHtml(a.name) + '</div>';
-  }).join('');
+async function toggleVoice(){
+  if(isRecording){mediaRecorder&&mediaRecorder.stop();return;}
+  try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    audioChunks=[];isRecording=true;
+    const btn=document.getElementById('voice-btn');btn.classList.add('recording');btn.title='Stop recording';
+    mediaRecorder=new MediaRecorder(stream,{mimeType:'audio/webm'});
+    mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data);};
+    mediaRecorder.onstop=async()=>{isRecording=false;btn.classList.remove('recording');btn.title='Voice message';
+      stream.getTracks().forEach(t=>t.stop());
+      const blob=new Blob(audioChunks,{type:'audio/webm'});const url=URL.createObjectURL(blob);
+      const ab=await blob.arrayBuffer();const b64=btoa(String.fromCharCode(...new Uint8Array(ab)));
+      pendingAtts.chat.push({name:'voice-message.webm',kind:'audio',mt:'audio/webm',data:b64,url});renderChips('chat');};
+    mediaRecorder.start();
+  }catch(e){alert('Microphone access denied: '+e.message);}
 }
 
-async function sendChat() {
-  const inp = document.getElementById('chat-input');
-  const text = inp.value.trim();
-  const atts = pendingAttachments.chat.slice();
-  if (!text && !atts.length) return;
-  inp.value = ''; inp.style.height = 'auto';
-  pendingAttachments.chat = []; renderAttachChips('chat');
-  document.getElementById('send-btn').disabled = true;
-  addUserMsg(text, atts);
-  const userContent = buildUserContent(text, atts);
-  chatHistory.push({ role: 'user', content: userContent });
-  chatHistory = trimHistory(chatHistory, 16);
+function makeBotAv(){
+  const av=document.createElement('div');av.className='msg-av bot-av';
+  const img=document.createElement('img');img.src=NK_AVATAR;img.alt='NK';img.onerror=function(){this.parentElement.textContent='NK';};
+  img.style.cssText='width:100%;height:100%;object-fit:cover;display:block';
+  av.appendChild(img);return av;
+}
+function addMsg(role,text,atts){
+  const box=document.getElementById('messages');
+  const wrap=document.createElement('div');wrap.className='msg '+(role==='user'?'user':'bot');
+  const av=document.createElement('div');
+  if(role==='user'){av.className='msg-av user-av';av.textContent='You';}else{wrap.appendChild(makeBotAv());wrap.innerHTML=''; /* rebuild */ const av2=makeBotAv();const bub=document.createElement('div');bub.className='bubble';bub.innerHTML=(text?toParas(text):'')+(atts?attPreview(atts):'');wrap.appendChild(av2);wrap.appendChild(bub);box.appendChild(wrap);box.scrollTop=box.scrollHeight;return bub;}
+  const bub=document.createElement('div');bub.className='bubble';bub.innerHTML=(text?toParas(text):'')+(atts?attPreview(atts):'');
+  wrap.appendChild(av);wrap.appendChild(bub);box.appendChild(wrap);box.scrollTop=box.scrollHeight;return bub;
+}
+function showTyping(){
+  const box=document.getElementById('messages');
+  const w=document.createElement('div');w.className='msg bot';w.id='typer';
+  w.appendChild(makeBotAv());
+  const b=document.createElement('div');b.className='bubble';b.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';
+  w.appendChild(b);box.appendChild(w);box.scrollTop=box.scrollHeight;
+}
+function rmTyping(){const t=document.getElementById('typer');if(t)t.remove();}
+
+async function sendChat(){
+  const inp=document.getElementById('chat-input');const text=inp.value.trim();const atts=pendingAtts.chat.slice();
+  if(!text&&!atts.length)return;
+  inp.value='';inp.style.height='auto';pendingAtts.chat=[];renderChips('chat');
+  document.getElementById('send-btn').disabled=true;
+  addMsg('user',text,atts);
+  const uc=buildContent(text,atts);chatHist.push({role:'user',content:uc});chatHist=trimH(chatHist);
   showTyping();
-  try {
-    let bubble = null;
-    const reply = await callClaudeStreaming(PROFILE, chatHistory, 1600, (partial, isDone) => {
-      if (!bubble) { removeTyping(); bubble = addMsg('bot', partial); }
-      else { bubble.innerHTML = textToParagraphs(partial); document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight; }
+  try{
+    let bub=null;
+    const reply=await streamClaude(PROFILE_SYS,chatHist,1800,(partial,done)=>{
+      if(!bub){rmTyping();bub=addMsg('bot',partial);}
+      else{bub.innerHTML=toParas(partial);document.getElementById('messages').scrollTop=document.getElementById('messages').scrollHeight;}
     });
-    chatHistory.push({ role: 'assistant', content: reply });
-  } catch(e) {
-    removeTyping();
-    addMsg('bot', 'Sorry, I had a connection issue. Please try again.');
-  }
-  document.getElementById('send-btn').disabled = false;
+    chatHist.push({role:'assistant',content:reply});
+  }catch(e){rmTyping();addMsg('bot','Sorry — connection issue. Please try again.');}
+  document.getElementById('send-btn').disabled=false;
+}
+function sendQ(q){document.getElementById('chat-input').value=q;sendChat();}
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
+
+async function generateCV(){
+  const role=document.getElementById('cv-role').value.trim();const desc=document.getElementById('cv-desc').value.trim();
+  if(!role){alert('Please enter a target role.');return;}
+  const atts=pendingAtts.cv.slice();pendingAtts.cv=[];renderChips('cv');
+  const btn=document.getElementById('cv-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Tailoring CV...';
+  document.getElementById('cv-output').style.display='none';
+  try{
+    const pt=`TARGET ROLE: ${role}\n${desc?'JOB DESCRIPTION:\n'+desc+'\n':''}Generate the tailored CV now.`;
+    const uc=buildContent(pt,atts);
+    currentCV=await callClaude(CV_SYS,[{role:'user',content:uc}],2000);
+    document.getElementById('cv-preview').innerHTML=renderCV(currentCV);document.getElementById('cv-output').style.display='block';
+    panelHist.cv.push({role:'user',content:uc});panelHist.cv.push({role:'assistant',content:currentCV});panelHist.cv=trimH(panelHist.cv);
+  }catch(e){alert('Error generating CV. Please try again.');}
+  btn.disabled=false;btn.innerHTML='<i class="ti ti-wand"></i> Generate Tailored CV';
+}
+async function generateCoverLetter(){
+  const role=document.getElementById('cl-role').value.trim();const desc=document.getElementById('cl-desc').value.trim();
+  const tone=document.getElementById('cl-tone').value;const notes=document.getElementById('cl-notes').value.trim();
+  if(!role){alert('Please enter the target role and employer.');return;}
+  const atts=pendingAtts.cl.slice();pendingAtts.cl=[];renderChips('cl');
+  const btn=document.getElementById('cl-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Writing cover letter...';
+  document.getElementById('cl-output').style.display='none';
+  try{
+    const pt=`TARGET ROLE: ${role}\nTONE: ${tone}\n${desc?'JOB DESCRIPTION:\n'+desc:''}\n${notes?'HIGHLIGHT:\n'+notes:''}\nWrite the full cover letter.`;
+    const uc=buildContent(pt,atts);
+    currentCL=await callClaude(CL_SYS,[{role:'user',content:uc}],1600);
+    document.getElementById('cl-preview').innerHTML=renderCL(currentCL);document.getElementById('cl-output').style.display='block';
+    panelHist.cl.push({role:'user',content:uc});panelHist.cl.push({role:'assistant',content:currentCL});panelHist.cl=trimH(panelHist.cl);
+  }catch(e){alert('Error generating cover letter.');}
+  btn.disabled=false;btn.innerHTML='<i class="ti ti-mail"></i> Generate Cover Letter';
+}
+async function processDocs(){
+  const q=document.getElementById('docs-q').value.trim();const atts=pendingAtts.docs.slice();
+  if(!atts.length){alert('Please upload at least one file first.');return;}
+  if(!q){alert('Please describe what to do with the files.');return;}
+  const btn=document.getElementById('docs-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Processing...';
+  document.getElementById('docs-output').style.display='none';
+  try{
+    const uc=buildContent(q,atts);
+    currentDocs=await callClaude(DOCS_SYS,[{role:'user',content:uc}],2000);
+    document.getElementById('docs-result').innerHTML=toParas(currentDocs);document.getElementById('docs-output').style.display='block';
+  }catch(e){alert('Error processing documents.');}
+  btn.disabled=false;btn.innerHTML='<i class="ti ti-wand"></i> Process Documents';
+}
+async function genInterview(){
+  const q=document.getElementById('iv-q').value.trim();const role=document.getElementById('iv-role').value.trim();
+  if(!q){alert('Please enter an interview question.');return;}
+  const atts=pendingAtts.iv.slice();pendingAtts.iv=[];renderChips('iv');
+  const btn=document.getElementById('iv-btn');btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Crafting answer...';
+  document.getElementById('iv-output').style.display='none';
+  try{
+    const pt=`INTERVIEW QUESTION: "${q}"${role?'\nROLE: '+role:''}\nGenerate a strong, authentic answer.`;
+    const uc=buildContent(pt,atts);
+    currentIV=await callClaude(IV_SYS,[{role:'user',content:uc}],900);
+    document.getElementById('iv-preview').innerHTML=toParas(currentIV);document.getElementById('iv-output').style.display='block';
+    panelHist.iv.push({role:'user',content:uc});panelHist.iv.push({role:'assistant',content:currentIV});panelHist.iv=trimH(panelHist.iv);
+  }catch(e){alert('Error generating answer.');}
+  btn.disabled=false;btn.innerHTML='<i class="ti ti-player-play"></i> Generate Answer';
 }
 
-function addUserMsg(text, attachments) {
-  const box = document.getElementById('messages');
-  const wrap = document.createElement('div');
-  wrap.className = 'msg user';
-  const av = document.createElement('div');
-  av.className = 'msg-av user-av';
-  av.textContent = 'You';
-  const bub = document.createElement('div');
-  bub.className = 'bubble';
-  const textHtml = text ? textToParagraphs(text) : '';
-  bub.innerHTML = textHtml + renderAttachmentPreview(attachments);
-  wrap.appendChild(av); wrap.appendChild(bub);
-  box.appendChild(wrap);
-  box.scrollTop = box.scrollHeight;
+function addPanelMsg(panel,role,text,atts){
+  const box=document.getElementById(panel+'-messages');if(!box)return;
+  const w=document.createElement('div');w.className='mini-msg '+(role==='user'?'user':'bot');
+  const b=document.createElement('div');b.className='mini-bubble';
+  b.innerHTML=(text?toParas(text):'')+(atts?attPreview(atts):'');
+  w.appendChild(b);box.appendChild(w);box.scrollTop=box.scrollHeight;return b;
 }
+function showPanelTyping(p){const box=document.getElementById(p+'-messages');if(!box)return;const w=document.createElement('div');w.className='mini-msg bot';w.id=p+'-typer';const b=document.createElement('div');b.className='mini-bubble';b.innerHTML='<div class="typing"><span></span><span></span><span></span></div>';w.appendChild(b);box.appendChild(w);box.scrollTop=box.scrollHeight;}
+function rmPanelTyping(p){const t=document.getElementById(p+'-typer');if(t)t.remove();}
+function panelKey(e,p){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();panelSend(p);}}
 
-function sendQuick(q) { document.getElementById('chat-input').value = q; sendChat(); }
-function handleKey(e) { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendChat(); } }
-
-// ===== Mini-chat (used by CV / Interview / Update panels for follow-up queries) =====
-
-function addPanelMsg(panel, role, text, attachments) {
-  const box = document.getElementById(panel + '-messages');
-  const wrap = document.createElement('div');
-  wrap.className = 'mini-msg ' + (role === 'user' ? 'user' : 'bot');
-  const bub = document.createElement('div');
-  bub.className = 'mini-bubble';
-  const textHtml = text ? textToParagraphs(text) : '';
-  bub.innerHTML = textHtml + (attachments ? renderAttachmentPreview(attachments) : '');
-  wrap.appendChild(bub);
-  box.appendChild(wrap);
-  box.scrollTop = box.scrollHeight;
-  return bub;
-}
-
-function showPanelTyping(panel) {
-  const box = document.getElementById(panel + '-messages');
-  const wrap = document.createElement('div');
-  wrap.className = 'mini-msg bot'; wrap.id = panel + '-typer';
-  const bub = document.createElement('div');
-  bub.className = 'mini-bubble';
-  bub.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
-  wrap.appendChild(bub); box.appendChild(wrap); box.scrollTop = box.scrollHeight;
-}
-function removePanelTyping(panel) { const t = document.getElementById(panel + '-typer'); if (t) t.remove(); }
-function handleKeyPanel(e, panel) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendPanelQuery(panel); } }
-
-async function sendPanelQuery(panel) {
-  const inputEl = document.getElementById(panel + '-query');
-  const text = inputEl.value.trim();
-  const atts = pendingAttachments[panel].slice();
-  if (!text && !atts.length) return;
-  inputEl.value = ''; inputEl.style.height = 'auto';
-  pendingAttachments[panel] = []; renderAttachChips(panel);
-  addPanelMsg(panel, 'user', text, atts);
-  const userContent = buildUserContent(text, atts);
-  panelHistory[panel].push({ role: 'user', content: userContent });
-  panelHistory[panel] = trimHistory(panelHistory[panel], 16);
-  const sysPrompt = panel === 'cv' ? CV_SYSTEM : panel === 'interview' ? INTERVIEW_SYSTEM : UPDATE_SYSTEM;
+async function panelSend(panel){
+  const inp=document.getElementById(panel+'-q')||document.getElementById(panel+'-msg');if(!inp)return;
+  const text=inp.value.trim();const atts=pendingAtts[panel]?pendingAtts[panel].slice():[];
+  if(!text&&!atts.length)return;
+  inp.value='';inp.style.height='auto';
+  if(pendingAtts[panel]){pendingAtts[panel]=[];renderChips(panel);}
+  addPanelMsg(panel,'user',text,atts);
+  const uc=buildContent(text,atts);panelHist[panel].push({role:'user',content:uc});panelHist[panel]=trimH(panelHist[panel]);
+  const sysMap={cv:CV_SYS,cl:CL_SYS,iv:IV_SYS,pr:UPDATE_SYS};const sys=sysMap[panel]||PROFILE_SYS;
   showPanelTyping(panel);
-  try {
-    let bub = null;
-    let firstChunkHandled = false;
-    const reply = await callClaudeStreaming(sysPrompt, panelHistory[panel], 1200, (partial, isDone) => {
-      if (panel === 'profile') {
-        // Don't stream the raw TYPE/TEXT/NOTE structure to the user; wait for completion.
-        if (isDone) {
-          removePanelTyping(panel);
-          finalizeProfileReply(partial);
-        }
-        return;
-      }
-      if (!bub) { removePanelTyping(panel); bub = addPanelMsg(panel, 'bot', partial); }
-      else { bub.innerHTML = textToParagraphs(partial); document.getElementById(panel + '-messages').scrollTop = document.getElementById(panel + '-messages').scrollHeight; }
+  try{
+    let bub=null;
+    const reply=await streamClaude(sys,panelHist[panel],1400,(partial,done)=>{
+      if(panel==='pr'){if(done){rmPanelTyping(panel);finishProfile(partial);}return;}
+      if(!bub){rmPanelTyping(panel);bub=addPanelMsg(panel,'bot',partial);}
+      else{bub.innerHTML=toParas(partial);const b2=document.getElementById(panel+'-messages');if(b2)b2.scrollTop=b2.scrollHeight;}
     });
-    panelHistory[panel].push({ role: 'assistant', content: reply });
-    panelHistory[panel] = trimHistory(panelHistory[panel], 16);
-    if (panel === 'cv' && /PROFESSIONAL SUMMARY/i.test(reply) && /PROFESSIONAL EXPERIENCE/i.test(reply)) {
-      currentCV = reply;
-      document.getElementById('cv-preview').innerHTML = renderCV(currentCV);
-      document.getElementById('cv-output').style.display = 'block';
+    panelHist[panel].push({role:'assistant',content:reply});panelHist[panel]=trimH(panelHist[panel]);
+    if(panel==='cv'&&/PROFESSIONAL SUMMARY/i.test(reply)){currentCV=reply;document.getElementById('cv-preview').innerHTML=renderCV(currentCV);document.getElementById('cv-output').style.display='block';}
+    if(panel==='cl'&&reply.split(/\s+/).length>50){currentCL=reply;document.getElementById('cl-preview').innerHTML=renderCL(currentCL);document.getElementById('cl-output').style.display='block';}
+    if(panel==='iv'&&reply.split(/\s+/).length>30){currentIV=reply;document.getElementById('iv-preview').innerHTML=toParas(currentIV);document.getElementById('iv-output').style.display='block';}
+  }catch(e){rmPanelTyping(panel);addPanelMsg(panel,'bot','Sorry — connection issue.');}
+}
+function finishProfile(raw){
+  const tm=raw.match(/TYPE:\s*([a-zA-Z]*)/i);const xm=raw.match(/TEXT:\s*([^\n]*)/i);const nm=raw.match(/NOTE:\s*([^\n]*)/i);
+  const type=(tm?tm[1].trim().toLowerCase():'');const text=(xm?xm[1].trim():'');const note=(nm?nm[1].trim():'');
+  if(type&&text){profileUpdates.push({type,text,date:new Date().toISOString().slice(0,10)});renderUpdList();addPanelMsg('pr','bot',note||('Added: '+text));}
+  else addPanelMsg('pr','bot',note||raw);
+}
+function renderUpdList(){
+  const box=document.getElementById('upd-list');document.getElementById('upd-count').textContent=profileUpdates.length;
+  if(!profileUpdates.length){box.innerHTML='<p style="color:#adb5bd">No updates yet.</p>';return;}
+  const lb={role:'New role',certification:'Certification',skill:'Skill',achievement:'Achievement',other:'Update'};
+  box.innerHTML=profileUpdates.map((u,i)=>`<p><strong>${lb[u.type]||'Update'}:</strong> ${esc(u.text||'')} <a href="#" onclick="profileUpdates.splice(${i},1);renderUpdList();return false;" style="color:#c0392b;font-size:11px;margin-left:6px">[remove]</a></p>`).join('');
+}
+function addGeneric(){const type=document.getElementById('upd-type').value;const text=document.getElementById('upd-text').value.trim();if(!text){alert('Please enter details.');return;}profileUpdates.push({type,text,date:new Date().toISOString().slice(0,10)});document.getElementById('upd-text').value='';renderUpdList();}
+function exportUpdates(){const b=new Blob([JSON.stringify(profileUpdates,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='nk-updates.json';a.click();URL.revokeObjectURL(u);}
+function importUpdates(ev){const f=ev.target.files[0];if(!f)return;const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);if(Array.isArray(d)){profileUpdates=d;renderUpdList();alert('Loaded.');}else alert('Invalid file.');}catch{alert('Could not read.');}};r.readAsText(f);ev.target.value='';}
+
+function switchTab(tab){
+  const order=['chat','cv','cover','docs','interview','profile'];
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById(tab+'-panel').classList.add('active');
+  document.querySelectorAll('.tab')[order.indexOf(tab)].classList.add('active');
+}
+function copyText(text,btn,label){
+  if(!text){alert('Nothing to copy yet.');return;}const orig=btn.innerHTML;
+  const done=()=>{btn.innerHTML='<i class="ti ti-check"></i> Copied!';setTimeout(()=>btn.innerHTML=orig,2200);};
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(done);
+  else{const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.focus();ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}
+}
+
+function renderCL(text){
+  if(!text) return '';
+  const lines = text.split(/\n/).map(l => l.trim());
+  let html = '';
+  let first = true;
+  for(let i = 0; i < lines.length; i++){
+    const l = lines[i];
+    if(!l){ html += '<br/>'; continue; }
+    // First non-empty line = title → centred bold heading
+    if(first){
+      html += '<p style="text-align:center;font-weight:700;font-family:\'Times New Roman\',serif;font-size:13px;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px">'+esc(l)+'</p>';
+      first = false;
+    } else {
+      html += '<p style="font-family:\'Times New Roman\',serif;font-size:13px;line-height:1.85;margin-bottom:8px">'+esc(l)+'</p>';
     }
-    if (panel === 'interview' && reply.split(/\s+/).length > 40) {
-      currentInterview = reply;
-    }
-  } catch (e) {
-    removePanelTyping(panel);
-    addPanelMsg(panel, 'bot', 'Sorry, I had a connection issue. Please try again.');
   }
+  return html;
 }
-
-function finalizeProfileReply(raw) {
-  const typeMatch = raw.match(/TYPE:\s*([a-zA-Z]*)/i);
-  const textMatch = raw.match(/TEXT:\s*([^\n]*)/i);
-  const noteMatch = raw.match(/NOTE:\s*([^\n]*)/i);
-  const type = typeMatch ? typeMatch[1].trim().toLowerCase() : '';
-  const text = textMatch ? textMatch[1].trim() : '';
-  const note = noteMatch ? noteMatch[1].trim() : '';
-  if (type && text) {
-    addUpdateProgrammatic(type, text);
-    addPanelMsg('profile', 'bot', note || ('Added to your profile: ' + text));
-  } else {
-    addPanelMsg('profile', 'bot', note || raw);
-  }
-}
-
-// ===== CV generation (structured flow, now attachment + follow-up aware) =====
-
-async function generateCV() {
-  const role = document.getElementById('role-input').value.trim();
-  const desc = document.getElementById('role-desc').value.trim();
-  if (!role) { alert('Please enter a target role first.'); return; }
-  const atts = pendingAttachments.cv.slice();
-  pendingAttachments.cv = []; renderAttachChips('cv');
-  const btn = document.getElementById('gen-cv-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div> Tailoring your CV...';
-  document.getElementById('cv-output').style.display = 'none';
-  try {
-    const promptText = `TARGET ROLE: ${role}\n${desc ? 'JOB DESCRIPTION:\n' + desc + '\n' : ''}Please write the tailored CV now.`;
-    const userContent = buildUserContent(promptText, atts);
-    currentCV = await callClaude(CV_SYSTEM, [{ role: 'user', content: userContent }], 1700);
-    document.getElementById('cv-preview').innerHTML = renderCV(currentCV);
-    document.getElementById('cv-output').style.display = 'block';
-    panelHistory.cv.push({ role: 'user', content: userContent });
-    panelHistory.cv.push({ role: 'assistant', content: currentCV });
-    panelHistory.cv = trimHistory(panelHistory.cv, 16);
-    if (atts.length) addPanelMsg('cv', 'user', 'Generate CV for: ' + role, atts);
-  } catch(e) {
-    alert('Error generating CV. Please try again.');
-  }
-  btn.disabled = false;
-  btn.innerHTML = '<i class="ti ti-wand"></i> Generate Tailored CV';
-}
-
-function copyCV() {
-  copyTextWithFallback(currentCV, () => {
-    const btns = document.querySelectorAll('#cv-output .sec-btn');
-    btns[0].innerHTML = '<i class="ti ti-check"></i> Copied!';
-    setTimeout(() => { btns[0].innerHTML = '<i class="ti ti-copy"></i> Copy text'; }, 2000);
-  });
-}
-
-// ===== Interview answer generation (structured flow, now attachment + follow-up aware) =====
-
-async function answerInterview() {
-  const q = document.getElementById('interview-q').value.trim();
-  const role = document.getElementById('interview-role').value.trim();
-  if (!q) { alert('Please enter an interview question.'); return; }
-  const atts = pendingAttachments.interview.slice();
-  pendingAttachments.interview = []; renderAttachChips('interview');
-  const btn = document.getElementById('interview-btn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div> Crafting your answer...';
-  document.getElementById('interview-output').style.display = 'none';
-  try {
-    const promptText = `INTERVIEW QUESTION: "${q}"${role ? '\nROLE: ' + role : ''}\n\nGenerate a strong, authentic interview answer.`;
-    const userContent = buildUserContent(promptText, atts);
-    currentInterview = await callClaude(INTERVIEW_SYSTEM, [{ role: 'user', content: userContent }], 700);
-    document.getElementById('interview-answer').innerHTML = textToParagraphs(currentInterview);
-    document.getElementById('interview-output').style.display = 'block';
-    panelHistory.interview.push({ role: 'user', content: userContent });
-    panelHistory.interview.push({ role: 'assistant', content: currentInterview });
-    panelHistory.interview = trimHistory(panelHistory.interview, 16);
-    if (atts.length) addPanelMsg('interview', 'user', 'Generate answer for: ' + q, atts);
-  } catch(e) {
-    alert('Error generating answer. Please try again.');
-  }
-  btn.disabled = false;
-  btn.innerHTML = '<i class="ti ti-player-play"></i> Generate Answer';
-}
-
-function copyInterview() {
-  copyTextWithFallback(currentInterview, () => {
-    const btns = document.querySelectorAll('#interview-output .sec-btn');
-    btns[0].innerHTML = '<i class="ti ti-check"></i> Copied!';
-    setTimeout(() => { btns[0].innerHTML = '<i class="ti ti-copy"></i> Copy answer'; }, 2000);
-  });
-}
-
-function copyTextWithFallback(text, onSuccess) {
-  if (!text) { alert('Nothing to copy yet.'); return; }
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(onSuccess).catch(() => fallbackCopy(text, onSuccess));
-  } else {
-    fallbackCopy(text, onSuccess);
-  }
-}
-
-function fallbackCopy(text, onSuccess) {
-  try {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.left = '-9999px';
-    document.body.appendChild(ta);
-    ta.focus(); ta.select();
-    const ok = document.execCommand('copy');
-    document.body.removeChild(ta);
-    if (ok) { onSuccess(); } else { alert('Could not copy automatically. Please select and copy the text manually.'); }
-  } catch (e) {
-    alert('Could not copy automatically. Please select and copy the text manually.');
-  }
-}
-
-function copyLink() {
-  navigator.clipboard.writeText(window.location.href).then(() => alert('Link copied! Share it on WhatsApp or social media.'));
-}
-
-function shareWA() {
-  const msg = encodeURIComponent("Chat with Nana Kwame's personal assistant to learn about his professional background, skills, and career: " + window.location.href);
-  window.open('https://wa.me/?text=' + msg, '_blank');
-}
-
-['chat-input', 'cv-query', 'interview-query', 'profile-query'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) {
-    el.addEventListener('input', function() {
-      this.style.height = 'auto';
-      this.style.height = Math.min(this.scrollHeight, 100) + 'px';
-    });
-  }
-});
+function copyLink(){navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!'));}
+function shareWA(){window.open('https://wa.me/?text='+encodeURIComponent("Chat with Nana Kwame's assistant: "+location.href),'_blank');}
+document.querySelectorAll('textarea').forEach(el=>{el.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,110)+'px';});});
 </script>
 </body>
 </html>
