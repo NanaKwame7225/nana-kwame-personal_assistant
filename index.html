@@ -130,6 +130,13 @@ textarea{resize:vertical}
   #app{max-width:100%;border-radius:0}
   .bubble{max-width:88%;font-size:14px}
 }
+
+#drop-overlay{position:fixed;inset:0;background:rgba(4,44,83,.35);backdrop-filter:blur(2px);display:none;align-items:center;justify-content:center;z-index:9999;pointer-events:none}
+#drop-overlay.show{display:flex}
+#drop-overlay .drop-inner{background:#fff;border:3px dashed var(--accent-border);border-radius:18px;padding:40px 56px;text-align:center;box-shadow:0 12px 48px rgba(0,0,0,.25)}
+#drop-overlay .drop-inner i{font-size:44px;color:var(--blue-mid,#185FA5)}
+#drop-overlay .drop-inner p{margin-top:10px;font-size:16px;font-weight:700;color:#333}
+
 </style>
 </head>
 <body>
@@ -171,7 +178,7 @@ textarea{resize:vertical}
     <div id="input-row">
       <button class="icon-btn" onclick="triggerFile('chat-file','chat')" title="Attach file"><i class="ti ti-paperclip"></i></button>
       <input type="file" id="chat-file" multiple accept="image/*,video/*,audio/*,.pdf,.docx,.doc,.txt,.md,.csv" style="display:none" onchange="handleFiles(event,'chat')"/>
-      <button class="icon-btn" id="voice-btn" onclick="toggleVoice()" title="Voice message"><i class="ti ti-microphone"></i></button>
+      <button class="icon-btn" id="voice-btn" onclick="toggleVoice()" title="Record voice message (auto-transcribed)"><i class="ti ti-microphone"></i></button>
       <textarea id="chat-input" placeholder="Ask anything about Nana Kwame..." rows="1" onkeydown="handleKey(event)"></textarea>
       <button id="send-btn" onclick="sendChat()"><i class="ti ti-send"></i></button>
     </div>
@@ -381,7 +388,7 @@ RESPONSE RULES:
 - If a role or certification is mentioned in context, only bring up the ones most relevant — not the full list every time.
 - If asked about salary: "Happy to discuss based on the scope of the role."
 
-VOICE/AUDIO: If the user sends a voice message or audio transcription, treat it exactly as typed input and respond helpfully.
+VOICE/AUDIO: Voice messages are transcribed to text in the browser and sent to you as a transcript. Treat the transcript exactly like typed input and respond helpfully. If a voice note could not be transcribed, politely ask the user to type what they said.
 FILE-READING: Read all attached images, PDFs, Word docs, and text files carefully. Ground your answer in their content plus his real background.`;
 
 const CV_SYS = `ATS-optimised CV writer for Nana Kwame Asomani-Appah. OUTPUT PLAIN TEXT ONLY — no markdown. UPPERCASE section headers. Hyphen bullets under PROFESSIONAL EXPERIENCE. Available for follow-up edits.
@@ -441,7 +448,7 @@ let chatHist=[], currentCV='', currentCL='', currentIV='', currentDocs='';
 let profileUpdates=[];
 let panelHist={cv:[],cl:[],docs:[],iv:[],pr:[]};
 let pendingAtts={chat:[],cv:[],cl:[],docs:[],iv:[],pr:[]};
-let mediaRecorder=null, audioChunks=[], isRecording=false;
+let mediaRecorder=null, audioChunks=[], isRecording=false, speechRec=null, voiceTranscript='';
 
 function updText(){
   if(!profileUpdates.length) return '';
@@ -489,7 +496,7 @@ function renderCV(text){
 function attPreview(atts){
   return(atts||[]).map(a=>{
     if(a.kind==='image')return`<img class="file-thumb" src="data:${a.mt};base64,${a.data}" alt="${esc(a.name)}" onclick="window.open(this.src)"/>`;
-    if(a.kind==='audio')return`<div class="audio-msg"><div style="font-size:11px;color:#999;margin-bottom:3px"><i class="ti ti-microphone"></i> ${esc(a.name)}</div><audio controls src="${a.url}"></audio></div>`;
+    if(a.kind==='audio')return`<div class="audio-msg"><div style="font-size:11px;color:#999;margin-bottom:3px"><i class="ti ti-microphone"></i> ${esc(a.name)}</div><audio controls src="${a.url}"></audio>${a.transcript?`<div style="font-size:12px;color:#555;margin-top:4px;font-style:italic">&ldquo;${esc(a.transcript)}&rdquo;</div>`:''}</div>`;
     if(a.kind==='video')return`<video class="file-thumb" controls src="${a.url}"></video>`;
     const ic=a.kind==='document'?'ti-file-type-pdf':'ti-file-text';
     return`<div class="file-card"><i class="ti ${ic}"></i>${esc(a.name)}</div>`;
@@ -515,6 +522,15 @@ async function ingest(f,panel){
   if(ext==='docx'||type.includes('wordprocessingml')){if(!window.mammoth)throw new Error('Parser not loaded');const buf=await toAB(f);const res=await mammoth.extractRawText({arrayBuffer:buf});pendingAtts[panel].push({name,kind:'text',mt:'text/plain',data:res.value||''});return;}
   const t=await toTxt(f);pendingAtts[panel].push({name,kind:'text',mt:'text/plain',data:t});
 }
+function arrayBufferToBase64(buffer){
+  let binary='';
+  const bytes=new Uint8Array(buffer);
+  const chunk=0x8000;
+  for(let i=0;i<bytes.length;i+=chunk){
+    binary+=String.fromCharCode.apply(null,bytes.subarray(i,i+chunk));
+  }
+  return btoa(binary);
+}
 const toB64=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>{const s=r.result||'';const i=s.indexOf(',');res(i>=0?s.slice(i+1):s);};r.onerror=rej;r.readAsDataURL(f);});
 const toTxt=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result||'');r.onerror=rej;r.readAsText(f);});
 const toAB=f=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(r.result);r.onerror=rej;r.readAsArrayBuffer(f);});
@@ -524,9 +540,12 @@ function buildContent(text,atts){
   for(const a of atts){
     if(a.kind==='image')blocks.push({type:'image',source:{type:'base64',media_type:a.mt,data:a.data}});
     else if(a.kind==='document')blocks.push({type:'document',source:{type:'base64',media_type:a.mt,data:a.data}});
-    else if(a.kind==='audio')blocks.push({type:'text',text:`[Audio/voice message: ${a.name}. Treat as spoken input.]`});
-    else if(a.kind==='video')blocks.push({type:'text',text:`[Video attached: ${a.name}]`});
-    else blocks.push({type:'text',text:`Attached "${a.name}":\n${a.data}`});
+    else if(a.kind==='audio'){
+      if(a.transcript&&a.transcript.trim())blocks.push({type:'text',text:'[Voice message transcript from '+a.name+']: "'+a.transcript.trim()+'"'});
+      else blocks.push({type:'text',text:'[A voice message ("'+a.name+'") was recorded but could not be transcribed automatically in this browser. Ask the user to type what they said, or note that audio content could not be read.]'});
+    }
+    else if(a.kind==='video')blocks.push({type:'text',text:'[A video file ("'+a.name+'") was attached. Video frames cannot be analysed directly — ask the user to describe it, share a screenshot/still image, or upload a transcript if they need its visual or audio content analysed.]'});
+    else blocks.push({type:'text',text:'Attached "'+a.name+'":\n'+a.data});
   }
   blocks.push({type:'text',text:text||'Process the attached file(s) helpfully.'});
   return blocks;
@@ -534,20 +553,60 @@ function buildContent(text,atts){
 function dropDocs(ev){ev.preventDefault();document.getElementById('doc-drop').classList.remove('drag');handleFiles({target:{files:ev.dataTransfer.files,value:''},'target':{files:ev.dataTransfer.files,value:''}},'docs');}
 
 async function toggleVoice(){
-  if(isRecording){mediaRecorder&&mediaRecorder.stop();return;}
-  try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});
-    audioChunks=[];isRecording=true;
-    const btn=document.getElementById('voice-btn');btn.classList.add('recording');btn.title='Stop recording';
-    mediaRecorder=new MediaRecorder(stream,{mimeType:'audio/webm'});
-    mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data);};
-    mediaRecorder.onstop=async()=>{isRecording=false;btn.classList.remove('recording');btn.title='Voice message';
+  if(isRecording){stopVoice();return;}
+  const btn=document.getElementById('voice-btn');
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    audioChunks=[];isRecording=true;voiceTranscript='';
+    btn.classList.add('recording');btn.title='Stop recording';
+
+    // Live speech-to-text (so the AI actually reads what was said)
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    if(SR){
+      try{
+        speechRec=new SR();
+        speechRec.continuous=true;speechRec.interimResults=true;speechRec.lang='en-US';
+        speechRec.onresult=e=>{
+          let finalT='';
+          for(let i=0;i<e.results.length;i++){
+            if(e.results[i].isFinal) finalT+=e.results[i][0].transcript+' ';
+          }
+          if(finalT) voiceTranscript=finalT.trim();
+        };
+        speechRec.onerror=()=>{};
+        speechRec.start();
+      }catch(err){speechRec=null;}
+    }
+
+    let mime='audio/webm';
+    if(!MediaRecorder.isTypeSupported(mime)){mime=MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'';}
+    mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);
+    mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)audioChunks.push(e.data);};
+    mediaRecorder.onstop=async()=>{
+      isRecording=false;btn.classList.remove('recording');btn.title='Voice message';
       stream.getTracks().forEach(t=>t.stop());
-      const blob=new Blob(audioChunks,{type:'audio/webm'});const url=URL.createObjectURL(blob);
-      const ab=await blob.arrayBuffer();const b64=btoa(String.fromCharCode(...new Uint8Array(ab)));
-      pendingAtts.chat.push({name:'voice-message.webm',kind:'audio',mt:'audio/webm',data:b64,url});renderChips('chat');};
+      if(speechRec){try{speechRec.stop();}catch(e){}speechRec=null;}
+      const outMime=mediaRecorder.mimeType||mime||'audio/webm';
+      const blob=new Blob(audioChunks,{type:outMime});
+      const url=URL.createObjectURL(blob);
+      const ab=await blob.arrayBuffer();
+      const b64=arrayBufferToBase64(ab);
+      pendingAtts.chat.push({name:'voice-message',kind:'audio',mt:outMime,data:b64,url,transcript:voiceTranscript});
+      renderChips('chat');
+      // If we captured a transcript, drop it into the input so the user can see/edit and send
+      if(voiceTranscript){
+        const inp=document.getElementById('chat-input');
+        inp.value=(inp.value?inp.value+' ':'')+voiceTranscript;
+        inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,110)+'px';
+      }
+    };
     mediaRecorder.start();
-  }catch(e){alert('Microphone access denied: '+e.message);}
+  }catch(e){
+    isRecording=false;btn.classList.remove('recording');
+    alert('Could not start recording. Please allow microphone access. ('+(e&&e.message?e.message:e)+')');
+  }
 }
+function stopVoice(){try{if(mediaRecorder&&isRecording)mediaRecorder.stop();}catch(e){}}
 
 function makeBotAv(){
   const av=document.createElement('div');av.className='msg-av bot-av';
@@ -737,6 +796,49 @@ function renderCL(text){
 }
 function copyLink(){navigator.clipboard.writeText(location.href).then(()=>alert('Link copied!'));}
 function shareWA(){window.open('https://wa.me/?text='+encodeURIComponent("Chat with Nana Kwame's assistant: "+location.href),'_blank');}
+
+// ──── GLOBAL DRAG & DROP (auto-accepts media into the active panel) ────
+function activePanelKey(){
+  const p=document.querySelector('.panel.active');
+  if(!p)return 'chat';
+  const id=p.id.replace('-panel','');
+  const map={chat:'chat',cv:'cv',cover:'cl',docs:'docs',interview:'iv',profile:'pr'};
+  return map[id]||'chat';
+}
+async function acceptDroppedFiles(fileList){
+  const panel=activePanelKey();
+  const files=Array.from(fileList||[]);
+  if(!files.length)return;
+  for(const f of files){try{await ingest(f,panel);}catch(e){alert('Could not read '+f.name+': '+(e&&e.message?e.message:e));}}
+  renderChips(panel);
+  // Flash a hint on the active panel
+  const box=document.querySelector('.panel.active #messages')||document.querySelector('.panel.active .scroll-panel');
+  if(box){const n=document.createElement('div');n.style.cssText='font-size:11px;color:var(--muted);text-align:center;padding:4px';n.textContent=files.length+' file(s) attached — add a message and send.';box.appendChild(n);setTimeout(()=>n.remove(),2600);box.scrollTop=box.scrollHeight;}
+}
+(function initDragDrop(){
+  const app=document.getElementById('app');
+  if(!app)return;
+  let overlay=document.getElementById('drop-overlay');
+  if(!overlay){
+    overlay=document.createElement('div');
+    overlay.id='drop-overlay';
+    overlay.innerHTML='<div class="drop-inner"><i class="ti ti-cloud-upload"></i><p>Drop files to attach</p></div>';
+    document.body.appendChild(overlay);
+  }
+  let depth=0;
+  const show=()=>overlay.classList.add('show');
+  const hide=()=>overlay.classList.remove('show');
+  window.addEventListener('dragenter',e=>{if(e.dataTransfer&&Array.from(e.dataTransfer.types||[]).includes('Files')){e.preventDefault();depth++;show();}});
+  window.addEventListener('dragover',e=>{if(e.dataTransfer&&Array.from(e.dataTransfer.types||[]).includes('Files')){e.preventDefault();}});
+  window.addEventListener('dragleave',e=>{depth=Math.max(0,depth-1);if(depth===0)hide();});
+  window.addEventListener('drop',e=>{
+    if(e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files.length){
+      e.preventDefault();depth=0;hide();
+      acceptDroppedFiles(e.dataTransfer.files);
+    }
+  });
+})();
+
 document.querySelectorAll('textarea').forEach(el=>{el.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,110)+'px';});});
 </script>
 </body>
