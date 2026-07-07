@@ -346,6 +346,7 @@ textarea{resize:vertical}
 </div>
 <script>
 const PROXY = 'https://nk-personal-assistant-proxy-production.up.railway.app/v1/messages';
+const TRANSCRIBE_URL = 'https://nk-personal-assistant-proxy-production.up.railway.app/transcribe';
 const NK_AVATAR = 'data:image/jpeg;base64,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';
 
 // Inject avatar images
@@ -633,79 +634,70 @@ function dropDocs(ev){ev.preventDefault();document.getElementById('doc-drop').cl
 async function toggleVoice(){
   if(isRecording){stopVoice();return;}
   const btn=document.getElementById('voice-btn');
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-
-  // Start audio recording (for playback) — best effort
   let stream=null;
   try{
     stream=await navigator.mediaDevices.getUserMedia({audio:true});
-    audioChunks=[];
-    let mime='audio/webm';
-    if(!MediaRecorder.isTypeSupported(mime))mime=MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':'';
-    mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);
-    mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)audioChunks.push(e.data);};
-    mediaRecorder.onstop=async()=>{
-      try{
-        const outMime=mediaRecorder.mimeType||'audio/webm';
-        const blob=new Blob(audioChunks,{type:outMime});
-        const url=URL.createObjectURL(blob);
-        const ab=await blob.arrayBuffer();
-        const b64=arrayBufferToBase64(ab);
-        pendingAtts.chat.push({name:'voice-message',kind:'audio',mt:outMime,data:b64,url,transcript:voiceTranscript});
-        renderChips('chat');
-      }catch(e){}
-      if(stream)stream.getTracks().forEach(t=>t.stop());
-    };
-    mediaRecorder.start();
   }catch(e){
-    // mic denied entirely
-    btn.classList.remove('recording');isRecording=false;
     alert('Microphone access is needed to record. Please allow it and try again.');
     return;
   }
-
-  isRecording=true;voiceTranscript='';
-  btn.classList.add('recording');btn.title='Stop recording';
-  showVoiceBanner('Listening… speak now');
-
-  // Speech-to-text — the primary transcription path
-  if(SR){
+  audioChunks=[];voiceTranscript='';
+  let mime='audio/webm';
+  if(!MediaRecorder.isTypeSupported(mime))mime=MediaRecorder.isTypeSupported('audio/mp4')?'audio/mp4':(MediaRecorder.isTypeSupported('audio/ogg')?'audio/ogg':'');
+  mediaRecorder=mime?new MediaRecorder(stream,{mimeType:mime}):new MediaRecorder(stream);
+  mediaRecorder.ondataavailable=e=>{if(e.data&&e.data.size>0)audioChunks.push(e.data);};
+  mediaRecorder.onstop=async()=>{
+    if(stream)stream.getTracks().forEach(t=>t.stop());
+    const outMime=mediaRecorder.mimeType||mime||'audio/webm';
+    const blob=new Blob(audioChunks,{type:outMime});
+    const url=URL.createObjectURL(blob);
+    const ab=await blob.arrayBuffer();
+    const b64=arrayBufferToBase64(ab);
+    // Attach immediately (playback), transcript filled in after
+    const att={name:'voice-message',kind:'audio',mt:outMime,data:b64,url,transcript:''};
+    pendingAtts.chat.push(att);
+    renderChips('chat');
+    // Send to Whisper via proxy for real transcription
+    updateVoiceBanner('Transcribing…');
     try{
-      speechRec=new SR();
-      speechRec.continuous=true;speechRec.interimResults=true;speechRec.lang='en-US';
-      speechRec.onresult=e=>{
-        let finalT='',interim='';
-        for(let i=0;i<e.results.length;i++){
-          const tr=e.results[i][0].transcript;
-          if(e.results[i].isFinal)finalT+=tr+' ';else interim+=tr;
-        }
-        if(finalT)voiceTranscript=(voiceTranscript+' '+finalT).trim();
-        updateVoiceBanner((voiceTranscript+' '+interim).trim()||'Listening…');
-      };
-      speechRec.onerror=ev=>{updateVoiceBanner('Transcription unavailable — audio still recording');};
-      speechRec.onend=()=>{if(isRecording){try{speechRec.start();}catch(e){}}};
-      speechRec.start();
-    }catch(err){speechRec=null;}
-  }else{
-    updateVoiceBanner('Recording… (live transcription not supported in this browser)');
-  }
+      const tr=await transcribeAudio(b64,outMime);
+      if(tr&&tr.trim()){
+        att.transcript=tr.trim();
+        const inp=document.getElementById('chat-input');
+        inp.value=(inp.value?inp.value+' ':'')+tr.trim();
+        inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,110)+'px';
+        inp.focus();
+        renderChips('chat');
+      }else{
+        updateVoiceBanner('Could not transcribe — you can still send the audio or type your message');
+      }
+    }catch(err){
+      updateVoiceBanner('Transcription unavailable — audio attached, please type your message');
+    }
+    setTimeout(hideVoiceBanner,1800);
+  };
+  isRecording=true;
+  btn.classList.add('recording');btn.title='Stop recording';
+  showVoiceBanner('Listening… tap Stop when done');
+  mediaRecorder.start();
 }
 function stopVoice(){
   isRecording=false;
   const btn=document.getElementById('voice-btn');
   if(btn){btn.classList.remove('recording');btn.title='Record voice message (auto-transcribed)';}
-  if(speechRec){try{speechRec.onend=null;speechRec.stop();}catch(e){}speechRec=null;}
   try{if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop();}catch(e){}
-  // Put transcript into the input box so the user can review, edit, and send
-  setTimeout(()=>{
-    hideVoiceBanner();
-    if(voiceTranscript&&voiceTranscript.trim()){
-      const inp=document.getElementById('chat-input');
-      inp.value=(inp.value?inp.value+' ':'')+voiceTranscript.trim();
-      inp.style.height='auto';inp.style.height=Math.min(inp.scrollHeight,110)+'px';
-      inp.focus();
-    }
-  },350);
+  updateVoiceBanner('Processing…');
+}
+// Send base64 audio to the proxy's /transcribe (Whisper) endpoint
+async function transcribeAudio(b64,mime){
+  const res=await fetch(TRANSCRIBE_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({audio:b64,mime:mime})
+  });
+  if(!res.ok)throw new Error('transcribe '+res.status);
+  const data=await res.json();
+  return data.text||data.transcript||'';
 }
 // Voice banner UI
 function showVoiceBanner(msg){
@@ -714,7 +706,7 @@ function showVoiceBanner(msg){
   b.innerHTML='<span class="vb-dot"></span><span class="vb-text">'+msg+'</span><button class="vb-stop" onclick="stopVoice()">Stop</button>';
   b.classList.add('show');
 }
-function updateVoiceBanner(msg){const b=document.getElementById('voice-banner');if(b){const t=b.querySelector('.vb-text');if(t)t.textContent=msg;}}
+function updateVoiceBanner(msg){const b=document.getElementById('voice-banner');if(b){const t=b.querySelector('.vb-text');if(t)t.textContent=msg;const s=b.querySelector('.vb-stop');if(s&&msg!=='Listening… tap Stop when done')s.style.display='none';}}
 function hideVoiceBanner(){const b=document.getElementById('voice-banner');if(b)b.classList.remove('show');}
 
 function makeBotAv(){
